@@ -63,7 +63,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <CardContent className="space-y-4 pt-1">
+        <CardContent className="space-y-4 pt-2 px-6 pb-4">
           <div className={`transition-all duration-700 delay-900 transform ${
             animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
           }`}>
@@ -146,7 +146,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
           )}
         </CardContent>
         
-        <CardFooter className={`flex flex-col space-y-3 pt-1 transition-all duration-700 delay-1300 transform ${
+        <CardFooter className={`flex flex-col space-y-3 pt-0 pb-6 px-6 transition-all duration-700 delay-1300 transform ${
           animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}>
           <Button 

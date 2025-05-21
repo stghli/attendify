@@ -13,7 +13,7 @@ export const BackgroundContainer: React.FC<BackgroundContainerProps> = ({
   animationActive 
 }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+    <div className="min-h-screen flex items-center justify-center p-6 md:p-8 overflow-hidden relative">
       {/* Background Animation Layer */}
       <BackgroundAnimations />
       
