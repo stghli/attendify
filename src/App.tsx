@@ -8,10 +8,12 @@ import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
 
 import Layout from "@/components/layout/Layout";
+import PublicLayout from "@/components/layout/PublicLayout";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import QrScannerPage from "@/pages/QrScannerPage";
+import PublicQrScannerPage from "@/pages/PublicQrScannerPage";
 import StudentsPage from "@/pages/StudentsPage";
 import TeachersPage from "@/pages/TeachersPage";
 import AttendancePage from "@/pages/AttendancePage";
@@ -29,6 +31,12 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
+              {/* Public routes that don't require authentication */}
+              <Route path="/public" element={<PublicLayout />}>
+                <Route path="qr-scanner" element={<PublicQrScannerPage />} />
+              </Route>
+              
+              {/* Protected and authentication routes */}
               <Route path="/" element={<Layout />}>
                 <Route index element={<Index />} />
                 <Route path="/login" element={<Login />} />
