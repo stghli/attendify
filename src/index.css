@@ -96,6 +96,24 @@
   }
 }
 
+/* Custom animations for login page */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(29, 155, 240, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(29, 155, 240, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(29, 155, 240, 0);
+  }
+}
+
+.animate-pulse {
+  animation: pulse-glow 2s infinite;
+}
+
+/* QR Scanner styles */
 .qr-scanner-container {
   position: relative;
   width: 100%;
