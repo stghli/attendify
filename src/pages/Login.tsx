@@ -5,10 +5,10 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { QrCode, UserRound, Lock, ArrowRight } from "lucide-react";
+import { QrCode, UserRound, Lock, ArrowRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { BackgroundAnimations } from "@/components/BackgroundAnimations";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -78,18 +78,22 @@ const Login: React.FC = () => {
             animationActive ? "scale-100 opacity-100" : "scale-90 opacity-0"
           }`}
         >
-          <div className="bg-primary rounded-full p-5 shadow-xl backdrop-blur-sm bg-opacity-90 animate-pulse">
+          <div className="bg-gradient-to-r from-primary to-blue-600 rounded-full p-5 shadow-xl backdrop-blur-sm bg-opacity-90 animate-pulse">
             <QrCode className="h-14 w-14 text-white" />
           </div>
         </div>
         
-        <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-md">
-          <CardHeader className="space-y-1 pb-3">
-            <CardTitle className={`text-3xl font-bold text-center bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent transition-all duration-1000 delay-500 transform ${
-              animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-            }`}>
-              QR Attendance
-            </CardTitle>
+        <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-md overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-blue-600"></div>
+          <CardHeader className="space-y-2 pb-4">
+            <div className="flex justify-between items-center">
+              <CardTitle className={`text-3xl font-bold text-center bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent transition-all duration-1000 delay-500 transform ${
+                animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}>
+                QR Attendance
+              </CardTitle>
+              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+            </div>
             <CardDescription className={`text-center text-base transition-all duration-1000 delay-700 transform ${
               animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
             }`}>
@@ -104,7 +108,7 @@ const Login: React.FC = () => {
                   animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}>
                   <div className="relative">
-                    <div className="absolute left-3 top-3 text-gray-400">
+                    <div className="absolute left-3 top-3 text-primary">
                       <UserRound className="h-5 w-5" />
                     </div>
                     <FormField
@@ -117,10 +121,11 @@ const Login: React.FC = () => {
                               {...field}
                               type="email"
                               placeholder="Email"
-                              className="bg-white/60 focus:bg-white pl-10 transition-all duration-300 h-12 rounded-xl border-gray-200 focus:border-primary"
+                              className="bg-white/90 backdrop-blur-sm focus:bg-white pl-10 transition-all duration-300 h-12 rounded-xl border-gray-200 focus:border-primary shadow-sm"
                               autoComplete="email"
                             />
                           </FormControl>
+                          <FormMessage className="text-xs mt-1 ml-1" />
                         </FormItem>
                       )}
                     />
@@ -131,7 +136,7 @@ const Login: React.FC = () => {
                   animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}>
                   <div className="relative">
-                    <div className="absolute left-3 top-3 text-gray-400">
+                    <div className="absolute left-3 top-3 text-primary">
                       <Lock className="h-5 w-5" />
                     </div>
                     <FormField
@@ -144,15 +149,16 @@ const Login: React.FC = () => {
                               {...field}
                               type="password"
                               placeholder="Password"
-                              className="bg-white/60 focus:bg-white pl-10 transition-all duration-300 h-12 rounded-xl border-gray-200 focus:border-primary"
+                              className="bg-white/90 backdrop-blur-sm focus:bg-white pl-10 transition-all duration-300 h-12 rounded-xl border-gray-200 focus:border-primary shadow-sm"
                               autoComplete="current-password"
                             />
                           </FormControl>
+                          <FormMessage className="text-xs mt-1 ml-1" />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <div className="flex justify-end mt-1">
+                  <div className="flex justify-end mt-2">
                     <a className="text-xs text-primary font-medium hover:text-primary/80 transition-colors" href="#">
                       Forgot password?
                     </a>
@@ -167,12 +173,12 @@ const Login: React.FC = () => {
                       <p className="text-sm text-gray-500">Enter verification code</p>
                       <InputOTP maxLength={6} className="justify-center gap-2">
                         <InputOTPGroup>
-                          <InputOTPSlot index={0} className="rounded-xl h-12 w-12 border-gray-200" />
-                          <InputOTPSlot index={1} className="rounded-xl h-12 w-12 border-gray-200" />
-                          <InputOTPSlot index={2} className="rounded-xl h-12 w-12 border-gray-200" />
-                          <InputOTPSlot index={3} className="rounded-xl h-12 w-12 border-gray-200" />
-                          <InputOTPSlot index={4} className="rounded-xl h-12 w-12 border-gray-200" />
-                          <InputOTPSlot index={5} className="rounded-xl h-12 w-12 border-gray-200" />
+                          <InputOTPSlot index={0} className="rounded-xl h-12 w-12 border-gray-200 bg-white/90 shadow-sm" />
+                          <InputOTPSlot index={1} className="rounded-xl h-12 w-12 border-gray-200 bg-white/90 shadow-sm" />
+                          <InputOTPSlot index={2} className="rounded-xl h-12 w-12 border-gray-200 bg-white/90 shadow-sm" />
+                          <InputOTPSlot index={3} className="rounded-xl h-12 w-12 border-gray-200 bg-white/90 shadow-sm" />
+                          <InputOTPSlot index={4} className="rounded-xl h-12 w-12 border-gray-200 bg-white/90 shadow-sm" />
+                          <InputOTPSlot index={5} className="rounded-xl h-12 w-12 border-gray-200 bg-white/90 shadow-sm" />
                         </InputOTPGroup>
                       </InputOTP>
                     </div>
@@ -184,12 +190,15 @@ const Login: React.FC = () => {
                 animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
               }`}>
                 <Button 
-                  className="w-full font-medium text-base group h-12 rounded-xl shadow-md shadow-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-primary/30" 
+                  className="w-full font-medium text-base group h-12 rounded-xl shadow-md shadow-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 bg-gradient-to-r from-primary to-blue-600" 
                   type="submit" 
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    "Signing in..."
+                    <div className="flex items-center justify-center">
+                      <div className="h-5 w-5 border-t-2 border-r-2 border-white rounded-full animate-spin mr-2"></div>
+                      <span>Signing in...</span>
+                    </div>
                   ) : (
                     <span className="flex items-center justify-center">
                       Sign In
@@ -202,10 +211,10 @@ const Login: React.FC = () => {
           </Form>
         </Card>
         
-        <div className={`mt-5 text-center text-sm text-gray-500 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-lg shadow-sm transition-all duration-500 delay-1500 transform ${
+        <div className={`mt-5 text-center text-sm text-gray-700 bg-white/60 backdrop-blur-sm px-4 py-3 rounded-lg shadow-md transition-all duration-500 delay-1500 transform ${
           animationActive ? "opacity-100" : "opacity-0"
         }`}>
-          <p>
+          <p className="font-medium">
             For demo: admin@school.edu / admin123 or jsmith@school.edu / teacher123
           </p>
         </div>
