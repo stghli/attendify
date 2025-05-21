@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { QrCode, UserRound, Lock, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { BackgroundAnimations } from "@/components/BackgroundAnimations";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -43,11 +44,14 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+      {/* Background Animation Layer */}
+      <BackgroundAnimations />
+      
       <div 
         className={`max-w-md w-full transition-all duration-700 ease-out transform ${
           animationActive ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-        }`}
+        } z-10`}
       >
         <div 
           className={`flex justify-center mb-8 transition-all duration-1000 delay-300 transform ${
