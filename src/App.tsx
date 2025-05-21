@@ -1,24 +1,50 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/context/AuthContext";
+import { DataProvider } from "@/context/DataContext";
+
+import Layout from "@/components/layout/Layout";
+import Index from "@/pages/Index";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import QrScannerPage from "@/pages/QrScannerPage";
+import StudentsPage from "@/pages/StudentsPage";
+import TeachersPage from "@/pages/TeachersPage";
+import AttendancePage from "@/pages/AttendancePage";
+import MyStudentsPage from "@/pages/MyStudentsPage";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <DataProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/qr-scanner" element={<QrScannerPage />} />
+                <Route path="/students" element={<StudentsPage />} />
+                <Route path="/teachers" element={<TeachersPage />} />
+                <Route path="/attendance" element={<AttendancePage />} />
+                <Route path="/my-students" element={<MyStudentsPage />} />
+                
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </DataProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
