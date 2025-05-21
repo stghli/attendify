@@ -1,13 +1,15 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useData } from "@/context/DataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, QrCode } from "lucide-react";
-import { toast } from "sonner";
+import { User, QrCode, Printer } from "lucide-react";
+import QrCodeModal from "@/components/QrCodeModal";
 
 const StudentsPage: React.FC = () => {
   const { students, teachers } = useData();
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const getTeacherName = (teacherId: string): string => {
     const teacher = teachers.find(t => t.id === teacherId);
@@ -15,13 +17,8 @@ const StudentsPage: React.FC = () => {
   };
 
   const handleViewQR = (student: any) => {
-    // In a real app, we would show a QR code modal
-    toast.info(`QR code for ${student.name} would be displayed here`);
-  };
-
-  const handlePrintQR = (student: any) => {
-    // In a real app, we would print the QR code
-    toast.info(`Printing QR code for ${student.name}`);
+    setSelectedStudent(student);
+    setIsQrModalOpen(true);
   };
 
   return (
@@ -77,7 +74,8 @@ const StudentsPage: React.FC = () => {
                   <QrCode className="h-4 w-4 mr-1" />
                   View QR
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handlePrintQR(student)}>
+                <Button variant="outline" size="sm" onClick={() => handleViewQR(student)}>
+                  <Printer className="h-4 w-4 mr-1" />
                   Print QR
                 </Button>
                 <Button variant="outline" size="sm">
@@ -88,6 +86,16 @@ const StudentsPage: React.FC = () => {
           </Card>
         ))}
       </div>
+      
+      {selectedStudent && (
+        <QrCodeModal
+          isOpen={isQrModalOpen}
+          onClose={() => setIsQrModalOpen(false)}
+          userId={selectedStudent.id}
+          userName={selectedStudent.name}
+          userRole="student"
+        />
+      )}
     </div>
   );
 };

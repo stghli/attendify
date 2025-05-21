@@ -1,22 +1,19 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useData } from "@/context/DataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, QrCode } from "lucide-react";
-import { toast } from "sonner";
+import { Users, QrCode, Printer } from "lucide-react";
+import QrCodeModal from "@/components/QrCodeModal";
 
 const TeachersPage: React.FC = () => {
   const { teachers, getStudentsByTeacher } = useData();
+  const [selectedTeacher, setSelectedTeacher] = useState<any>(null);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const handleViewQR = (teacher: any) => {
-    // In a real app, we would show a QR code modal
-    toast.info(`QR code for ${teacher.name} would be displayed here`);
-  };
-
-  const handlePrintQR = (teacher: any) => {
-    // In a real app, we would print the QR code
-    toast.info(`Printing QR code for ${teacher.name}`);
+    setSelectedTeacher(teacher);
+    setIsQrModalOpen(true);
   };
 
   return (
@@ -74,7 +71,8 @@ const TeachersPage: React.FC = () => {
                   <QrCode className="h-4 w-4 mr-1" />
                   View QR
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handlePrintQR(teacher)}>
+                <Button variant="outline" size="sm" onClick={() => handleViewQR(teacher)}>
+                  <Printer className="h-4 w-4 mr-1" />
                   Print QR
                 </Button>
                 <Button variant="outline" size="sm">
@@ -85,6 +83,16 @@ const TeachersPage: React.FC = () => {
           </Card>
         ))}
       </div>
+      
+      {selectedTeacher && (
+        <QrCodeModal
+          isOpen={isQrModalOpen}
+          onClose={() => setIsQrModalOpen(false)}
+          userId={selectedTeacher.id}
+          userName={selectedTeacher.name}
+          userRole="teacher"
+        />
+      )}
     </div>
   );
 };
