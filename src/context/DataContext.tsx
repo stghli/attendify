@@ -1,9 +1,9 @@
 
 import React from "react";
-import { StudentsProvider } from "./students/StudentsContext";
-import { TeachersProvider } from "./teachers/TeachersContext";
-import { SmsProvider } from "./sms/SmsContext";
-import { AttendanceProvider } from "./attendance/AttendanceContext";
+import { StudentsProvider, useStudents } from "./students/StudentsContext";
+import { TeachersProvider, useTeachers } from "./teachers/TeachersContext";
+import { SmsProvider, useSmsNotifications } from "./sms/SmsContext";
+import { AttendanceProvider, useAttendance } from "./attendance/AttendanceContext";
 
 // Re-export all context hooks for backward compatibility
 export { useStudents } from "./students/StudentsContext";

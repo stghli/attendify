@@ -82,21 +82,24 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     // If student, send SMS notification
     if (userRole === "student") {
       const student = user;
-      const actionText = action === "time-in" ? "arrived at" : "left";
-      const timeString = new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      
-      const message = `${student.name} has ${actionText} school at ${timeString}.`;
-      
-      // Send SMS via SmsContext
-      addSmsLog({
-        studentId: student.id,
-        studentName: student.name,
-        parentPhone: student.parentPhone,
-        message,
-      });
+      // Make sure we're only accessing parentPhone for students
+      if ('parentPhone' in student) {
+        const actionText = action === "time-in" ? "arrived at" : "left";
+        const timeString = new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        const message = `${student.name} has ${actionText} school at ${timeString}.`;
+        
+        // Send SMS via SmsContext
+        addSmsLog({
+          studentId: student.id,
+          studentName: student.name,
+          parentPhone: student.parentPhone,
+          message,
+        });
+      }
       
       toast.success(`Attendance recorded and notification sent`);
     } else {

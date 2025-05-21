@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { QrReader } from "react-qr-reader";
 import { useData } from "@/context/DataContext";
@@ -90,9 +91,8 @@ const QrScanner: React.FC = () => {
               constraints={{ facingMode: "environment" }}
               scanDelay={500}
               onResult={handleScan}
-              onError={handleError}
-              containerStyle={{ width: '100%', height: '100%' }}
               videoStyle={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              containerStyle={{ width: '100%', height: '100%' }}
             />
           </div>
         ) : (
