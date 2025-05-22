@@ -24,7 +24,7 @@ export const BackgroundContainer: React.FC<BackgroundContainerProps> = ({
       >
         {children}
         
-        <div className={`mt-5 text-center text-sm text-gray-700 bg-white/60 backdrop-blur-sm px-4 py-3 rounded-lg shadow-md transition-all duration-500 delay-1500 transform ${
+        <div className={`mt-6 text-center text-sm text-gray-700 bg-white/70 backdrop-blur-sm px-4 py-3 rounded-xl shadow-md transition-all duration-500 delay-1500 transform ${
           animationActive ? "opacity-100" : "opacity-0"
         }`}>
           <p className="font-medium">
