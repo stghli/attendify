@@ -1,11 +1,10 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthState, Admin, Teacher } from "@/types";
+import { AuthState, Admin, Teacher, Scanner } from "@/types";
 import { toast } from "sonner";
 
 // Sample users for testing
-const SAMPLE_USERS = [
+export const SAMPLE_USERS = [
   {
     id: "admin-1",
     name: "Admin User",
@@ -104,7 +103,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem("user", JSON.stringify(safeUser));
       
       setAuthState({
-        user: safeUser as Admin | Teacher,
+        user: safeUser as Admin | Teacher | Scanner,
         isAuthenticated: true,
         isLoading: false,
       });

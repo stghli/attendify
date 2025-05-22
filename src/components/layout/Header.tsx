@@ -18,6 +18,19 @@ const Header: React.FC<HeaderProps> = ({ toggleMobileSidebar }) => {
     return null;
   }
 
+  const getRoleBadgeClass = (role: string) => {
+    switch (role) {
+      case "admin":
+        return "bg-purple-100 text-purple-800";
+      case "teacher":
+        return "bg-green-100 text-green-800";
+      case "scanner":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur-sm px-4 lg:px-6 shadow-sm">
       <Button
@@ -51,10 +64,13 @@ const Header: React.FC<HeaderProps> = ({ toggleMobileSidebar }) => {
             <Badge className="h-4 w-4 p-0 flex items-center justify-center absolute -top-1 -right-1 text-[10px]">2</Badge>
           </Button>
           
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-2">
             <span className="text-sm font-medium bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
               Welcome, {user.name}
             </span>
+            <Badge className={`${getRoleBadgeClass(user.role)} capitalize text-xs`}>
+              {user.role}
+            </Badge>
           </div>
         </div>
       </div>
