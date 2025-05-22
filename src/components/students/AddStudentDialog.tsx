@@ -66,7 +66,7 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
     addStudent({
       name: values.name,
       gender: values.gender,
-      age: values.age,
+      age: Number(values.age), // Fix: Explicitly convert to number
       address: values.address,
       parentPhone: values.parentPhone,
       assignedTeacherId: values.assignedTeacherId,
