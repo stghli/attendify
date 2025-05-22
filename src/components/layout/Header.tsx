@@ -2,7 +2,9 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Bell, Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 interface HeaderProps {
   toggleMobileSidebar: () => void;
@@ -17,21 +19,43 @@ const Header: React.FC<HeaderProps> = ({ toggleMobileSidebar }) => {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur-sm px-4 lg:px-6 shadow-sm">
       <Button
         variant="ghost"
         size="icon"
         onClick={toggleMobileSidebar}
         className="lg:hidden"
       >
-        <Menu className="h-6 w-6" />
+        <Menu className="h-5 w-5" />
       </Button>
+      
       <div className="w-full flex justify-between items-center">
-        <h1 className="text-lg font-medium">QR Code Attendance System</h1>
         <div>
-          <span className="text-sm text-muted-foreground hidden md:inline-block mr-2">
-            Welcome, {user.name}
-          </span>
+          <h1 className="text-lg font-medium bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+            QR Code Attendance System
+          </h1>
+        </div>
+        
+        <div className="hidden md:flex items-center border rounded-md bg-muted/40 px-3 max-w-xs">
+          <Search className="h-4 w-4 text-muted-foreground mr-2" />
+          <Input 
+            type="search" 
+            placeholder="Search..." 
+            className="h-9 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+          />
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" className="rounded-full relative">
+            <Bell className="h-4 w-4" />
+            <Badge className="h-4 w-4 p-0 flex items-center justify-center absolute -top-1 -right-1 text-[10px]">2</Badge>
+          </Button>
+          
+          <div className="hidden md:block">
+            <span className="text-sm font-medium bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+              Welcome, {user.name}
+            </span>
+          </div>
         </div>
       </div>
     </header>

@@ -1,88 +1,71 @@
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { useTeachers } from "@/context/teachers/TeachersContext";
-import { useStudents } from "@/context/students/StudentsContext";
-import { studentFormSchema, StudentFormValues } from "./StudentFormSchema";
 import StudentFormFields from "./StudentFormFields";
+import { StudentFormValues, studentFormSchema } from "./StudentFormSchema";
+import { useStudents } from "@/context/students/StudentsContext";
+import { toast } from "sonner";
 
 interface AddStudentDialogProps {
-  trigger?: React.ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
-  const { teachers } = useTeachers();
-  const { addStudent, getAllClasses } = useStudents();
-  const [open, setOpen] = React.useState(false);
-  
-  const classes = getAllClasses();
+const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange }) => {
+  const { addStudent } = useStudents();
   
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      gender: "",
-      age: "",
+      gender: "Male",
+      age: 0,
       address: "",
       parentPhone: "",
       assignedTeacherId: "",
       class: "",
     },
   });
-  
-  const onSubmit = (values: StudentFormValues) => {
-    // Explicitly convert age to a number to satisfy TypeScript
-    const studentData = {
-      name: values.name,
-      gender: values.gender,
-      age: Number(values.age), // Ensure age is converted to a number
-      address: values.address,
-      parentPhone: values.parentPhone,
-      assignedTeacherId: values.assignedTeacherId,
-      role: "student" as const,
-      class: values.class,
-    };
-    
-    addStudent(studentData);
-    
+
+  const onSubmit = (data: StudentFormValues) => {
+    addStudent({
+      ...data,
+      age: Number(data.age), // Convert age to number
+    });
+    toast.success(`Student ${data.name} added successfully`);
     form.reset();
-    setOpen(false);
+    onOpenChange(false);
   };
-  
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || <Button>Add New Student</Button>}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Add New Student</DialogTitle>
           <DialogDescription>
-            Enter the student information to add them to the system.
+            Fill in the student details below to create a new student record.
           </DialogDescription>
         </DialogHeader>
-        
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
-            <StudentFormFields 
-              control={form.control}
-              teachers={teachers}
-              classes={classes}
-            />
-            
-            <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-2">
+            <StudentFormFields form={form} />
+            <DialogFooter>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit">Add Student</Button>

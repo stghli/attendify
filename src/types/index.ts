@@ -1,6 +1,6 @@
 
 // User roles
-export type UserRole = "admin" | "teacher" | "student";
+export type UserRole = "admin" | "teacher" | "student" | "scanner";
 
 // Base user type
 export interface User {
@@ -24,6 +24,12 @@ export interface Teacher extends User {
   assignedClass: string;
   qrCode: string;
   role: "teacher";
+}
+
+// Scanner user type
+export interface Scanner extends User {
+  email: string;
+  role: "scanner";
 }
 
 // Student user type
@@ -62,7 +68,7 @@ export interface SMSLog {
 
 // Auth state
 export interface AuthState {
-  user: Admin | Teacher | null;
+  user: Admin | Teacher | Scanner | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }

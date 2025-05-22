@@ -138,6 +138,20 @@
   }
 }
 
+@keyframes scan {
+  0% {
+    top: 0;
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    top: 100%;
+    opacity: 0.8;
+  }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }

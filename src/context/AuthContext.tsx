@@ -26,6 +26,14 @@ const SAMPLE_USERS = [
     qrCode: "teacher-1-qr",
     createdAt: new Date().toISOString(),
   },
+  {
+    id: "scanner-1",
+    name: "Sarah QR",
+    email: "scanner@school.edu",
+    role: "scanner",
+    password: "scanner123",
+    createdAt: new Date().toISOString(),
+  }
 ];
 
 interface AuthContextType {
