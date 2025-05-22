@@ -26,6 +26,8 @@ interface DataContextType {
   addSmsLog: (log: Omit<SMSLog, "id">) => void;
   addUser: (user: any) => void;
   deleteUser: (id: string) => void;
+  recordAttendance: (userId: string, userRole: "student" | "teacher", action: "time-in" | "time-out") => void;
+  getStudentsByTeacher: (teacherId: string) => Student[];
 }
 
 const DataContext = createContext<DataContextType>({
@@ -44,6 +46,8 @@ const DataContext = createContext<DataContextType>({
   addSmsLog: () => {},
   addUser: () => {},
   deleteUser: () => {},
+  recordAttendance: () => {},
+  getStudentsByTeacher: () => [],
 });
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -60,7 +64,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `student-${Date.now()}`,
       qrCode: `student-qr-${Date.now()}`,
       createdAt: new Date().toISOString(),
-      role: "student" as UserRole,
     };
     setStudents([...students, newStudent]);
   };
@@ -82,7 +85,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `teacher-${Date.now()}`,
       qrCode: `teacher-qr-${Date.now()}`,
       createdAt: new Date().toISOString(),
-      role: "teacher" as UserRole,
     };
     setTeachers([...teachers, newTeacher]);
   };
@@ -104,6 +106,58 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `log-${Date.now()}`,
     };
     setAttendanceLogs([newLog, ...attendanceLogs]);
+  };
+
+  // Record attendance for a user (student or teacher)
+  const recordAttendance = (userId: string, userRole: "student" | "teacher", action: "time-in" | "time-out") => {
+    // Find the user
+    let userName = "";
+    
+    if (userRole === "student") {
+      const student = students.find(s => s.id === userId);
+      if (student) userName = student.name;
+    } else if (userRole === "teacher") {
+      const teacher = teachers.find(t => t.id === userId);
+      if (teacher) userName = teacher.name;
+    }
+    
+    if (!userName) return;
+    
+    // Create and add attendance log
+    const attendanceLog: Omit<AttendanceLog, "id"> = {
+      userId,
+      userName,
+      userRole,
+      action,
+      timestamp: new Date().toISOString(),
+      processed: true,
+    };
+    
+    addAttendanceLog(attendanceLog);
+    
+    // If it's a student, send SMS notification
+    if (userRole === "student") {
+      const student = students.find(s => s.id === userId);
+      if (student && student.parentPhone) {
+        const message = `${student.name} was marked ${action === "time-in" ? "present" : "out"} at ${new Date().toLocaleTimeString()}`;
+        
+        const smsLog: Omit<SMSLog, "id"> = {
+          studentId: student.id,
+          studentName: student.name,
+          parentPhone: student.parentPhone,
+          message,
+          sentAt: new Date().toISOString(),
+          status: "delivered",
+        };
+        
+        addSmsLog(smsLog);
+      }
+    }
+  };
+
+  // Function to get students by teacher
+  const getStudentsByTeacher = (teacherId: string): Student[] => {
+    return students.filter(student => student.assignedTeacherId === teacherId);
   };
 
   // SMS log operations
@@ -141,6 +195,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addSmsLog,
       addUser,
       deleteUser,
+      recordAttendance,
+      getStudentsByTeacher,
     }}>
       {children}
     </DataContext.Provider>

@@ -2,7 +2,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,27 +9,36 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { useData } from "@/context/DataContext";
+import {
+  studentFormSchema,
+  StudentFormValues,
+} from "./StudentFormSchema";
 import StudentFormFields from "./StudentFormFields";
-import { StudentFormValues, studentFormSchema } from "./StudentFormSchema";
-import { useStudents } from "@/context/students/StudentsContext";
 import { toast } from "sonner";
 
 interface AddStudentDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  trigger: React.ReactNode;
 }
 
-const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange }) => {
-  const { addStudent } = useStudents();
-  
+const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
+  const { addStudent, teachers } = useData();
+  const [open, setOpen] = React.useState(false);
+
+  // Extract all unique class names from existing students
+  const { students } = useData();
+  const classes = Array.from(new Set(students.map(student => student.class)));
+
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      gender: "Male",
-      age: 0,
+      gender: "",
+      age: "",
       address: "",
       parentPhone: "",
       assignedTeacherId: "",
@@ -38,34 +46,41 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange 
     },
   });
 
-  const onSubmit = (data: StudentFormValues) => {
-    addStudent({
-      ...data,
-      age: Number(data.age), // Convert age to number
-    });
-    toast.success(`Student ${data.name} added successfully`);
+  const onSubmit = (values: StudentFormValues) => {
+    // Add role field to meet the Student type requirements
+    const studentData = {
+      ...values,
+      age: Number(values.age),
+      role: "student" as const,
+    };
+
+    addStudent(studentData);
+    toast.success(`Student ${values.name} added successfully`);
     form.reset();
-    onOpenChange(false);
+    setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px]">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Add New Student</DialogTitle>
           <DialogDescription>
-            Fill in the student details below to create a new student record.
+            Enter the student information to add them to the system.
           </DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-2">
-            <StudentFormFields form={form} />
-            <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => onOpenChange(false)}
-              >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
+            <StudentFormFields
+              control={form.control}
+              teachers={teachers.map((teacher) => ({ id: teacher.id, name: teacher.name }))}
+              classes={classes.length > 0 ? classes : ["Class 1", "Class 2", "Class 3"]}
+            />
+
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit">Add Student</Button>

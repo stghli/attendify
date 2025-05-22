@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { QrReader } from "react-qr-reader";
 import { useData } from "@/context/DataContext";
@@ -10,7 +9,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
 const QrScanner: React.FC = () => {
-  const { recordAttendance, students, teachers } = useData();
+  const { students, teachers, recordAttendance } = useData();
   const [scanning, setScanning] = useState(false);
   const [lastScan, setLastScan] = useState<{
     userId: string;
