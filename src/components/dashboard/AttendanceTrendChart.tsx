@@ -1,9 +1,9 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LineChart, Line } from "recharts";
 import { useData } from "@/context/DataContext";
-import { TrendingUp, Calendar } from "lucide-react";
+import { TrendingUp, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 const AttendanceTrendChart: React.FC = () => {
   const { attendanceLogs } = useData();
@@ -35,6 +35,7 @@ const AttendanceTrendChart: React.FC = () => {
       name: dayString,
       students,
       teachers,
+      total: students + teachers
     };
   });
 
@@ -54,35 +55,56 @@ const AttendanceTrendChart: React.FC = () => {
     : 0;
 
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-none bg-white">
-      <div className="absolute h-1 w-full bg-gradient-to-r from-primary via-blue-500 to-purple-500"></div>
-      <CardHeader className="pt-6">
+    <Card className="overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border-none bg-white rounded-xl">
+      <div className="absolute h-1.5 w-full bg-gradient-to-r from-primary via-blue-500 to-purple-500"></div>
+      <CardHeader className="pt-6 pb-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary/10 p-2 rounded-full">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2.5 rounded-xl">
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
-            <CardTitle className="text-lg font-semibold">
-              Weekly Attendance Trend
-            </CardTitle>
+            <div>
+              <CardTitle className="text-lg font-semibold">
+                Attendance Analytics
+              </CardTitle>
+              <CardDescription className="flex items-center mt-0.5">
+                Weekly attendance patterns 
+                {trend !== 0 && (
+                  <div className={`ml-2 flex items-center ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className="text-sm font-medium flex items-center">
+                      {trend > 0 ? (
+                        <>+{trend}% <ArrowUpRight className="h-3.5 w-3.5 ml-0.5" /></>
+                      ) : (
+                        <>{trend}% <ArrowDownRight className="h-3.5 w-3.5 ml-0.5" /></>
+                      )}
+                    </span>
+                  </div>
+                )}
+              </CardDescription>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Last 7 days</span>
+          <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-lg text-muted-foreground">
+            <Calendar className="h-3.5 w-3.5" />
+            <span className="text-xs">Last 7 days</span>
           </div>
         </div>
-        <CardDescription className="flex items-center mt-1">
-          Attendance patterns {trend !== 0 && (
-            <div className={`ml-2 flex items-center ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
-              <span className="text-sm font-medium">
-                {trend > 0 ? `+${trend}%` : `${trend}%`}
-              </span>
-              <TrendingUp className={`h-4 w-4 ml-1 ${trend > 0 ? '' : 'rotate-180'}`} />
-            </div>
-          )}
-        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-4">
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-blue-50 rounded-lg px-4 py-3 border border-blue-100">
+            <p className="text-xs text-blue-700">Total Present</p>
+            <p className="text-2xl font-bold text-blue-800">{chartData.reduce((sum, day) => sum + day.total, 0)}</p>
+          </div>
+          <div className="bg-purple-50 rounded-lg px-4 py-3 border border-purple-100">
+            <p className="text-xs text-purple-700">Students</p>
+            <p className="text-2xl font-bold text-purple-800">{chartData.reduce((sum, day) => sum + day.students, 0)}</p>
+          </div>
+          <div className="bg-green-50 rounded-lg px-4 py-3 border border-green-100">
+            <p className="text-xs text-green-700">Teachers</p>
+            <p className="text-2xl font-bold text-green-800">{chartData.reduce((sum, day) => sum + day.teachers, 0)}</p>
+          </div>
+        </div>
+      
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -93,18 +115,20 @@ const AttendanceTrendChart: React.FC = () => {
                 left: 0,
                 bottom: 20,
               }}
+              barGap={0}
+              barCategoryGap={16}
             >
               <defs>
                 <linearGradient id="studentGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.4}/>
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.9}/>
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.6}/>
                 </linearGradient>
                 <linearGradient id="teacherGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#4ade80" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#4ade80" stopOpacity={0.4}/>
+                  <stop offset="5%" stopColor="#4ade80" stopOpacity={0.9}/>
+                  <stop offset="95%" stopColor="#4ade80" stopOpacity={0.6}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
               <XAxis 
                 dataKey="name" 
                 fontSize={12} 
@@ -120,7 +144,7 @@ const AttendanceTrendChart: React.FC = () => {
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.98)',
                   borderRadius: '8px',
                   boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)', 
                   border: 'none',
@@ -131,14 +155,14 @@ const AttendanceTrendChart: React.FC = () => {
               <Legend 
                 wrapperStyle={{ paddingTop: 10 }} 
                 iconType="circle"
-                iconSize={10}
+                iconSize={8}
               />
               <Bar 
                 dataKey="students" 
                 name="Students" 
                 fill="url(#studentGradient)" 
                 radius={[4, 4, 0, 0]}
-                barSize={30}
+                barSize={24}
                 animationDuration={1500}
               />
               <Bar 
@@ -146,7 +170,7 @@ const AttendanceTrendChart: React.FC = () => {
                 name="Teachers" 
                 fill="url(#teacherGradient)" 
                 radius={[4, 4, 0, 0]}
-                barSize={30}
+                barSize={24}
                 animationDuration={1500}
               />
             </BarChart>
