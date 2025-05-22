@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StudentFormValues } from "./StudentFormSchema";
+import { Teacher } from "@/types";
 
 interface StudentFormFieldsProps {
   control: Control<StudentFormValues>;

@@ -9,6 +9,7 @@ export const studentFormSchema = z.object({
   parentPhone: z.string().min(10, "Phone number must be at least 10 characters"),
   assignedTeacherId: z.string().min(1, "Please select a teacher"),
   class: z.string().min(1, "Please select a class"),
+  role: z.literal("student").default("student"),
 });
 
 export type StudentFormValues = z.infer<typeof studentFormSchema>;
