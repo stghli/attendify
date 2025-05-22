@@ -3,10 +3,21 @@ import React, { useState } from "react";
 import { useData } from "@/context/DataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, QrCode, Printer, Search } from "lucide-react";
+import { 
+  Users, 
+  QrCode, 
+  Printer, 
+  Search, 
+  Mail, 
+  Phone, 
+  BookOpen,
+  UserRound,
+  GraduationCap 
+} from "lucide-react";
 import QrCodeModal from "@/components/QrCodeModal";
 import AddTeacherDialog from "@/components/teachers/AddTeacherDialog";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 const TeachersPage: React.FC = () => {
   const { teachers, getStudentsByTeacher } = useData();
@@ -50,58 +61,63 @@ const TeachersPage: React.FC = () => {
       </div>
 
       <div className="flex justify-between items-center my-6">
-        <div className="flex items-center px-3 py-1 rounded-lg bg-purple-100 dark:bg-purple-900/20">
-          <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Total Teachers: {filteredTeachers.length}</span>
+        <div className="flex items-center px-3 py-1 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+          <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Total Teachers: {filteredTeachers.length}</span>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {filteredTeachers.map(teacher => (
-          <Card key={teacher.id} className="overflow-hidden border-purple-100 dark:border-purple-800/30 transition-all hover:shadow-md">
-            <CardHeader className="pb-2 bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20">
+          <Card key={teacher.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-white to-blue-50 dark:from-slate-900 dark:to-slate-800">
+            <CardHeader className="pb-2 bg-gradient-to-r from-blue-500 to-violet-500 text-white">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg text-purple-900 dark:text-purple-100">{teacher.name}</CardTitle>
-                <div className="bg-purple-200 dark:bg-purple-700/30 p-1.5 rounded-full">
-                  <Users className="h-4 w-4 text-purple-700 dark:text-purple-300" />
+                <CardTitle className="text-lg font-semibold">{teacher.name}</CardTitle>
+                <div className="bg-white/20 p-1.5 rounded-full">
+                  <GraduationCap className="h-5 w-5 text-white" />
                 </div>
               </div>
+              <Badge variant="secondary" className="bg-white/30 text-white hover:bg-white/40 mt-1 w-fit">
+                {teacher.assignedClass}
+              </Badge>
             </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-2 mb-4">
-                <div className="grid grid-cols-3 gap-1">
-                  <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">Class:</span>
-                  <span className="text-sm col-span-2">{teacher.assignedClass}</span>
+            <CardContent className="pt-5">
+              <div className="grid gap-4 mb-5">
+                <div className="flex items-center">
+                  <Mail className="h-4 w-4 mr-2 text-blue-500" />
+                  <span className="text-sm">{teacher.email}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-1">
-                  <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">Email:</span>
-                  <span className="text-sm col-span-2">{teacher.email}</span>
+                <div className="flex items-center">
+                  <Phone className="h-4 w-4 mr-2 text-blue-500" />
+                  <span className="text-sm">{teacher.contact}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-1">
-                  <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">Contact:</span>
-                  <span className="text-sm col-span-2">{teacher.contact}</span>
+                <div className="flex items-center">
+                  <UserRound className="h-4 w-4 mr-2 text-blue-500" />
+                  <span className="text-sm">{teacher.gender}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-1">
-                  <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">Gender:</span>
-                  <span className="text-sm col-span-2">{teacher.gender}</span>
-                </div>
-                <div className="grid grid-cols-3 gap-1">
-                  <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">Students:</span>
-                  <span className="text-sm col-span-2 font-medium">
-                    {getStudentsByTeacher(teacher.id).length}
-                  </span>
+                <div className="flex items-center">
+                  <Users className="h-4 w-4 mr-2 text-blue-500" />
+                  <div>
+                    <span className="text-sm font-medium">
+                      {getStudentsByTeacher(teacher.id).length} Students
+                    </span>
+                  </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <Button variant="outline" size="sm" onClick={() => handleViewQR(teacher)} className="text-purple-700 border-purple-200 hover:bg-purple-50 hover:text-purple-800 dark:text-purple-300 dark:border-purple-800 dark:hover:bg-purple-900/30">
-                  <QrCode className="h-4 w-4 mr-1" />
-                  View QR
+              <div className="grid grid-cols-3 gap-2 mt-6">
+                <Button variant="outline" size="sm" onClick={() => handleViewQR(teacher)} 
+                  className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-800/50">
+                  <QrCode className="h-4 w-4 mr-1.5" />
+                  QR Code
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleViewQR(teacher)} className="text-purple-700 border-purple-200 hover:bg-purple-50 hover:text-purple-800 dark:text-purple-300 dark:border-purple-800 dark:hover:bg-purple-900/30">
-                  <Printer className="h-4 w-4 mr-1" />
-                  Print QR
+                <Button variant="outline" size="sm" onClick={() => handleViewQR(teacher)}
+                  className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-800/50">
+                  <Printer className="h-4 w-4 mr-1.5" />
+                  Print
                 </Button>
-                <Button variant="outline" size="sm" className="text-purple-700 border-purple-200 hover:bg-purple-50 hover:text-purple-800 dark:text-purple-300 dark:border-purple-800 dark:hover:bg-purple-900/30">
+                <Button variant="outline" size="sm"
+                  className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-800/50">
+                  <BookOpen className="h-4 w-4 mr-1.5" />
                   Edit
                 </Button>
               </div>

@@ -1,16 +1,19 @@
+
 import React, { useState, useEffect } from "react";
 import { QrReader } from "react-qr-reader";
 import { useData } from "@/context/DataContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { UserCheck, UserX, Clock, QrCode, Scan, CheckCircle } from "lucide-react";
+import { UserCheck, UserX, Clock, QrCode, Scan, CheckCircle, LogIn, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const QrScanner: React.FC = () => {
   const { students, teachers, recordAttendance } = useData();
   const [scanning, setScanning] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<"time-in" | "time-out">("time-in");
   const [lastScan, setLastScan] = useState<{
     userId: string;
     name: string;
@@ -44,20 +47,15 @@ const QrScanner: React.FC = () => {
           return;
         }
         
-        // Determine if this is time-in or time-out based on last action
-        // For simplicity, we're alternating between time-in and time-out
-        // In a real system, you'd check the last record for this user
-        const action: "time-in" | "time-out" = "time-in"; 
-        
-        // Record attendance
-        recordAttendance(userId, role as "student" | "teacher", action);
+        // Record attendance with the selected action (time-in or time-out)
+        recordAttendance(userId, role as "student" | "teacher", selectedAction);
         
         // Update last scan info
         setLastScan({
           userId,
           name: user.name,
           role: role as "student" | "teacher",
-          action,
+          action: selectedAction,
           timestamp: new Date()
         });
         
@@ -83,6 +81,32 @@ const QrScanner: React.FC = () => {
         {scanning ? "Scan QR Code to Record Attendance" : "QR Scanner"}
       </div>
       <CardContent className="p-5">
+        {!scanning && (
+          <Tabs 
+            defaultValue="time-in" 
+            value={selectedAction} 
+            onValueChange={(value) => setSelectedAction(value as "time-in" | "time-out")}
+            className="w-full mb-5"
+          >
+            <TabsList className="grid grid-cols-2 w-full">
+              <TabsTrigger value="time-in" className="flex items-center gap-1.5">
+                <LogIn className="h-4 w-4" />
+                Check In
+              </TabsTrigger>
+              <TabsTrigger value="time-out" className="flex items-center gap-1.5">
+                <LogOut className="h-4 w-4" />
+                Check Out
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="time-in" className="mt-3 text-center text-sm text-muted-foreground">
+              Students and teachers will be marked as present
+            </TabsContent>
+            <TabsContent value="time-out" className="mt-3 text-center text-sm text-muted-foreground">
+              Students and teachers will be marked as departed
+            </TabsContent>
+          </Tabs>
+        )}
+
         <AnimatePresence mode="wait">
           {scanning ? (
             <motion.div 
@@ -140,8 +164,8 @@ const QrScanner: React.FC = () => {
                   }`}
                   >
                     {lastScan.action === 'time-in' ? 
-                      <CheckCircle className="h-8 w-8 text-green-600" /> : 
-                      <UserX className="h-8 w-8 text-amber-600" />
+                      <LogIn className="h-8 w-8 text-green-600" /> : 
+                      <LogOut className="h-8 w-8 text-amber-600" />
                     }
                   </motion.div>
                   <h3 className="font-medium text-xl">{lastScan.name}</h3>
@@ -161,9 +185,12 @@ const QrScanner: React.FC = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                   <div className="rounded-full bg-muted p-6">
-                    <QrCode className="h-10 w-10" />
+                    {selectedAction === "time-in" ? 
+                      <LogIn className="h-10 w-10" /> : 
+                      <LogOut className="h-10 w-10" />
+                    }
                   </div>
-                  <p className="mt-4">Ready to scan attendance QR codes</p>
+                  <p className="mt-4">Ready to scan {selectedAction === 'time-in' ? 'check-in' : 'check-out'} QR codes</p>
                 </div>
               )}
               
