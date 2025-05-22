@@ -130,7 +130,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       userRole,
       action,
       timestamp: new Date().toISOString(),
-      processed: true,
+      status: action === "time-in" ? "entry" : "exit",
     };
     
     addAttendanceLog(attendanceLog);
@@ -146,7 +146,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           studentName: student.name,
           parentPhone: student.parentPhone,
           message,
-          sentAt: new Date().toISOString(),
+          timestamp: new Date().toISOString(),
           status: "delivered",
         };
         

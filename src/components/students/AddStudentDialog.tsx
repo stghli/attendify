@@ -47,10 +47,15 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
   });
 
   const onSubmit = (values: StudentFormValues) => {
-    // Add role field to meet the Student type requirements
+    // Convert age to number and add required Student fields
     const studentData = {
-      ...values,
+      name: values.name,
+      gender: values.gender,
       age: Number(values.age),
+      address: values.address,
+      parentPhone: values.parentPhone,
+      assignedTeacherId: values.assignedTeacherId,
+      class: values.class,
       role: "student" as const,
     };
 

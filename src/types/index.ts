@@ -32,6 +32,13 @@ export interface Scanner extends User {
   role: "scanner";
 }
 
+// Student attendance statistics
+export interface StudentAttendance {
+  present: number;
+  absent: number;
+  late: number;
+}
+
 // Student user type
 export interface Student extends User {
   gender: string;
@@ -41,7 +48,8 @@ export interface Student extends User {
   assignedTeacherId: string;
   qrCode: string;
   role: "student";
-  class: string; // Added class field
+  class: string;
+  attendance?: StudentAttendance; // Now properly defined as optional
 }
 
 // Attendance log type
@@ -52,7 +60,8 @@ export interface AttendanceLog {
   userRole: UserRole;
   timestamp: string;
   action: "time-in" | "time-out";
-  status: "entry" | "exit";
+  status?: "entry" | "exit"; // Optional status
+  processed?: boolean; // Added as optional property
 }
 
 // SMS notification log
@@ -62,7 +71,8 @@ export interface SMSLog {
   studentName: string;
   parentPhone: string;
   message: string;
-  timestamp: string;
+  timestamp: string; // Primary timestamp
+  sentAt?: string; // Added as optional property for actual send time
   status: "sent" | "failed" | "delivered";
 }
 
