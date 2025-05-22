@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,12 +42,11 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
   });
   
   const onSubmit = (values: StudentFormValues) => {
-    // Zod transforms the string to number in the schema, but TypeScript doesn't know this
-    // Let's explicitly define the student object with the correct types
+    // Explicitly convert age to a number to satisfy TypeScript
     const studentData = {
       name: values.name,
       gender: values.gender,
-      age: Number(values.age), // Explicitly convert to number to satisfy TypeScript
+      age: Number(values.age), // Ensure age is converted to a number
       address: values.address,
       parentPhone: values.parentPhone,
       assignedTeacherId: values.assignedTeacherId,
