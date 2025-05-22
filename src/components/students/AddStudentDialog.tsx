@@ -47,11 +47,19 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange,
   });
 
   const onSubmit = (data: StudentFormValues) => {
-    addStudent({
-      ...data,
+    // Make sure all required fields are present before adding student
+    const newStudent = {
+      name: data.name,
+      gender: data.gender,
       age: Number(data.age),
-      role: "student"
-    });
+      address: data.address,
+      parentPhone: data.parentPhone,
+      assignedTeacherId: data.assignedTeacherId,
+      class: data.class,
+      role: "student" as const, // Using const assertion to make this a literal
+    };
+    
+    addStudent(newStudent);
     toast.success(`Student ${data.name} added successfully`);
     form.reset();
     onOpenChange(false);
