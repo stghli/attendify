@@ -43,16 +43,20 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
   });
   
   const onSubmit = (values: StudentFormValues) => {
-    addStudent({
+    // Zod transforms the string to number in the schema, but TypeScript doesn't know this
+    // Let's explicitly define the student object with the correct types
+    const studentData = {
       name: values.name,
       gender: values.gender,
-      age: values.age, // This will now be a number from our schema transformation
+      age: Number(values.age), // Explicitly convert to number to satisfy TypeScript
       address: values.address,
       parentPhone: values.parentPhone,
       assignedTeacherId: values.assignedTeacherId,
-      role: "student",
+      role: "student" as const,
       class: values.class,
-    });
+    };
+    
+    addStudent(studentData);
     
     form.reset();
     setOpen(false);
