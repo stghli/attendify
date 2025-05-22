@@ -12,8 +12,8 @@ export const BackgroundContainer: React.FC<BackgroundContainerProps> = ({
   animationActive 
 }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden relative">
-      {/* Enhanced Background Animation Layer */}
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 overflow-hidden relative">
+      {/* Background Animation Layer */}
       <BackgroundAnimations />
       
       <div 
@@ -24,10 +24,10 @@ export const BackgroundContainer: React.FC<BackgroundContainerProps> = ({
         {children}
       </div>
       
-      <div className={`mt-6 text-center text-xs transition-all duration-500 delay-1000 transform ${
+      <div className={`mt-6 text-center text-xs text-gray-500 transition-all duration-500 delay-1000 transform ${
         animationActive ? "opacity-100" : "opacity-0"
       } z-10`}>
-        <p className="font-medium text-white/70">
+        <p className="font-medium">
           QR Attendance System &copy; 2025
         </p>
       </div>

@@ -74,14 +74,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="relative group">
-                      <Mail className="absolute left-3 top-2.5 h-5 w-5 text-blue-400 transition-colors group-hover:text-blue-600" />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                       <FormControl>
                         <Input
                           {...field}
                           type="email"
                           placeholder="Email"
-                          className="h-10 pl-10 pr-4 bg-white/80 backdrop-blur-sm border-gray-200/50 focus:bg-white/95 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 rounded-xl transition-all"
+                          className="h-10 pl-10 pr-4 bg-gray-50 border-gray-200 focus:bg-white rounded-md"
                           autoComplete="email"
                         />
                       </FormControl>
@@ -101,21 +101,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="relative group">
-                    <Lock className="absolute left-3 top-2.5 h-5 w-5 text-blue-400 transition-colors group-hover:text-blue-600" />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                     <FormControl>
                       <Input
                         {...field}
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
-                        className="h-10 pl-10 pr-10 bg-white/80 backdrop-blur-sm border-gray-200/50 focus:bg-white/95 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 rounded-xl transition-all"
+                        className="h-10 pl-10 pr-10 bg-gray-50 border-gray-200 focus:bg-white rounded-md"
                         autoComplete="current-password"
                       />
                     </FormControl>
                     <button 
                       type="button"
                       onClick={togglePasswordVisibility}
-                      className="absolute right-3 top-2.5 text-gray-400 hover:text-blue-600 transition-colors"
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
                     >
                       {showPassword ? 
                         <EyeOff className="h-5 w-5" /> : 
@@ -127,7 +127,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
                 </FormItem>
               )}
             />
-            <div className="flex justify-end mt-2">
+            <div className="flex justify-end mt-1">
               <a className="text-xs text-blue-600 font-medium hover:text-blue-800 transition-colors" href="#">
                 Forgot password?
               </a>
@@ -139,7 +139,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
           animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}>
           <Button 
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium rounded-xl shadow-md shadow-blue-500/20 border border-blue-400/20 transition-all"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium rounded-md shadow transition-all"
             type="submit" 
             disabled={isLoading}
           >
