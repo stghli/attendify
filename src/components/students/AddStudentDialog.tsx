@@ -10,27 +10,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import StudentFormFields from "./StudentFormFields";
 import { StudentFormValues, studentFormSchema } from "./StudentFormSchema";
 import { useStudents } from "@/context/students/StudentsContext";
-import { useData } from "@/context/DataContext";
 import { toast } from "sonner";
 
 interface AddStudentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  trigger?: React.ReactNode;
 }
 
-const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange, trigger }) => {
+const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange }) => {
   const { addStudent } = useStudents();
-  const { teachers } = useData();
-  const { getAllClasses } = useStudents();
-  
-  const classes = getAllClasses();
   
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentFormSchema),
@@ -42,24 +35,14 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange,
       parentPhone: "",
       assignedTeacherId: "",
       class: "",
-      role: "student",
     },
   });
 
   const onSubmit = (data: StudentFormValues) => {
-    // Make sure all required fields are present before adding student
-    const newStudent = {
-      name: data.name,
-      gender: data.gender,
-      age: Number(data.age),
-      address: data.address,
-      parentPhone: data.parentPhone,
-      assignedTeacherId: data.assignedTeacherId,
-      class: data.class,
-      role: "student" as const, // Using const assertion to make this a literal
-    };
-    
-    addStudent(newStudent);
+    addStudent({
+      ...data,
+      age: Number(data.age), // Convert age to number
+    });
     toast.success(`Student ${data.name} added successfully`);
     form.reset();
     onOpenChange(false);
@@ -67,7 +50,6 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange,
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Add New Student</DialogTitle>
@@ -77,11 +59,7 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ open, onOpenChange,
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-2">
-            <StudentFormFields 
-              control={form.control} 
-              teachers={teachers} 
-              classes={classes}
-            />
+            <StudentFormFields form={form} />
             <DialogFooter>
               <Button 
                 type="button" 

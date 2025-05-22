@@ -28,7 +28,6 @@ const StudentsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClass, setSelectedClass] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
   
   // Get all unique classes
   const classes = Array.from(new Set(students.map(student => student.class)));
@@ -107,16 +106,13 @@ const StudentsPage: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <Button 
-            className="gap-2"
-            onClick={() => setAddDialogOpen(true)}
-          >
-            <Plus className="h-4 w-4" />
-            Add New Student
-          </Button>
           <AddStudentDialog 
-            open={addDialogOpen}
-            onOpenChange={setAddDialogOpen}
+            trigger={
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add New Student
+              </Button>
+            }
           />
           <div className="ml-auto md:ml-0">
             <span className="text-sm text-muted-foreground mr-2">Total:</span>
