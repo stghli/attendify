@@ -1,20 +1,25 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useData } from "@/context/DataContext";
-import { User, Users, Calendar, QrCode, Clock, TrendingUp } from "lucide-react";
+import { User, Users, Calendar, QrCode, Clock, TrendingUp, Activity, Bell, BarChart } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Import our new components
+// Import our components
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatCard from "@/components/dashboard/StatCard";
 import AttendanceLogs from "@/components/dashboard/AttendanceLogs";
 import SmsNotifications from "@/components/dashboard/SmsNotifications";
 import AttendanceSummary from "@/components/dashboard/AttendanceSummary";
+import AttendanceTrendChart from "@/components/dashboard/AttendanceTrendChart";
+import RecentActivities from "@/components/dashboard/RecentActivities";
+import QuickActions from "@/components/dashboard/QuickActions";
 
 const Dashboard: React.FC = () => {
   const { authState } = useAuth();
   const { students, teachers, attendanceLogs, smsLogs } = useData();
   const user = authState.user;
+  const [activeTab, setActiveTab] = useState("overview");
 
   const todayLogs = attendanceLogs.filter(
     log => new Date(log.timestamp).toDateString() === new Date().toDateString()
@@ -50,9 +55,26 @@ const Dashboard: React.FC = () => {
     : 0;
 
   return (
-    <div className="space-y-6">
-      {/* Dashboard Header */}
-      <DashboardHeader userName={user?.name || ''} />
+    <div className="space-y-6 max-w-[1600px] mx-auto">
+      {/* Dashboard Header with greeting and tabs */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <DashboardHeader userName={user?.name || ''} />
+        
+        <Tabs 
+          value={activeTab} 
+          onValueChange={setActiveTab}
+          className="w-full md:w-auto"
+        >
+          <TabsList className="grid grid-cols-2 md:grid-cols-3 w-full md:w-auto">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="attendance">Attendance</TabsTrigger>
+            <TabsTrigger value="analytics" className="hidden md:block">Analytics</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Quick Actions */}
+      <QuickActions userRole={user?.role || ''} />
 
       {/* Stat Cards Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -134,6 +156,11 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
+      {/* Attendance Trend Chart */}
+      <div className="mt-6">
+        <AttendanceTrendChart />
+      </div>
+
       {/* Detailed Cards */}
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <AttendanceLogs 
@@ -151,6 +178,13 @@ const Dashboard: React.FC = () => {
             presentCount={myStudentsPresent} 
           />
         )}
+      </div>
+
+      {/* Recent Activities Section */}
+      <div className="mt-6">
+        <RecentActivities logs={[...attendanceLogs, ...smsLogs].sort((a, b) => 
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        ).slice(0, 10)} />
       </div>
     </div>
   );
