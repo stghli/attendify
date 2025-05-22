@@ -11,25 +11,22 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({ animationActive }) => 
   return (
     <>
       <div 
-        className={`flex justify-center mb-8 transition-all duration-1000 delay-300 transform ${
+        className={`flex justify-center mb-6 transition-all duration-700 delay-300 transform ${
           animationActive ? "scale-100 opacity-100" : "scale-90 opacity-0"
         }`}
       >
-        <div className="bg-gradient-to-r from-primary to-blue-600 rounded-full p-6 shadow-xl backdrop-blur-sm bg-opacity-90 animate-pulse">
-          <QrCode className="h-16 w-16 text-white" />
+        <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-5 shadow-lg">
+          <QrCode className="h-12 w-12 text-white" strokeWidth={1.5} />
         </div>
       </div>
       
-      <CardHeader className="space-y-2 pb-6">
-        <div className="flex justify-between items-center">
-          <CardTitle className={`text-4xl font-bold text-center bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent transition-all duration-1000 delay-500 transform ${
-            animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-          }`}>
-            QR Attendance
-          </CardTitle>
-          <Sparkles className="h-6 w-6 text-primary animate-pulse" />
-        </div>
-        <CardDescription className={`text-center text-lg transition-all duration-1000 delay-700 transform ${
+      <CardHeader className="space-y-1 p-0 text-center">
+        <CardTitle className={`text-2xl font-bold bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent transition-all duration-700 delay-400 transform ${
+          animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+        }`}>
+          Welcome Back
+        </CardTitle>
+        <CardDescription className={`text-base text-gray-500 transition-all duration-700 delay-500 transform ${
           animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}>
           Sign in to access your dashboard

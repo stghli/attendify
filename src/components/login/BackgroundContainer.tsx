@@ -1,7 +1,6 @@
 
 import React, { ReactNode } from "react";
 import { BackgroundAnimations } from "@/components/BackgroundAnimations";
-import { Card } from "@/components/ui/card";
 
 interface BackgroundContainerProps {
   children: ReactNode;
@@ -13,24 +12,24 @@ export const BackgroundContainer: React.FC<BackgroundContainerProps> = ({
   animationActive 
 }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 md:p-8 overflow-hidden relative">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 overflow-hidden relative">
       {/* Background Animation Layer */}
       <BackgroundAnimations />
       
       <div 
-        className={`max-w-md w-full transition-all duration-700 ease-out transform ${
-          animationActive ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+        className={`w-full max-w-md transition-all duration-700 ease-out transform ${
+          animationActive ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
         } z-10`}
       >
         {children}
-        
-        <div className={`mt-6 text-center text-sm text-gray-700 bg-white/70 backdrop-blur-sm px-4 py-3 rounded-xl shadow-md transition-all duration-500 delay-1500 transform ${
-          animationActive ? "opacity-100" : "opacity-0"
-        }`}>
-          <p className="font-medium">
-            For demo: admin@school.edu / admin123 or jsmith@school.edu / teacher123
-          </p>
-        </div>
+      </div>
+      
+      <div className={`mt-6 text-center text-xs text-gray-500 transition-all duration-500 delay-1000 transform ${
+        animationActive ? "opacity-100" : "opacity-0"
+      } z-10`}>
+        <p className="font-medium">
+          QR Attendance System &copy; 2025
+        </p>
       </div>
     </div>
   );
