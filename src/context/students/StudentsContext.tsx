@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext } from "react";
 import { Student } from "@/types";
 import { toast } from "sonner";
 
-// Mock data
+// Mock data with class information
 const initialStudents: Student[] = [
   {
     id: "student-1",
@@ -16,6 +16,7 @@ const initialStudents: Student[] = [
     assignedTeacherId: "teacher-1",
     qrCode: "student-1-qr",
     createdAt: new Date().toISOString(),
+    class: "Grade 5A",
   },
   {
     id: "student-2",
@@ -28,6 +29,46 @@ const initialStudents: Student[] = [
     assignedTeacherId: "teacher-1",
     qrCode: "student-2-qr",
     createdAt: new Date().toISOString(),
+    class: "Grade 6B",
+  },
+  {
+    id: "student-3",
+    name: "Charlie Brown",
+    role: "student",
+    gender: "Male",
+    age: 12,
+    address: "789 Knowledge Blvd",
+    parentPhone: "+1567890123",
+    assignedTeacherId: "teacher-2",
+    qrCode: "student-3-qr",
+    createdAt: new Date().toISOString(),
+    class: "Grade 5A",
+  },
+  {
+    id: "student-4",
+    name: "Diana Prince",
+    role: "student",
+    gender: "Female",
+    age: 13,
+    address: "101 Wonder St",
+    parentPhone: "+1345678901",
+    assignedTeacherId: "teacher-2",
+    qrCode: "student-4-qr",
+    createdAt: new Date().toISOString(),
+    class: "Grade 6B",
+  },
+  {
+    id: "student-5",
+    name: "Edward Smith",
+    role: "student",
+    gender: "Male",
+    age: 12,
+    address: "202 Scholar Ave",
+    parentPhone: "+1234509876",
+    assignedTeacherId: "teacher-1",
+    qrCode: "student-5-qr",
+    createdAt: new Date().toISOString(),
+    class: "Grade 5A",
   },
 ];
 
@@ -37,6 +78,8 @@ interface StudentsContextType {
   updateStudent: (id: string, student: Partial<Student>) => void;
   deleteStudent: (id: string) => void;
   getStudentsByTeacher: (teacherId: string) => Student[];
+  getStudentsByClass: (className: string) => Student[]; // New method to get students by class
+  getAllClasses: () => string[]; // New method to get all classes
 }
 
 const StudentsContext = createContext<StudentsContextType>({
@@ -45,6 +88,8 @@ const StudentsContext = createContext<StudentsContextType>({
   updateStudent: () => {},
   deleteStudent: () => {},
   getStudentsByTeacher: () => [],
+  getStudentsByClass: () => [], // Initialize new method
+  getAllClasses: () => [], // Initialize new method
 });
 
 export const StudentsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -84,6 +129,22 @@ export const StudentsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return students.filter(student => student.assignedTeacherId === teacherId);
   };
 
+  // Get students by class
+  const getStudentsByClass = (className: string): Student[] => {
+    return students.filter(student => student.class === className);
+  };
+
+  // Get all unique classes
+  const getAllClasses = (): string[] => {
+    const classSet = new Set<string>();
+    students.forEach(student => {
+      if (student.class) {
+        classSet.add(student.class);
+      }
+    });
+    return Array.from(classSet);
+  };
+
   return (
     <StudentsContext.Provider
       value={{
@@ -92,6 +153,8 @@ export const StudentsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         updateStudent,
         deleteStudent,
         getStudentsByTeacher,
+        getStudentsByClass,
+        getAllClasses,
       }}
     >
       {children}

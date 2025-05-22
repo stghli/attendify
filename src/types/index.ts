@@ -35,6 +35,7 @@ export interface Student extends User {
   assignedTeacherId: string;
   qrCode: string;
   role: "student";
+  class: string; // Added class field
 }
 
 // Attendance log type
