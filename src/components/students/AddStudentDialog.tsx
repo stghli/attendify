@@ -38,7 +38,7 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
     defaultValues: {
       name: "",
       gender: "",
-      age: "",
+      age: "", // This is a string in the form, but will be transformed to number
       address: "",
       parentPhone: "",
       assignedTeacherId: "",
@@ -51,7 +51,7 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
     const studentData = {
       name: values.name,
       gender: values.gender,
-      age: Number(values.age),
+      age: Number(values.age), // Ensure age is converted to number
       address: values.address,
       parentPhone: values.parentPhone,
       assignedTeacherId: values.assignedTeacherId,
