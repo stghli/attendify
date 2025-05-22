@@ -15,6 +15,11 @@ const Layout: React.FC = () => {
   // Allow login page to be accessed without authentication
   const isLoginPage = location.pathname === "/login";
 
+  // Function to toggle mobile sidebar
+  const toggleMobileSidebar = () => {
+    setIsMobileOpen(prevState => !prevState);
+  };
+
   useEffect(() => {
     // If not loading and not authenticated and not on login page, redirect to login
     if (!isLoading && !isAuthenticated && !isLoginPage) {
