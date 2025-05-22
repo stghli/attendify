@@ -46,7 +46,7 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
     addStudent({
       name: values.name,
       gender: values.gender,
-      age: Number(values.age), // Explicitly convert to number
+      age: values.age, // This will now be a number from our schema transformation
       address: values.address,
       parentPhone: values.parentPhone,
       assignedTeacherId: values.assignedTeacherId,
