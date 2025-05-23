@@ -19,15 +19,15 @@ interface SmsNotificationsProps {
 
 const SmsNotifications: React.FC<SmsNotificationsProps> = ({ logs }) => {
   return (
-    <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 border-none">
-      <div className="absolute h-1 w-full bg-gradient-to-r from-pink-500 to-rose-500"></div>
+    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-none rounded-xl">
+      <div className="absolute h-1.5 w-full bg-gradient-to-r from-pink-500 to-rose-500"></div>
       <CardHeader className="pt-6">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold flex items-center">
             <Bell className="h-5 w-5 mr-2 text-pink-500" />
             SMS Notifications
           </CardTitle>
-          <Badge variant="outline" className="bg-pink-50 text-pink-700">
+          <Badge variant="outline" className="bg-pink-50 text-pink-700 font-medium">
             {logs.length} sent
           </Badge>
         </div>
@@ -40,15 +40,15 @@ const SmsNotifications: React.FC<SmsNotificationsProps> = ({ logs }) => {
             <p className="text-muted-foreground">No SMS logs yet</p>
           </div>
         ) : (
-          <div className="space-y-4 max-h-96 overflow-auto pr-2">
+          <div className="space-y-4 max-h-96 overflow-auto pr-2 custom-scrollbar">
             {logs.slice(0, 7).map((log) => (
-              <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0">
+              <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0 hover:bg-muted/20 p-2 rounded-lg transition-colors duration-200">
                 <div className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm
                     ${log.status === 'delivered' ? 'bg-green-100' : 'bg-amber-100'}`}>
                     {log.status === 'delivered' ? 
-                      <CheckCircle2 className="h-4 w-4 text-green-600" /> : 
-                      <Bell className="h-4 w-4 text-amber-600" />
+                      <CheckCircle2 className="h-5 w-5 text-green-600" /> : 
+                      <Bell className="h-5 w-5 text-amber-600" />
                     }
                   </div>
                   <div>
@@ -62,7 +62,7 @@ const SmsNotifications: React.FC<SmsNotificationsProps> = ({ logs }) => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-right">
+                  <p className="text-sm text-right font-medium">
                     {new Date(log.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </p>
                   <p className="text-xs text-muted-foreground text-right capitalize">

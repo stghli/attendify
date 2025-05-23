@@ -55,29 +55,29 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ logs }) => {
   };
   
   return (
-    <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 border-none">
-      <div className="absolute h-1 w-full bg-gradient-to-r from-blue-600 to-indigo-500"></div>
+    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-none rounded-xl">
+      <div className="absolute h-1.5 w-full bg-gradient-to-r from-blue-600 to-indigo-500"></div>
       <CardHeader className="pt-6">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold flex items-center">
             <Activity className="h-5 w-5 mr-2 text-blue-600" />
             Recent Activities
           </CardTitle>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
+          <Badge variant="outline" className="bg-blue-50 text-blue-700 font-medium">
             {logs.length} activities
           </Badge>
         </div>
         <CardDescription>Latest system activities across the platform</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4 max-h-[300px] overflow-auto pr-2">
+        <div className="space-y-4 max-h-[300px] overflow-auto pr-2 custom-scrollbar">
           {logs.map((log) => {
             const { icon: Icon, iconBg, iconColor, title, description, badge, badgeColor } = getActivityDetails(log);
             
             return (
-              <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0">
+              <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0 hover:bg-muted/20 p-2 rounded-lg transition-colors duration-200">
                 <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${iconBg}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm ${iconBg}`}>
                     <Icon className={`h-5 w-5 ${iconColor}`} />
                   </div>
                   <div>
@@ -88,7 +88,7 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ logs }) => {
                   </div>
                 </div>
                 <div className="flex flex-col items-end">
-                  <Badge variant="outline" className={`${badgeColor} mb-1`}>
+                  <Badge variant="outline" className={`${badgeColor} mb-1 font-medium`}>
                     {badge}
                   </Badge>
                   <p className="text-xs text-muted-foreground">

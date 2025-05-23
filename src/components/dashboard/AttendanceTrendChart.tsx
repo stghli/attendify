@@ -60,7 +60,7 @@ const AttendanceTrendChart: React.FC = () => {
       <CardHeader className="pt-6 pb-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl">
+            <div className="bg-primary/10 p-3 rounded-xl shadow-sm">
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -89,17 +89,17 @@ const AttendanceTrendChart: React.FC = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-4">
+      <CardContent className="pt-6">
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-blue-50 rounded-lg px-4 py-3 border border-blue-100">
+          <div className="bg-blue-50 rounded-lg px-4 py-3 border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
             <p className="text-xs text-blue-700">Total Present</p>
             <p className="text-2xl font-bold text-blue-800">{chartData.reduce((sum, day) => sum + day.total, 0)}</p>
           </div>
-          <div className="bg-purple-50 rounded-lg px-4 py-3 border border-purple-100">
+          <div className="bg-purple-50 rounded-lg px-4 py-3 border border-purple-100 shadow-sm hover:shadow-md transition-all duration-200">
             <p className="text-xs text-purple-700">Students</p>
             <p className="text-2xl font-bold text-purple-800">{chartData.reduce((sum, day) => sum + day.students, 0)}</p>
           </div>
-          <div className="bg-green-50 rounded-lg px-4 py-3 border border-green-100">
+          <div className="bg-green-50 rounded-lg px-4 py-3 border border-green-100 shadow-sm hover:shadow-md transition-all duration-200">
             <p className="text-xs text-green-700">Teachers</p>
             <p className="text-2xl font-bold text-green-800">{chartData.reduce((sum, day) => sum + day.teachers, 0)}</p>
           </div>

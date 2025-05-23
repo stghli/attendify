@@ -36,18 +36,22 @@ const StatCard: React.FC<StatCardProps> = ({
   subtitleHighlight,
 }) => {
   return (
-    <Card className="overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-none rounded-xl relative group">
+    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-none rounded-xl relative group">
+      {/* Hover effect gradient background */}
       <div 
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{ 
-          background: `linear-gradient(135deg, ${gradientFrom}25, ${gradientTo}20)`,
+          background: `linear-gradient(135deg, ${gradientFrom}15, ${gradientTo}10)`,
           borderRadius: 'inherit'
         }}
       ></div>
+      
+      {/* Top color bar */}
       <div 
         className="absolute h-1.5 w-full" 
         style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
       ></div>
+      
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-6 relative z-10">
         <CardTitle className="text-sm font-medium">
           {title}
@@ -56,6 +60,7 @@ const StatCard: React.FC<StatCardProps> = ({
           <Icon className={`h-5 w-5 ${iconColor}`} />
         </div>
       </CardHeader>
+      
       <CardContent className="relative z-10">
         <div className="text-3xl font-bold mb-2 tracking-tight group-hover:transform group-hover:translate-x-1 transition-transform duration-300">{value}</div>
         {subtitle && (
