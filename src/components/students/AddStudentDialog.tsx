@@ -38,7 +38,7 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
     defaultValues: {
       name: "",
       gender: "",
-      age: "", // This is a string in the form, but will be transformed to number
+      age: "", // This will be transformed to number by the schema
       address: "",
       parentPhone: "",
       assignedTeacherId: "",
@@ -47,11 +47,11 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
   });
 
   const onSubmit = (values: StudentFormValues) => {
-    // Convert age to number and add required Student fields
+    // The age is already converted to a number by the schema transformation
     const studentData = {
       name: values.name,
       gender: values.gender,
-      age: Number(values.age), // Explicit conversion of age to number
+      age: values.age, // This is now a number thanks to the schema transformation
       address: values.address,
       parentPhone: values.parentPhone,
       assignedTeacherId: values.assignedTeacherId,
