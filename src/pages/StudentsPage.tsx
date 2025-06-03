@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
 import QrCodeModal from "@/components/QrCodeModal";
 import StudentCard from "@/components/students/StudentCard";
-import AddStudentDialog from "@/components/students/AddStudentDialog";
+import { AddStudentDialog } from "@/components/students/AddStudentDialog";
 import ClassFilterTabs from "@/components/students/ClassFilterTabs";
 import { Student } from "@/types";
 import {
@@ -105,14 +105,7 @@ const StudentsPage: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <AddStudentDialog 
-            trigger={
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add New Student
-              </Button>
-            }
-          />
+          <AddStudentDialog />
           <div className="ml-auto md:ml-0">
             <span className="text-sm text-muted-foreground mr-2">Total:</span>
             <span className="font-semibold">{filteredStudents.length}</span>

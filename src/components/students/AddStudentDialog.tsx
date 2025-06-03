@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { useStudents } from "@/context/students/StudentsContext";
+import { useData } from "@/context/DataContext";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,6 +21,7 @@ import { toast } from "sonner";
 export const AddStudentDialog = () => {
   const [open, setOpen] = useState(false);
   const { addStudent } = useStudents();
+  const { teachers } = useData();
 
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentFormSchema),
@@ -27,22 +29,25 @@ export const AddStudentDialog = () => {
       name: "",
       age: "",
       gender: "",
-      contact: "",
-      parentContact: "",
+      parentPhone: "",
       address: "",
       class: "",
+      assignedTeacherId: "",
     },
   });
 
   const onSubmit = async (data: StudentFormValues) => {
     try {
-      // Convert age string to number and add required fields
+      // Convert age to number and prepare student data
       const studentData = {
-        ...data,
-        age: Number(data.age),
+        name: data.name,
+        gender: data.gender,
+        age: data.age, // Already converted by schema transform
+        address: data.address,
+        parentPhone: data.parentPhone,
+        assignedTeacherId: data.assignedTeacherId,
+        class: data.class,
         role: "student" as const,
-        parentPhone: data.parentContact || "",
-        assignedTeacherId: "",
       };
       
       await addStudent(studentData);
@@ -54,6 +59,10 @@ export const AddStudentDialog = () => {
       console.error("Error adding student:", error);
     }
   };
+
+  // Get all unique classes from existing students
+  const { students } = useStudents();
+  const classes = Array.from(new Set(students.map(student => student.class).filter(Boolean)));
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -69,7 +78,11 @@ export const AddStudentDialog = () => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <StudentFormFields form={form} />
+            <StudentFormFields 
+              control={form.control}
+              teachers={teachers}
+              classes={classes}
+            />
             <div className="flex justify-end gap-2 pt-4">
               <Button
                 type="button"
@@ -86,3 +99,5 @@ export const AddStudentDialog = () => {
     </Dialog>
   );
 };
+
+export default AddStudentDialog;
