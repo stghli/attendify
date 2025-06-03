@@ -1,100 +1,85 @@
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
+import { useStudents } from "@/context/students/StudentsContext";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { StudentFormFields } from "./StudentFormFields";
+import { studentFormSchema, type StudentFormValues } from "./StudentFormSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { useData } from "@/context/DataContext";
-import {
-  studentFormSchema,
-  StudentFormValues,
-} from "./StudentFormSchema";
-import StudentFormFields from "./StudentFormFields";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
-interface AddStudentDialogProps {
-  trigger: React.ReactNode;
-}
-
-const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ trigger }) => {
-  const { addStudent, teachers } = useData();
-  const [open, setOpen] = React.useState(false);
-
-  // Extract all unique class names from existing students
-  const { students } = useData();
-  const classes = Array.from(new Set(students.map(student => student.class)));
+export const AddStudentDialog = () => {
+  const [open, setOpen] = useState(false);
+  const { addStudent } = useStudents();
 
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      gender: "",
       age: "",
+      gender: "",
+      contact: "",
+      parentContact: "",
       address: "",
-      parentPhone: "",
-      assignedTeacherId: "",
       class: "",
     },
   });
 
-  const onSubmit = (values: StudentFormValues) => {
-    // The schema transforms age to a number, so values.age is already a number
-    const studentData = {
-      name: values.name,
-      gender: values.gender,
-      age: values.age, // This is already a number from schema transformation
-      address: values.address,
-      parentPhone: values.parentPhone,
-      assignedTeacherId: values.assignedTeacherId,
-      class: values.class,
-      role: "student" as const,
-    };
-
-    addStudent(studentData);
-    toast.success(`Student ${values.name} added successfully`);
-    form.reset();
-    setOpen(false);
+  const onSubmit = async (data: StudentFormValues) => {
+    try {
+      // Convert age string to number
+      const studentData = {
+        ...data,
+        age: Number(data.age), // Convert string to number here
+      };
+      
+      await addStudent(studentData);
+      toast.success("Student added successfully!");
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      toast.error("Failed to add student");
+      console.error("Error adding student:", error);
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogTrigger asChild>
+        <Button className="bg-primary hover:bg-primary/90">
+          <Plus className="mr-2 h-4 w-4" />
+          Add Student
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Student</DialogTitle>
-          <DialogDescription>
-            Enter the student information to add them to the system.
-          </DialogDescription>
         </DialogHeader>
-
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
-            <StudentFormFields
-              control={form.control}
-              teachers={teachers.map((teacher) => ({ id: teacher.id, name: teacher.name }))}
-              classes={classes.length > 0 ? classes : ["Class 1", "Class 2", "Class 3"]}
-            />
-
-            <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <StudentFormFields form={form} />
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit">Add Student</Button>
-            </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
   );
 };
-
-export default AddStudentDialog;
