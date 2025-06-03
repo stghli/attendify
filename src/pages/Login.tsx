@@ -15,8 +15,8 @@ const Login: React.FC = () => {
 
   return (
     <BackgroundContainer animationActive={animationActive}>
-      <Card className="border-none shadow-xl bg-white backdrop-blur-md overflow-hidden rounded-2xl max-w-sm w-full">
-        <div className="p-8">
+      <Card className="border-none shadow-2xl bg-white backdrop-blur-md overflow-hidden rounded-3xl max-w-md w-full">
+        <div className="p-12">
           <LoginHeader animationActive={animationActive} />
           <LoginForm animationActive={animationActive} />
         </div>

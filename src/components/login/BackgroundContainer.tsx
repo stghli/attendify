@@ -12,24 +12,29 @@ export const BackgroundContainer: React.FC<BackgroundContainerProps> = ({
 }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50 overflow-hidden relative">
-      {/* Abstract geometric background shapes */}
+      {/* Abstract geometric background shapes matching the image */}
       <div className="absolute inset-0">
-        {/* Large mint green organic shape */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-200/60 rounded-full transform translate-x-32 -translate-y-16" />
+        {/* Large mint green organic shape - top right */}
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-300 rounded-full opacity-80" />
         
-        {/* Blue geometric shapes */}
-        <div className="absolute top-32 right-20 w-48 h-48 bg-blue-500 transform rotate-45 rounded-2xl" />
-        <div className="absolute bottom-0 left-0 w-64 h-32 bg-blue-600 rounded-full transform -translate-x-20 translate-y-10" />
+        {/* Blue geometric shape - top right */}
+        <div className="absolute top-32 right-20 w-48 h-48 bg-blue-600 transform rotate-45 rounded-3xl" />
         
-        {/* Additional mint green accents */}
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-emerald-300/40 rounded-full" />
+        {/* Blue curved shape - bottom left */}
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-600 rounded-full" />
         
-        {/* Curved line accent */}
-        <div className="absolute bottom-10 right-32 w-48 h-1 bg-yellow-400 transform rotate-12 rounded-full" />
+        {/* Additional mint green accent - right side */}
+        <div className="absolute top-1/2 right-0 w-80 h-80 bg-emerald-200 rounded-full transform translate-x-32 opacity-60" />
+        
+        {/* Yellow curved line accent */}
+        <div className="absolute bottom-32 right-40 w-48 h-2 bg-yellow-400 transform rotate-12 rounded-full" />
+        
+        {/* Small blue accent - bottom */}
+        <div className="absolute bottom-10 left-1/3 w-24 h-24 bg-blue-500 rounded-full" />
       </div>
       
       <div 
-        className={`w-full max-w-sm transition-all duration-700 ease-out transform ${
+        className={`w-full max-w-md transition-all duration-700 ease-out transform ${
           animationActive ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
         } z-10`}
       >

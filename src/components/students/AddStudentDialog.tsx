@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { StudentFormFields } from "./StudentFormFields";
+import StudentFormFields from "./StudentFormFields";
 import { studentFormSchema, type StudentFormValues } from "./StudentFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -36,10 +36,13 @@ export const AddStudentDialog = () => {
 
   const onSubmit = async (data: StudentFormValues) => {
     try {
-      // Convert age string to number
+      // Convert age string to number and add required fields
       const studentData = {
         ...data,
-        age: Number(data.age), // Convert string to number here
+        age: Number(data.age),
+        role: "student" as const,
+        parentPhone: data.parentContact || "",
+        assignedTeacherId: "",
       };
       
       await addStudent(studentData);
