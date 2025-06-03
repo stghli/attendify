@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -12,7 +11,7 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/login");
     }
   }, [isAuthenticated, isLoading, navigate]);
 
@@ -59,7 +58,7 @@ const Index: React.FC = () => {
     );
   }
 
-  return null; // Will navigate to dashboard if authenticated
+  return null; // Will navigate to login if authenticated
 };
 
 export default Index;

@@ -27,7 +27,7 @@ export const AddStudentDialog = () => {
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      age: "",
+      age: "0",
       gender: "",
       parentPhone: "",
       address: "",
