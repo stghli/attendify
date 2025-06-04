@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,8 +59,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="space-y-4">
           <div className={`transition-all duration-500 delay-600 transform ${
             animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
           }`}>
@@ -69,19 +69,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <div className="relative group">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
                     <FormControl>
                       <Input
                         {...field}
                         type="email"
-                        placeholder="audrey_weimann@anissa.org"
-                        className="h-14 pl-12 pr-4 bg-transparent border-0 border-b-2 border-gray-200 focus:border-emerald-500 rounded-none focus:ring-0 placeholder:text-gray-400 text-base"
+                        placeholder="your@email.com"
+                        className="h-10 pl-10 pr-4 bg-gray-50/50 border border-gray-200 focus:border-emerald-400 focus:bg-white rounded-lg focus:ring-2 focus:ring-emerald-100 placeholder:text-gray-400 text-sm transition-all"
                         autoComplete="email"
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-xs mt-2 ml-1" />
+                  <FormMessage className="text-xs mt-1 ml-1" />
                 </FormItem>
               )}
             />
@@ -95,50 +95,53 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+                  <div className="relative group">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400 group-focus-within:text-emerald-500 transition-colors" />
                     <FormControl>
                       <Input
                         {...field}
                         type="password"
                         placeholder="password"
-                        className="h-14 pl-12 pr-4 bg-transparent border-0 border-b-2 border-gray-200 focus:border-emerald-500 rounded-none focus:ring-0 placeholder:text-gray-400 text-base"
+                        className="h-10 pl-10 pr-4 bg-gray-50/50 border border-gray-200 focus:border-emerald-400 focus:bg-white rounded-lg focus:ring-2 focus:ring-emerald-100 placeholder:text-gray-400 text-sm transition-all"
                         autoComplete="current-password"
                       />
                     </FormControl>
                   </div>
-                  <FormMessage className="text-xs mt-2 ml-1" />
+                  <FormMessage className="text-xs mt-1 ml-1" />
                 </FormItem>
               )}
             />
           </div>
         </div>
         
-        <div className={`flex flex-col space-y-6 pt-8 transition-all duration-500 delay-800 transform ${
+        <div className={`flex flex-col space-y-3 pt-4 transition-all duration-500 delay-800 transform ${
           animationActive ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}>
           <Button 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl h-14 text-base shadow-lg transition-all"
+            className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white font-medium rounded-lg h-10 text-sm shadow-md hover:shadow-lg transition-all transform hover:scale-[1.02]"
             type="submit" 
             disabled={isLoading}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
-                <div className="h-4 w-4 border-t-2 border-r-2 border-white rounded-full animate-spin mr-2"></div>
+                <div className="h-3 w-3 border-t-2 border-r-2 border-white rounded-full animate-spin mr-2"></div>
                 <span>Signing in...</span>
               </div>
             ) : (
-              <span>Login</span>
+              <div className="flex items-center justify-center">
+                <span>Sign In</span>
+                <Heart className="ml-2 h-3 w-3" />
+              </div>
             )}
           </Button>
           
-          <div className="text-center space-y-6">
-            <p className="text-gray-500 text-base">
-              or <span className="text-emerald-600 font-medium cursor-pointer hover:underline">Sign Up</span>
+          <div className="text-center space-y-3">
+            <p className="text-gray-500 text-xs">
+              Don't have an account? <span className="text-emerald-600 font-medium cursor-pointer hover:underline">Sign Up</span>
             </p>
             
-            <p className="text-gray-400 text-sm cursor-pointer hover:text-gray-600">
-              forgot password?
+            <p className="text-gray-400 text-xs cursor-pointer hover:text-emerald-600 transition-colors">
+              Forgot password?
             </p>
           </div>
         </div>
