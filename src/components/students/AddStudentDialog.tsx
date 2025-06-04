@@ -38,11 +38,11 @@ export const AddStudentDialog = () => {
 
   const onSubmit = async (data: StudentFormValues) => {
     try {
-      // Convert age to number and prepare student data
+      // The schema transform converts age string to number automatically
       const studentData = {
         name: data.name,
         gender: data.gender,
-        age: data.age, // Already converted by schema transform
+        age: data.age, // This is already a number after schema transform
         address: data.address,
         parentPhone: data.parentPhone,
         assignedTeacherId: data.assignedTeacherId,
