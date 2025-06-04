@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useData } from "@/context/DataContext";
 import { Input } from "@/components/ui/input";
@@ -174,7 +173,7 @@ const StudentsPage: React.FC = () => {
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogFooter>
+        </AlertDialogContent>
       </AlertDialog>
     </div>
   );
