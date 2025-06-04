@@ -10,6 +10,8 @@ import { DataProvider } from "@/context/DataContext";
 import Layout from "@/components/layout/Layout";
 import PublicLayout from "@/components/layout/PublicLayout";
 import Index from "@/pages/Index";
+import CodeEntry from "@/pages/CodeEntry";
+import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import QrScannerPage from "@/pages/QrScannerPage";
@@ -38,7 +40,9 @@ const App = () => (
                 <Route path="qr-scanner" element={<PublicQrScannerPage />} />
               </Route>
               
-              {/* Standalone login page */}
+              {/* Standalone pages */}
+              <Route path="/code-entry" element={<CodeEntry />} />
+              <Route path="/landing" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               
               {/* Protected routes with layout */}
