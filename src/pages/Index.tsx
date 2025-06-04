@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -10,8 +11,9 @@ const Index: React.FC = () => {
   const { isAuthenticated, isLoading } = authState;
 
   useEffect(() => {
+    // If authenticated, go directly to dashboard (login already completed)
     if (!isLoading && isAuthenticated) {
-      navigate("/login");
+      navigate("/dashboard");
     }
   }, [isAuthenticated, isLoading, navigate]);
 
@@ -41,15 +43,15 @@ const Index: React.FC = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="gap-2">
-              <Link to="/public/qr-scanner">
-                <ScanQrCode className="h-5 w-5" />
-                Scan QR Code
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="gap-2">
               <Link to="/login">
                 <LogIn className="h-5 w-5" />
                 Admin Login
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="gap-2">
+              <Link to="/public/qr-scanner">
+                <ScanQrCode className="h-5 w-5" />
+                Scan QR Code
               </Link>
             </Button>
           </div>
@@ -58,7 +60,7 @@ const Index: React.FC = () => {
     );
   }
 
-  return null; // Will navigate to login if authenticated
+  return null; // Will navigate to dashboard if authenticated
 };
 
 export default Index;

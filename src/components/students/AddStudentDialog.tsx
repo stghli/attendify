@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useData } from "@/context/DataContext";
@@ -27,7 +26,7 @@ export const AddStudentDialog = () => {
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      age: "0",
+      age: "",  // Keep as string for form input
       gender: "",
       parentPhone: "",
       address: "",
