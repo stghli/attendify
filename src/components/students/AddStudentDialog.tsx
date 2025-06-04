@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useData } from "@/context/DataContext";
@@ -10,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import StudentFormFields from "./StudentFormFields";
-import { studentFormSchema, type StudentFormValues } from "./StudentFormSchema";
+import { studentFormSchema, type StudentFormValues, type StudentFormInput } from "./StudentFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
@@ -22,11 +23,11 @@ export const AddStudentDialog = () => {
   const { addStudent } = useStudents();
   const { teachers } = useData();
 
-  const form = useForm<StudentFormValues>({
+  const form = useForm<StudentFormInput>({
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      age: "",  // Keep as string for form input
+      age: "",  // String for form input, will be transformed to number
       gender: "",
       parentPhone: "",
       address: "",

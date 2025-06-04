@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { StudentFormValues } from "./StudentFormSchema";
+import { StudentFormInput } from "./StudentFormSchema";
 
 interface StudentFormFieldsProps {
-  control: Control<StudentFormValues>;
+  control: Control<StudentFormInput>;
   teachers: { id: string; name: string }[];
   classes: string[];
 }

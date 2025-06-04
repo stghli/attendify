@@ -11,4 +11,7 @@ export const studentFormSchema = z.object({
   class: z.string().min(1, "Please select a class"),
 });
 
+// Input type (before transform) - for form defaultValues
+export type StudentFormInput = z.input<typeof studentFormSchema>;
+// Output type (after transform) - for form submission
 export type StudentFormValues = z.infer<typeof studentFormSchema>;
