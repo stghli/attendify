@@ -1,4 +1,5 @@
 
+
 import React, { useState } from "react";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useData } from "@/context/DataContext";
@@ -36,17 +37,19 @@ export const AddStudentDialog = () => {
     },
   });
 
-  const onSubmit = async (data: StudentFormValues) => {
+  const onSubmit = async (data: StudentFormInput) => {
     try {
-      // The schema transform converts age string to number automatically
+      // Parse and validate the data to get the transformed types
+      const validatedData = studentFormSchema.parse(data);
+      
       const studentData = {
-        name: data.name,
-        gender: data.gender,
-        age: data.age, // This is already a number after schema transform
-        address: data.address,
-        parentPhone: data.parentPhone,
-        assignedTeacherId: data.assignedTeacherId,
-        class: data.class,
+        name: validatedData.name,
+        gender: validatedData.gender,
+        age: validatedData.age, // This is now a number after schema transform
+        address: validatedData.address,
+        parentPhone: validatedData.parentPhone,
+        assignedTeacherId: validatedData.assignedTeacherId,
+        class: validatedData.class,
         role: "student" as const,
       };
       
@@ -101,3 +104,4 @@ export const AddStudentDialog = () => {
 };
 
 export default AddStudentDialog;
+
