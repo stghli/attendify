@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useData } from "@/context/DataContext";
 import { Input } from "@/components/ui/input";
@@ -68,9 +69,7 @@ const StudentsPage: React.FC = () => {
   };
   
   const handleEdit = (student: Student) => {
-    // For now, just show which student we'd edit
     console.log("Edit student:", student.name);
-    // In a future implementation, we could open an edit dialog
   };
   
   const handleDelete = (student: Student) => {
@@ -85,31 +84,31 @@ const StudentsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Students</h1>
-        <p className="text-muted-foreground">
+    <div className="space-y-6 p-4">
+      {/* Compact header */}
+      <div className="flex flex-col space-y-1">
+        <h1 className="text-xl font-bold tracking-tight">Students</h1>
+        <p className="text-sm text-muted-foreground">
           Manage students and their QR codes.
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div className="relative w-full md:w-auto md:min-w-[300px]">
+      {/* Compact controls */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+        <div className="relative w-full md:w-80">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input 
             placeholder="Search students..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-9"
           />
         </div>
         
-        <div className="flex items-center gap-2 w-full md:w-auto">
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
           <AddStudentDialog />
-          <div className="ml-auto md:ml-0">
-            <span className="text-sm text-muted-foreground mr-2">Total:</span>
-            <span className="font-semibold">{filteredStudents.length}</span>
-            <span className="text-sm text-muted-foreground ml-1">students</span>
+          <div className="text-sm text-muted-foreground">
+            <span className="font-medium">{filteredStudents.length}</span> students
           </div>
         </div>
       </div>
@@ -122,8 +121,8 @@ const StudentsPage: React.FC = () => {
         studentsCount={studentsCount}
       />
 
-      {/* Student cards grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* Compact student cards grid */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredStudents.map(student => (
           <StudentCard
             key={student.id}
@@ -136,12 +135,12 @@ const StudentsPage: React.FC = () => {
         ))}
         
         {filteredStudents.length === 0 && (
-          <div className="col-span-full flex flex-col items-center justify-center py-10 text-center">
-            <div className="bg-muted/40 rounded-full p-3 mb-4">
-              <Search className="h-6 w-6 text-muted-foreground" />
+          <div className="col-span-full flex flex-col items-center justify-center py-8 text-center">
+            <div className="bg-muted/40 rounded-full p-3 mb-3">
+              <Search className="h-5 w-5 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium">No students found</h3>
-            <p className="text-muted-foreground mt-1">
+            <h3 className="text-base font-medium">No students found</h3>
+            <p className="text-sm text-muted-foreground mt-1">
               {searchTerm ? "Try adjusting your search term" : "Add students to get started"}
             </p>
           </div>
@@ -175,7 +174,7 @@ const StudentsPage: React.FC = () => {
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogContent>
+        </AlertDialogFooter>
       </AlertDialog>
     </div>
   );
