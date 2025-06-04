@@ -9,39 +9,39 @@ interface QuickActionsProps {
 
 const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <Button 
         variant="outline" 
-        className="h-auto py-4 flex flex-col items-center justify-center gap-2 border-dashed hover:border-primary hover:bg-primary/5"
+        className="h-24 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-blue-300 hover:border-blue-500 hover:bg-blue-50 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         onClick={() => window.location.href = '/qr-scanner'}
       >
-        <div className="bg-primary/10 p-3 rounded-full">
-          <QrCode className="h-5 w-5 text-primary" />
+        <div className="bg-blue-100 p-3 rounded-full shadow-md">
+          <QrCode className="h-6 w-6 text-blue-600" />
         </div>
-        <span className="text-sm font-medium">Scan QR Code</span>
+        <span className="text-sm font-bold text-gray-700">Scan QR Code</span>
       </Button>
 
       {userRole === "admin" && (
         <>
           <Button 
             variant="outline"
-            className="h-auto py-4 flex flex-col items-center justify-center gap-2 border-dashed hover:border-green-500 hover:bg-green-50"
+            className="h-24 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             onClick={() => window.location.href = '/students'}
           >
-            <div className="bg-green-100 p-3 rounded-full">
-              <UserPlus className="h-5 w-5 text-green-600" />
+            <div className="bg-emerald-100 p-3 rounded-full shadow-md">
+              <UserPlus className="h-6 w-6 text-emerald-600" />
             </div>
-            <span className="text-sm font-medium">Add Student</span>
+            <span className="text-sm font-bold text-gray-700">Add Student</span>
           </Button>
 
           <Button 
             variant="outline"
-            className="h-auto py-4 flex flex-col items-center justify-center gap-2 border-dashed hover:border-pink-500 hover:bg-pink-50"
+            className="h-24 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-pink-300 hover:border-pink-500 hover:bg-pink-50 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
-            <div className="bg-pink-100 p-3 rounded-full">
-              <Bell className="h-5 w-5 text-pink-600" />
+            <div className="bg-pink-100 p-3 rounded-full shadow-md">
+              <Bell className="h-6 w-6 text-pink-600" />
             </div>
-            <span className="text-sm font-medium">Send Notification</span>
+            <span className="text-sm font-bold text-gray-700">Send Alert</span>
           </Button>
         </>
       )}
@@ -50,36 +50,36 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
         <>
           <Button 
             variant="outline"
-            className="h-auto py-4 flex flex-col items-center justify-center gap-2 border-dashed hover:border-violet-500 hover:bg-violet-50"
+            className="h-24 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-purple-300 hover:border-purple-500 hover:bg-purple-50 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             onClick={() => window.location.href = '/my-students'}
           >
-            <div className="bg-violet-100 p-3 rounded-full">
-              <UserPlus className="h-5 w-5 text-violet-600" />
+            <div className="bg-purple-100 p-3 rounded-full shadow-md">
+              <UserPlus className="h-6 w-6 text-purple-600" />
             </div>
-            <span className="text-sm font-medium">My Students</span>
+            <span className="text-sm font-bold text-gray-700">My Students</span>
           </Button>
 
           <Button 
             variant="outline"
-            className="h-auto py-4 flex flex-col items-center justify-center gap-2 border-dashed hover:border-amber-500 hover:bg-amber-50"
+            className="h-24 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-amber-300 hover:border-amber-500 hover:bg-amber-50 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
-            <div className="bg-amber-100 p-3 rounded-full">
-              <Clock className="h-5 w-5 text-amber-600" />
+            <div className="bg-amber-100 p-3 rounded-full shadow-md">
+              <Clock className="h-6 w-6 text-amber-600" />
             </div>
-            <span className="text-sm font-medium">Mark Attendance</span>
+            <span className="text-sm font-bold text-gray-700">Mark Present</span>
           </Button>
         </>
       )}
 
       <Button 
         variant="outline" 
-        className="h-auto py-4 flex flex-col items-center justify-center gap-2 border-dashed hover:border-blue-500 hover:bg-blue-50"
+        className="h-24 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 bg-white/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         onClick={() => window.location.href = '/attendance'}
       >
-        <div className="bg-blue-100 p-3 rounded-full">
-          <Calendar className="h-5 w-5 text-blue-600" />
+        <div className="bg-indigo-100 p-3 rounded-full shadow-md">
+          <Calendar className="h-6 w-6 text-indigo-600" />
         </div>
-        <span className="text-sm font-medium">View Records</span>
+        <span className="text-sm font-bold text-gray-700">View Records</span>
       </Button>
     </div>
   );

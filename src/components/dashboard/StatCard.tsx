@@ -36,45 +36,47 @@ const StatCard: React.FC<StatCardProps> = ({
   subtitleHighlight,
 }) => {
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-none rounded-xl relative group">
-      {/* Hover effect gradient background */}
+    <Card className="overflow-hidden bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-500 border border-white/50 shadow-xl hover:shadow-2xl hover:scale-105 rounded-2xl relative group">
+      {/* Animated gradient background */}
       <div 
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
         style={{ 
-          background: `linear-gradient(135deg, ${gradientFrom}15, ${gradientTo}10)`,
+          background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
           borderRadius: 'inherit'
         }}
       ></div>
       
-      {/* Top color bar */}
+      {/* Top accent bar */}
       <div 
-        className="absolute h-1.5 w-full" 
+        className="absolute h-2 w-full" 
         style={{ background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` }}
       ></div>
       
-      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pt-6 relative z-10">
-        <CardTitle className="text-sm font-medium">
+      <CardHeader className="flex flex-row items-center justify-between pb-3 space-y-0 pt-8 relative z-10">
+        <CardTitle className="text-sm font-bold text-gray-700 uppercase tracking-wider">
           {title}
         </CardTitle>
-        <div className={cn(`inline-flex items-center justify-center rounded-xl ${iconBgColor} p-2.5 shadow-sm transform group-hover:scale-110 transition-transform duration-300`)}>
+        <div className={cn(`inline-flex items-center justify-center rounded-xl ${iconBgColor} p-3 shadow-lg transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500`)}>
           <Icon className={`h-5 w-5 ${iconColor}`} />
         </div>
       </CardHeader>
       
-      <CardContent className="relative z-10">
-        <div className="text-3xl font-bold mb-2 tracking-tight group-hover:transform group-hover:translate-x-1 transition-transform duration-300">{value}</div>
+      <CardContent className="relative z-10 pb-6">
+        <div className="text-4xl font-black mb-3 tracking-tight text-gray-900 group-hover:transform group-hover:translate-x-1 transition-transform duration-300">
+          {value}
+        </div>
         {subtitle && (
           <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-gray-600 font-medium">
               {subtitleHighlight && (
-                <span className={`font-medium ${subtitleHighlight.color}`}>
+                <span className={`font-bold ${subtitleHighlight.color} text-lg`}>
                   {subtitleHighlight.value}{" "}
                 </span>
               )}
               {subtitle}
             </p>
             {badgeText && (
-              <Badge variant="outline" className={cn(`${badgeBgClass} text-xs font-medium px-2 py-0.5`)}>
+              <Badge variant="outline" className={cn(`${badgeBgClass} text-xs font-bold px-3 py-1 rounded-full border-2`)}>
                 {badgeText}
               </Badge>
             )}
