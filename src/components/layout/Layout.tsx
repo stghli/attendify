@@ -10,10 +10,6 @@ const Layout: React.FC = () => {
   const { authState } = useAuth();
   const { isAuthenticated, isLoading } = authState;
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Allow login page to be accessed without authentication
-  const isLoginPage = location.pathname === "/login";
 
   // Function to toggle mobile sidebar
   const toggleMobileSidebar = () => {
@@ -21,19 +17,14 @@ const Layout: React.FC = () => {
   };
 
   useEffect(() => {
-    // If not loading and not authenticated and not on login page, redirect to login
-    if (!isLoading && !isAuthenticated && !isLoginPage) {
+    // If not loading and not authenticated, redirect to login
+    if (!isLoading && !isAuthenticated) {
       navigate("/login");
     }
-  }, [isAuthenticated, isLoading, navigate, isLoginPage]);
+  }, [isAuthenticated, isLoading, navigate]);
 
-  // Special case: if we're on login page and not authenticated, just show the login page
-  if (!isAuthenticated && isLoginPage) {
-    return <Outlet />;
-  }
-
-  // For all other routes, if not authenticated, don't render anything (redirection will happen)
-  if (!isAuthenticated && !isLoginPage) {
+  // If not authenticated, don't render anything (redirection will happen)
+  if (!isAuthenticated) {
     return null;
   }
 

@@ -38,10 +38,12 @@ const App = () => (
                 <Route path="qr-scanner" element={<PublicQrScannerPage />} />
               </Route>
               
-              {/* Protected and authentication routes */}
+              {/* Standalone login page */}
+              <Route path="/login" element={<Login />} />
+              
+              {/* Protected routes with layout */}
               <Route path="/" element={<Layout />}>
                 <Route index element={<Index />} />
-                <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/qr-scanner" element={<QrScannerPage />} />
                 <Route path="/students" element={<StudentsPage />} />
