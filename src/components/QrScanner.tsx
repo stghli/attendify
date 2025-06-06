@@ -1,16 +1,21 @@
 
 import React, { useState } from "react";
 import { useData } from "@/context/DataContext";
+import { useAttendance } from "@/context/attendance/AttendanceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import ScannerCamera from "./qr-scanner/ScannerCamera";
 import { ScanHistoryItem } from "./qr-scanner/types";
+import { Clock, AlertTriangle } from "lucide-react";
 
 const QrScanner: React.FC = () => {
-  const { students, teachers, recordAttendance } = useData();
+  const { students, teachers } = useData();
+  const { recordAttendance, getTimeStatus } = useAttendance();
   const [scanning, setScanning] = useState(false);
   const [lastScan, setLastScan] = useState<ScanHistoryItem | null>(null);
+  
+  const timeStatus = getTimeStatus();
 
   const handleScan = (result: any) => {
     if (result && result.text) {
@@ -37,15 +42,26 @@ const QrScanner: React.FC = () => {
           return;
         }
         
-        // Record attendance with time-in by default
-        recordAttendance(userId, role as "student" | "teacher", "time-in");
+        // Determine action based on time
+        let action: "time-in" | "time-out";
+        if (timeStatus.canCheckIn) {
+          action = "time-in";
+        } else if (timeStatus.canCheckOut) {
+          action = "time-out";
+        } else {
+          toast.error(`Attendance not available. ${timeStatus.message}`);
+          return;
+        }
+        
+        // Record attendance
+        recordAttendance(userId, role as "student" | "teacher", action);
         
         // Create new scan history item
         const newScanItem: ScanHistoryItem = {
           userId,
           name: user.name,
           role: role as "student" | "teacher",
-          action: "time-in",
+          action,
           timestamp: new Date()
         };
         
@@ -55,10 +71,10 @@ const QrScanner: React.FC = () => {
         // Stop scanning temporarily 
         setScanning(false);
         
-        // Auto restart scanning after 2 seconds
+        // Auto restart scanning after 3 seconds
         setTimeout(() => {
           setScanning(true);
-        }, 2000);
+        }, 3000);
         
       } catch (error) {
         console.error("Error processing QR code:", error);
@@ -78,7 +94,22 @@ const QrScanner: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-4">
+      {/* Time Status Banner */}
+      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center text-white border border-white/20">
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <Clock className="h-4 w-4" />
+          <span className="text-sm font-medium">Current Time Status</span>
+        </div>
+        <p className="text-xs text-white/80">{timeStatus.message}</p>
+        {(timeStatus.isLateCheckIn || timeStatus.isLateCheckOut) && (
+          <div className="flex items-center justify-center gap-1 mt-1 text-orange-300">
+            <AlertTriangle className="h-3 w-3" />
+            <span className="text-xs">Late Period</span>
+          </div>
+        )}
+      </div>
+
       <AnimatePresence mode="wait">
         {scanning ? (
           <ScannerCamera onScan={handleScan} onError={handleError} />
@@ -92,12 +123,20 @@ const QrScanner: React.FC = () => {
           >
             {lastScan && (
               <div className="space-y-3">
-                <div className="text-2xl font-bold text-green-400">✓ Checked In</div>
+                <div className="text-2xl font-bold text-green-400">
+                  ✓ {lastScan.action === "time-in" ? "Checked In" : "Checked Out"}
+                </div>
                 <div className="text-xl">{lastScan.name}</div>
                 <div className="text-sm text-white/70 capitalize">{lastScan.role}</div>
                 <div className="text-xs text-white/60">
                   {lastScan.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </div>
+                {((lastScan.action === "time-in" && timeStatus.isLateCheckIn) || 
+                  (lastScan.action === "time-out" && timeStatus.isLateCheckOut)) && (
+                  <div className="text-sm text-orange-300 font-medium">
+                    ⚠️ {lastScan.action === "time-in" ? "Late Arrival" : "Late Pickup"}
+                  </div>
+                )}
               </div>
             )}
           </motion.div>

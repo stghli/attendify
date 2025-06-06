@@ -53,12 +53,26 @@ interface AttendanceContextType {
     action: "time-in" | "time-out"
   ) => void;
   generateQRCode: (userId: string, userRole: "student" | "teacher") => string;
+  getTimeStatus: () => {
+    canCheckIn: boolean;
+    canCheckOut: boolean;
+    isLateCheckIn: boolean;
+    isLateCheckOut: boolean;
+    message: string;
+  };
 }
 
 const AttendanceContext = createContext<AttendanceContextType>({
   attendanceLogs: [],
   recordAttendance: () => {},
   generateQRCode: () => "",
+  getTimeStatus: () => ({
+    canCheckIn: false,
+    canCheckOut: false,
+    isLateCheckIn: false,
+    isLateCheckOut: false,
+    message: ""
+  }),
 });
 
 export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -66,6 +80,44 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const { students } = useStudents();
   const { teachers } = useTeachers();
   const { addSmsLog } = useSmsNotifications();
+
+  // Get time status for attendance
+  const getTimeStatus = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    
+    // Check-in times: 5am-9am (on time), 9am-11am (late)
+    const canCheckIn = hours >= 5 && hours < 11;
+    const isLateCheckIn = hours >= 9 && hours < 11;
+    
+    // Check-out times: 12pm-5pm (on time), after 5pm (late pickup)
+    const canCheckOut = hours >= 12;
+    const isLateCheckOut = hours >= 17;
+    
+    let message = "";
+    
+    if (hours < 5) {
+      message = "Check-in starts at 5:00 AM";
+    } else if (hours >= 5 && hours < 9) {
+      message = "On-time check-in period";
+    } else if (hours >= 9 && hours < 11) {
+      message = "Late check-in period";
+    } else if (hours >= 11 && hours < 12) {
+      message = "Check-in closed. Check-out starts at 12:00 PM";
+    } else if (hours >= 12 && hours < 17) {
+      message = "On-time check-out period";
+    } else {
+      message = "Late check-out period";
+    }
+    
+    return {
+      canCheckIn,
+      canCheckOut,
+      isLateCheckIn,
+      isLateCheckOut,
+      message
+    };
+  };
 
   // Get random scripture based on time of day
   const getRandomScripture = (isCheckin: boolean) => {
@@ -75,18 +127,22 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   // Get greeting based on time of day
-  const getGreeting = (name: string, isCheckin: boolean) => {
+  const getGreeting = (name: string, isCheckin: boolean, isLate: boolean = false) => {
     const hours = new Date().getHours();
     let greeting = "";
     
     if (isCheckin) {
-      if (hours < 12) {
+      if (isLate) {
+        greeting = `${name}, you're checking in late. Please be on time next time.`;
+      } else if (hours < 12) {
         greeting = `Good morning, ${name}! Have a wonderful day at school.`;
       } else {
         greeting = `Good afternoon, ${name}! Glad you're here today.`;
       }
     } else {
-      if (hours < 16) {
+      if (isLate) {
+        greeting = `${name}, this is a late pickup. Please arrange for earlier pickup next time.`;
+      } else if (hours < 16) {
         greeting = `Goodbye, ${name}! Hope you had a great day at school.`;
       } else {
         greeting = `Good evening, ${name}! Have a peaceful evening and rest well.`;
@@ -102,6 +158,19 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     userRole: "student" | "teacher",
     action: "time-in" | "time-out"
   ) => {
+    const timeStatus = getTimeStatus();
+    
+    // Check if the action is allowed based on time
+    if (action === "time-in" && !timeStatus.canCheckIn) {
+      toast.error("Check-in is not available at this time. Check-in hours: 5:00 AM - 11:00 AM");
+      return;
+    }
+    
+    if (action === "time-out" && !timeStatus.canCheckOut) {
+      toast.error("Check-out is not available at this time. Check-out starts at 12:00 PM");
+      return;
+    }
+
     // Find the user
     const user = userRole === "student" 
       ? students.find(s => s.id === userId)
@@ -111,6 +180,9 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       toast.error("User not found");
       return;
     }
+
+    // Determine if this is a late check-in or check-out
+    const isLate = action === "time-in" ? timeStatus.isLateCheckIn : timeStatus.isLateCheckOut;
 
     // Create attendance log
     const newLog: AttendanceLog = {
@@ -128,12 +200,17 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     // Get scripture and greeting
     const isCheckin = action === "time-in";
     const scripture = getRandomScripture(isCheckin);
-    const greeting = getGreeting(user.name, isCheckin);
+    const greeting = getGreeting(user.name, isCheckin, isLate);
     
     // Display welcome message with scripture
     toast.success(
       <div className="space-y-1">
         <p className="font-medium">{greeting}</p>
+        {isLate && (
+          <p className="text-sm text-orange-600 font-medium">
+            {action === "time-in" ? "⚠️ Late Arrival" : "⚠️ Late Pickup"}
+          </p>
+        )}
         <p className="text-sm italic">"{scripture.verse}"</p>
         <p className="text-xs text-right">- {scripture.reference}</p>
       </div>,
@@ -153,7 +230,8 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           minute: '2-digit'
         });
         
-        const message = `${student.name} has ${actionText} school at ${timeString}. ${scripture.verse} - ${scripture.reference}`;
+        const lateText = isLate ? (action === "time-in" ? " (Late Arrival)" : " (Late Pickup)") : "";
+        const message = `${student.name} has ${actionText} school at ${timeString}${lateText}. ${scripture.verse} - ${scripture.reference}`;
         
         // Send SMS via SmsContext
         addSmsLog({
@@ -178,6 +256,7 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         attendanceLogs,
         recordAttendance,
         generateQRCode,
+        getTimeStatus,
       }}
     >
       {children}
