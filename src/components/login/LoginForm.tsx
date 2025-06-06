@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -48,7 +47,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
       const success = await login(data.email, data.password);
       if (success) {
         toast.success("Login successful!");
-        navigate("/dashboard");
+        navigate("/app/dashboard");
       }
     } catch (error) {
       console.error(error);

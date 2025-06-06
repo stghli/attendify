@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useData } from "@/context/DataContext";
@@ -14,6 +13,7 @@ import AttendanceSummary from "@/components/dashboard/AttendanceSummary";
 import AttendanceTrendChart from "@/components/dashboard/AttendanceTrendChart";
 import RecentActivities from "@/components/dashboard/RecentActivities";
 import QuickActions from "@/components/dashboard/QuickActions";
+import LandingPageControl from "@/components/dashboard/LandingPageControl";
 
 const Dashboard: React.FC = () => {
   const { authState } = useAuth();
@@ -79,6 +79,11 @@ const Dashboard: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
           <QuickActions userRole={user?.role || ''} />
         </div>
+
+        {/* Landing Page Control - Only for Admin */}
+        {user?.role === "admin" && (
+          <LandingPageControl />
+        )}
 
         {/* Stat Cards Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
