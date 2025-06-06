@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
-import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
+import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, GraduationCap } from "lucide-react";
 
 const Landing: React.FC = () => {
   // Current time state
@@ -116,7 +116,7 @@ const Landing: React.FC = () => {
         </Card>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <Card className="shadow-md border-0 bg-gray-100">
             <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-gray-600 mx-auto mb-3" />
@@ -138,6 +138,14 @@ const Landing: React.FC = () => {
               <UserX className="h-8 w-8 text-orange-600 mx-auto mb-3" />
               <div className="text-3xl font-bold text-orange-700">534</div>
               <div className="text-sm text-orange-600 font-medium">Not Checked</div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-md border-0 bg-blue-50">
+            <CardContent className="p-6 text-center">
+              <GraduationCap className="h-8 w-8 text-blue-600 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-blue-700">8</div>
+              <div className="text-sm text-blue-600 font-medium">Teachers In</div>
             </CardContent>
           </Card>
         </div>
