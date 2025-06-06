@@ -4,41 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
+
 const Landing: React.FC = () => {
-  // Timer state - starts from 1 hour 7 minutes 30 seconds
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 1,
-    minutes: 7,
-    seconds: 30
-  });
+  // Current time state
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        let {
-          hours,
-          minutes,
-          seconds
-        } = prev;
-        if (seconds > 0) {
-          seconds--;
-        } else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        }
-        return {
-          hours,
-          minutes,
-          seconds
-        };
-      });
+      setCurrentTime(new Date());
     }, 1000);
+
     return () => clearInterval(timer);
   }, []);
-  return <div className="min-h-screen flex flex-col lg:flex-row">
+
+  // Format time components
+  const hours = currentTime.getHours();
+  const minutes = currentTime.getMinutes();
+  const seconds = currentTime.getSeconds();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const displayHours = hours % 12 || 12;
+
+  return (
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-8 relative">
         {/* Admin Login Button */}
@@ -51,32 +38,37 @@ const Landing: React.FC = () => {
           </Button>
         </div>
 
-        {/* Expires Timer */}
+        {/* Current Time Display */}
         <div className="text-center mb-8">
           <p className="text-white/70 text-sm mb-4 flex items-center justify-center gap-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            Expires in
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            Current Time
           </p>
           <div className="flex items-center justify-center gap-4 text-white font-mono">
             <div className="text-center">
               <div className="text-5xl lg:text-6xl font-bold">
-                {timeLeft.hours.toString().padStart(2, '0')}
+                {displayHours.toString().padStart(2, '0')}
               </div>
               <div className="text-sm text-white/60 mt-1">Hours</div>
             </div>
             <div className="text-4xl lg:text-5xl font-bold text-white/60">:</div>
             <div className="text-center">
               <div className="text-5xl lg:text-6xl font-bold">
-                {timeLeft.minutes.toString().padStart(2, '0')}
+                {minutes.toString().padStart(2, '0')}
               </div>
               <div className="text-sm text-white/60 mt-1">Minutes</div>
             </div>
             <div className="text-4xl lg:text-5xl font-bold text-white/60">:</div>
             <div className="text-center">
               <div className="text-5xl lg:text-6xl font-bold">
-                {timeLeft.seconds.toString().padStart(2, '0')}
+                {seconds.toString().padStart(2, '0')}
               </div>
               <div className="text-sm text-white/60 mt-1">Seconds</div>
+            </div>
+            <div className="text-center ml-4">
+              <div className="text-3xl lg:text-4xl font-bold">
+                {ampm}
+              </div>
             </div>
           </div>
         </div>
@@ -152,6 +144,8 @@ const Landing: React.FC = () => {
           <p>Contact branch administrators if you need any assistance.</p>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Landing;
