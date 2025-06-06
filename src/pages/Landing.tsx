@@ -29,6 +29,12 @@ const Landing: React.FC = () => {
   const currentMonth = currentTime.toLocaleString('default', { month: 'short' }).toUpperCase();
   const currentDay = currentTime.getDate();
 
+  // Calculate days left in the year
+  const currentYear = currentTime.getFullYear();
+  const endOfYear = new Date(currentYear, 11, 31); // December 31st
+  const timeDiff = endOfYear.getTime() - currentTime.getTime();
+  const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
@@ -110,7 +116,7 @@ const Landing: React.FC = () => {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <Key className="h-5 w-5 text-yellow-500" />
-                  <span className="text-3xl font-bold text-blue-600">9768</span>
+                  <span className="text-3xl font-bold text-blue-600">{daysLeft}</span>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">Sunday Service</h2>
                 <p className="text-gray-600 text-lg">7:30 AM - 12:30 PM</p>
