@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { QRCodeSVG } from "qrcode.react";
+import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
 
 const Landing: React.FC = () => {
@@ -39,7 +39,7 @@ const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left Side - Dark Background with QR Code */}
+      {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-8 relative">
         {/* Admin Login Button */}
         <div className="absolute top-6 left-6">
@@ -81,14 +81,9 @@ const Landing: React.FC = () => {
           </div>
         </div>
 
-        {/* QR Code */}
-        <div className="bg-white p-6 rounded-2xl shadow-2xl">
-          <QRCodeSVG 
-            value="attendance-qr-9768-sunday-service"
-            size={250}
-            level="H"
-            includeMargin={true}
-          />
+        {/* QR Scanner */}
+        <div className="w-full max-w-sm">
+          <QrScanner />
         </div>
       </div>
 
