@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { ShieldCheck, ArrowRight, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ShieldCheck, Lock, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
 const CodeEntry: React.FC = () => {
   const [code, setCode] = useState("");
+  const [trustDevice, setTrustDevice] = useState(false);
   const navigate = useNavigate();
 
   // Valid codes that allow access to the landing page
@@ -36,82 +39,93 @@ const CodeEntry: React.FC = () => {
       <AnimatedBackground />
       
       <div className="relative z-10 w-full max-w-md">
-        <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-lg overflow-hidden">
-          <CardContent className="p-8">
-            {/* Header with animated icon */}
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl overflow-hidden rounded-3xl">
+          <CardContent className="p-10">
+            {/* Phone illustration */}
             <div className="text-center mb-8">
               <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center mx-auto shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                  <ShieldCheck className="h-10 w-10 text-white" />
+                <div className="w-24 h-40 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg relative overflow-hidden">
+                  {/* Phone screen */}
+                  <div className="w-16 h-28 bg-white rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
+                      <Lock className="h-4 w-4 text-white" />
+                    </div>
+                  </div>
+                  {/* Phone details */}
+                  <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-emerald-600 rounded-full"></div>
+                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-6 border-2 border-emerald-600 rounded-full"></div>
                 </div>
-                <div className="absolute -top-1 -right-1">
-                  <Sparkles className="h-5 w-5 text-amber-400 animate-pulse" />
-                </div>
+                {/* Hand holding phone effect */}
+                <div className="absolute -bottom-4 -left-6 w-16 h-12 bg-gradient-to-br from-orange-300 to-orange-400 rounded-t-full rounded-br-full transform rotate-12 opacity-80"></div>
+                <div className="absolute -bottom-2 -right-4 w-12 h-8 bg-gradient-to-br from-orange-300 to-orange-400 rounded-full transform -rotate-12 opacity-80"></div>
               </div>
               
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-3">
-                Secure Access
+              <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                Two-step verification
               </h1>
-              <p className="text-slate-600 text-lg">Enter your event access code to continue</p>
+              <p className="text-gray-600 text-sm mb-2">
+                Thanks for keeping your account secure.
+              </p>
+              <p className="text-gray-600 text-sm">
+                Check your mobile device: <span className="font-mono">(xxx)-xxx-0099</span>
+              </p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="flex flex-col items-center space-y-6">
-                {/* OTP Input with enhanced styling */}
-                <div className="relative">
-                  <InputOTP
-                    maxLength={4}
-                    value={code}
-                    onChange={(value) => setCode(value)}
-                    autoFocus
-                  >
-                    <InputOTPGroup className="gap-3">
-                      <InputOTPSlot 
-                        index={0} 
-                        className="w-14 h-14 text-2xl font-bold border-2 border-slate-200 bg-white/70 backdrop-blur-sm rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-slate-300" 
-                      />
-                      <InputOTPSlot 
-                        index={1} 
-                        className="w-14 h-14 text-2xl font-bold border-2 border-slate-200 bg-white/70 backdrop-blur-sm rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-slate-300" 
-                      />
-                      <InputOTPSlot 
-                        index={2} 
-                        className="w-14 h-14 text-2xl font-bold border-2 border-slate-200 bg-white/70 backdrop-blur-sm rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-slate-300" 
-                      />
-                      <InputOTPSlot 
-                        index={3} 
-                        className="w-14 h-14 text-2xl font-bold border-2 border-slate-200 bg-white/70 backdrop-blur-sm rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 hover:border-slate-300" 
-                      />
-                    </InputOTPGroup>
-                  </InputOTP>
-                  
-                  {/* Animated underline */}
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300" 
-                       style={{ width: code.length > 0 ? `${(code.length / 4) * 100}%` : '0%' }}></div>
-                </div>
-                
-                <p className="text-sm text-slate-500 font-medium">Enter your 4-digit access code</p>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="code" className="text-sm font-medium text-gray-700">
+                  Your Verification Code
+                </Label>
+                <Input
+                  id="code"
+                  type="text"
+                  placeholder="6-digit code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  className="w-full h-12 px-4 text-center text-lg font-mono bg-gray-50 border border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all"
+                  maxLength={6}
+                  autoFocus
+                />
+              </div>
+
+              {/* Trust device checkbox */}
+              <div className="flex items-center space-x-3">
+                <Checkbox
+                  id="trust"
+                  checked={trustDevice}
+                  onCheckedChange={(checked) => setTrustDevice(checked as boolean)}
+                  className="border-gray-300 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                />
+                <Label htmlFor="trust" className="text-sm text-gray-600 cursor-pointer">
+                  This is a trusted device, don't ask again.{" "}
+                  <span className="text-emerald-600 hover:text-emerald-700 cursor-pointer">
+                    Learn more
+                  </span>
+                </Label>
               </div>
 
               {/* Submit Button */}
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                disabled={code.length !== 4}
+                className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                disabled={code.length < 4}
               >
-                <span className="mr-2">Access System</span>
-                <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+                <Lock className="h-5 w-5 mr-2" />
+                Sign In Securely
               </Button>
-            </form>
 
-            {/* Footer */}
-            <div className="mt-8 pt-6 border-t border-slate-200">
+              {/* Cancel link */}
               <div className="text-center">
-                <p className="text-sm text-slate-500 mb-2">Need help accessing the system?</p>
-                <p className="text-xs text-slate-400">Contact your event administrator for assistance</p>
+                <button
+                  type="button"
+                  className="text-emerald-600 hover:text-emerald-700 text-sm font-medium transition-colors"
+                  onClick={() => navigate("/")}
+                >
+                  Cancel
+                </button>
               </div>
-            </div>
+            </form>
           </CardContent>
         </Card>
       </div>
