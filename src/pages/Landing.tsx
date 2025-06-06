@@ -25,6 +25,10 @@ const Landing: React.FC = () => {
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const displayHours = hours % 12 || 12;
 
+  // Format date components
+  const currentMonth = currentTime.toLocaleString('default', { month: 'short' }).toUpperCase();
+  const currentDay = currentTime.getDate();
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
@@ -98,8 +102,8 @@ const Landing: React.FC = () => {
             <div className="flex items-start gap-4">
               {/* Date Icon */}
               <div className="bg-pink-500 text-white rounded-lg p-3 text-center min-w-[80px]">
-                <div className="text-xs font-medium">JUNE</div>
-                <div className="text-2xl font-bold">01</div>
+                <div className="text-xs font-medium">{currentMonth}</div>
+                <div className="text-2xl font-bold">{currentDay.toString().padStart(2, '0')}</div>
               </div>
               
               {/* Event Details */}
