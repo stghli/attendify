@@ -1,20 +1,16 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
-import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, GraduationCap } from "lucide-react";
-
+import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
 const Landing: React.FC = () => {
   // Current time state
   const [currentTime, setCurrentTime] = useState(new Date());
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -24,19 +20,7 @@ const Landing: React.FC = () => {
   const seconds = currentTime.getSeconds();
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const displayHours = hours % 12 || 12;
-
-  // Format date components
-  const currentMonth = currentTime.toLocaleString('default', { month: 'short' }).toUpperCase();
-  const currentDay = currentTime.getDate();
-
-  // Calculate days left in the year
-  const currentYear = currentTime.getFullYear();
-  const endOfYear = new Date(currentYear, 11, 31); // December 31st
-  const timeDiff = endOfYear.getTime() - currentTime.getTime();
-  const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+  return <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-8 relative">
         {/* Admin Login Button */}
@@ -62,7 +46,7 @@ const Landing: React.FC = () => {
         {/* Current Time Display */}
         <div className="text-center mb-8">
           <p className="text-white/70 text-sm mb-4 flex items-center justify-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            
             Current Time
           </p>
           <div className="flex items-center justify-center gap-4 text-white font-mono">
@@ -108,15 +92,15 @@ const Landing: React.FC = () => {
             <div className="flex items-start gap-4">
               {/* Date Icon */}
               <div className="bg-pink-500 text-white rounded-lg p-3 text-center min-w-[80px]">
-                <div className="text-xs font-medium">{currentMonth}</div>
-                <div className="text-2xl font-bold">{currentDay.toString().padStart(2, '0')}</div>
+                <div className="text-xs font-medium">JUNE</div>
+                <div className="text-2xl font-bold">01</div>
               </div>
               
               {/* Event Details */}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <Key className="h-5 w-5 text-yellow-500" />
-                  <span className="text-3xl font-bold text-blue-600">{daysLeft}</span>
+                  <span className="text-3xl font-bold text-blue-600">9768</span>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-1">Sunday Service</h2>
                 <p className="text-gray-600 text-lg">7:30 AM - 12:30 PM</p>
@@ -126,7 +110,7 @@ const Landing: React.FC = () => {
         </Card>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <Card className="shadow-md border-0 bg-gray-100">
             <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-gray-600 mx-auto mb-3" />
@@ -150,14 +134,6 @@ const Landing: React.FC = () => {
               <div className="text-sm text-orange-600 font-medium">Not Checked</div>
             </CardContent>
           </Card>
-
-          <Card className="shadow-md border-0 bg-blue-50">
-            <CardContent className="p-6 text-center">
-              <GraduationCap className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-blue-700">8</div>
-              <div className="text-sm text-blue-600 font-medium">Teachers In</div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Footer Note */}
@@ -166,8 +142,6 @@ const Landing: React.FC = () => {
           <p>Contact branch administrators if you need any assistance.</p>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
