@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ShieldCheck, Lock, Smartphone } from "lucide-react";
+import { ShieldCheck, Lock, Key } from "lucide-react";
 import { toast } from "sonner";
 import AnimatedBackground from "@/components/AnimatedBackground";
 
@@ -38,52 +38,38 @@ const CodeEntry: React.FC = () => {
     <div className="min-h-screen relative flex items-center justify-center p-4">
       <AnimatedBackground />
       
-      <div className="relative z-10 w-full max-w-md">
-        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl overflow-hidden rounded-3xl">
-          <CardContent className="p-10">
-            {/* Phone illustration */}
-            <div className="text-center mb-8">
-              <div className="relative inline-block mb-6">
-                <div className="w-24 h-40 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg relative overflow-hidden">
-                  {/* Phone screen */}
-                  <div className="w-16 h-28 bg-white rounded-lg flex items-center justify-center">
-                    <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
-                      <Lock className="h-4 w-4 text-white" />
-                    </div>
-                  </div>
-                  {/* Phone details */}
-                  <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-emerald-600 rounded-full"></div>
-                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-6 border-2 border-emerald-600 rounded-full"></div>
+      <div className="relative z-10 w-full max-w-sm">
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-xl overflow-hidden rounded-2xl">
+          <CardContent className="p-8">
+            {/* Lock icon illustration */}
+            <div className="text-center mb-6">
+              <div className="relative inline-block mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <Key className="h-8 w-8 text-white" />
                 </div>
-                {/* Hand holding phone effect */}
-                <div className="absolute -bottom-4 -left-6 w-16 h-12 bg-gradient-to-br from-orange-300 to-orange-400 rounded-t-full rounded-br-full transform rotate-12 opacity-80"></div>
-                <div className="absolute -bottom-2 -right-4 w-12 h-8 bg-gradient-to-br from-orange-300 to-orange-400 rounded-full transform -rotate-12 opacity-80"></div>
               </div>
               
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                Two-step verification
+              <h1 className="text-xl font-bold text-gray-800 mb-2">
+                Access Code Required
               </h1>
-              <p className="text-gray-600 text-sm mb-2">
-                Thanks for keeping your account secure.
-              </p>
               <p className="text-gray-600 text-sm">
-                Check your mobile device: <span className="font-mono">(xxx)-xxx-0099</span>
+                Enter your access code to continue
               </p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="code" className="text-sm font-medium text-gray-700">
-                  Your Verification Code
+                  Access Code
                 </Label>
                 <Input
                   id="code"
                   type="text"
-                  placeholder="6-digit code"
+                  placeholder="Enter code"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  className="w-full h-12 px-4 text-center text-lg font-mono bg-gray-50 border border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all"
+                  className="w-full h-11 px-4 text-center text-lg font-mono bg-gray-50 border border-gray-200 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all"
                   maxLength={6}
                   autoFocus
                 />
@@ -98,21 +84,18 @@ const CodeEntry: React.FC = () => {
                   className="border-gray-300 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
                 />
                 <Label htmlFor="trust" className="text-sm text-gray-600 cursor-pointer">
-                  This is a trusted device, don't ask again.{" "}
-                  <span className="text-emerald-600 hover:text-emerald-700 cursor-pointer">
-                    Learn more
-                  </span>
+                  Remember this device
                 </Label>
               </div>
 
               {/* Submit Button */}
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full h-11 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 disabled={code.length < 4}
               >
-                <Lock className="h-5 w-5 mr-2" />
-                Sign In Securely
+                <Lock className="h-4 w-4 mr-2" />
+                Access System
               </Button>
 
               {/* Cancel link */}
