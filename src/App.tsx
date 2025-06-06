@@ -40,26 +40,26 @@ const App = () => (
                 <Route path="qr-scanner" element={<PublicQrScannerPage />} />
               </Route>
               
-              {/* Standalone pages */}
+              {/* Entry point - starts with code entry */}
+              <Route path="/" element={<Index />} />
               <Route path="/code-entry" element={<CodeEntry />} />
               <Route path="/landing" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               
               {/* Protected routes with layout */}
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/qr-scanner" element={<QrScannerPage />} />
-                <Route path="/students" element={<StudentsPage />} />
-                <Route path="/teachers" element={<TeachersPage />} />
-                <Route path="/attendance" element={<AttendancePage />} />
-                <Route path="/my-students" element={<MyStudentsPage />} />
-                <Route path="/reports" element={<ReportsPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
+              <Route path="/app" element={<Layout />}>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="qr-scanner" element={<QrScannerPage />} />
+                <Route path="students" element={<StudentsPage />} />
+                <Route path="teachers" element={<TeachersPage />} />
+                <Route path="attendance" element={<AttendancePage />} />
+                <Route path="my-students" element={<MyStudentsPage />} />
+                <Route path="reports" element={<ReportsPage />} />
+                <Route path="settings" element={<SettingsPage />} />
               </Route>
+                
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </TooltipProvider>
         </DataProvider>

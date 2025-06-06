@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,16 @@ const Landing: React.FC = () => {
             <Link to="/login">
               <LogIn className="h-4 w-4 mr-2" />
               Admin Login
+            </Link>
+          </Button>
+        </div>
+
+        {/* Back to Code Entry Button */}
+        <div className="absolute top-6 right-6">
+          <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+            <Link to="/code-entry">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Change Code
             </Link>
           </Button>
         </div>
@@ -81,13 +92,6 @@ const Landing: React.FC = () => {
 
       {/* Right Side - Light Background with Event Info */}
       <div className="lg:w-1/2 bg-gray-50 flex flex-col justify-center p-8">
-        {/* Dashboard Link */}
-        <div className="absolute top-6 right-6 lg:static lg:mb-8">
-          <Button asChild variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-            
-          </Button>
-        </div>
-
         {/* Event Card */}
         <Card className="mb-8 shadow-lg border-0">
           <CardContent className="p-6">
