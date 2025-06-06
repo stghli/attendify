@@ -1,11 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
-
 const Landing: React.FC = () => {
   // Timer state - starts from 1 hour 7 minutes 30 seconds
   const [timeLeft, setTimeLeft] = useState({
@@ -13,12 +11,14 @@ const Landing: React.FC = () => {
     minutes: 7,
     seconds: 30
   });
-
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
-        let { hours, minutes, seconds } = prev;
-        
+        let {
+          hours,
+          minutes,
+          seconds
+        } = prev;
         if (seconds > 0) {
           seconds--;
         } else if (minutes > 0) {
@@ -29,16 +29,16 @@ const Landing: React.FC = () => {
           minutes = 59;
           seconds = 59;
         }
-        
-        return { hours, minutes, seconds };
+        return {
+          hours,
+          minutes,
+          seconds
+        };
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
-
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+  return <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-8 relative">
         {/* Admin Login Button */}
@@ -92,10 +92,7 @@ const Landing: React.FC = () => {
         {/* Dashboard Link */}
         <div className="absolute top-6 right-6 lg:static lg:mb-8">
           <Button asChild variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Dashboard
-            </Link>
+            
           </Button>
         </div>
 
@@ -155,8 +152,6 @@ const Landing: React.FC = () => {
           <p>Contact branch administrators if you need any assistance.</p>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
