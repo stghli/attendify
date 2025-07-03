@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useData } from "@/context/DataContext";
 import { useAttendance } from "@/context/attendance/AttendanceContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { Clock, AlertTriangle } from "lucide-react";
 const QrScanner: React.FC = () => {
   const { students, teachers } = useData();
   const { recordAttendance, getTimeStatus } = useAttendance();
-  const [scanning, setScanning] = useState(false);
+  const [scanning, setScanning] = useState(true);
   const [lastScan, setLastScan] = useState<ScanHistoryItem | null>(null);
   
   const timeStatus = getTimeStatus();
@@ -25,7 +25,7 @@ const QrScanner: React.FC = () => {
       console.log("Available teachers:", teachers);
 
       try {
-        // Process QR code data (format: {role}-{userId}-qr)
+        // Process QR code data (format: {role}-{userId}-qr or just {role}-{userId})
         const parts = qrData.split('-');
         if (parts.length < 2) throw new Error("Invalid QR code format");
         
@@ -95,18 +95,19 @@ const QrScanner: React.FC = () => {
     toast.error("Error accessing camera. Please check permissions.");
   };
 
-  // Auto-start scanning on mount
-  React.useEffect(() => {
-    setScanning(true);
-  }, []);
-
   return (
     <div className="w-full max-w-sm mx-auto space-y-4">
       <AnimatePresence mode="wait">
         {scanning ? (
-          <div className="flex justify-center">
+          <motion.div
+            key="scanner"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="flex justify-center"
+          >
             <ScannerCamera onScan={handleScan} onError={handleError} />
-          </div>
+          </motion.div>
         ) : (
           <motion.div 
             key="result"
