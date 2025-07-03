@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
+
 const Landing: React.FC = () => {
   // Current time state
   const [currentTime, setCurrentTime] = useState(new Date());
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -20,7 +22,15 @@ const Landing: React.FC = () => {
   const seconds = currentTime.getSeconds();
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const displayHours = hours % 12 || 12;
-  return <div className="min-h-screen flex flex-col lg:flex-row">
+
+  // Format date components
+  const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
+                     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const currentMonth = monthNames[currentTime.getMonth()];
+  const currentDate = currentTime.getDate().toString().padStart(2, '0');
+
+  return (
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-8 relative">
         {/* Admin Login Button */}
@@ -46,7 +56,6 @@ const Landing: React.FC = () => {
         {/* Current Time Display */}
         <div className="text-center mb-8">
           <p className="text-white/70 text-sm mb-4 flex items-center justify-center gap-2">
-            
             Current Time
           </p>
           <div className="flex items-center justify-center gap-4 text-white font-mono">
@@ -92,8 +101,8 @@ const Landing: React.FC = () => {
             <div className="flex items-start gap-4">
               {/* Date Icon */}
               <div className="bg-pink-500 text-white rounded-lg p-3 text-center min-w-[80px]">
-                <div className="text-xs font-medium">JUNE</div>
-                <div className="text-2xl font-bold">01</div>
+                <div className="text-xs font-medium">{currentMonth}</div>
+                <div className="text-2xl font-bold">{currentDate}</div>
               </div>
               
               {/* Event Details */}
@@ -142,6 +151,8 @@ const Landing: React.FC = () => {
           <p>Contact branch administrators if you need any assistance.</p>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Landing;
