@@ -162,20 +162,7 @@ const Landing: React.FC = () => {
 
         {/* How It Works Section */}
         <Card className="shadow-lg border-0 bg-blue-50">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-start gap-3">
-              <QrCode className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-base sm:text-lg font-bold text-blue-800 mb-2">How to Check In</h4>
-                <ul className="space-y-1 text-blue-700 text-xs sm:text-sm">
-                  <li>• Hold your QR code in front of the scanner</li>
-                  <li>• Wait for the green confirmation message</li>
-                  <li>• Students: SMS notification sent to parents</li>
-                  <li>• Teachers: Attendance automatically recorded</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
+          
         </Card>
 
         {/* Important Notice */}
