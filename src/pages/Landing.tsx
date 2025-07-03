@@ -1,15 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
-
 const Landing: React.FC = () => {
   // Current time state
   const [currentTime, setCurrentTime] = useState(new Date());
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -32,9 +29,7 @@ const Landing: React.FC = () => {
   // Format day of the week
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const currentDay = dayNames[currentTime.getDay()];
-
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+  return <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-4 sm:p-8 relative">
         {/* Mobile Header Buttons - Stack vertically on small screens */}
@@ -153,32 +148,7 @@ const Landing: React.FC = () => {
 
         {/* How It Works Section */}
         <Card className="shadow-lg border-0 bg-blue-50">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-start gap-3">
-              <QrCode className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-base sm:text-lg font-bold text-blue-800 mb-2">How to Check In</h4>
-                <ul className="space-y-1 text-blue-700 text-xs sm:text-sm">
-                  <li className="flex items-center gap-2">
-                    <Smartphone className="h-3 w-3 sm:h-4 sm:w-4" />
-                    Hold your QR code up to the scanner
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
-                    Wait for the confirmation message
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                    Check-in hours: 5:00 AM - 11:00 AM
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                    Check-out starts: 12:00 PM
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
+          
         </Card>
 
         {/* Important Notice */}
@@ -225,8 +195,6 @@ const Landing: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
