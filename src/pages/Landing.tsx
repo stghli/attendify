@@ -1,10 +1,22 @@
+
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
+
 const Landing: React.FC = () => {
+  const navigate = useNavigate();
+  
+  // Check for valid access code on mount
+  useEffect(() => {
+    const hasValidAccess = localStorage.getItem("validAccessCode");
+    if (!hasValidAccess) {
+      navigate("/code-entry");
+    }
+  }, [navigate]);
+
   // Current time state
   const [currentTime, setCurrentTime] = useState(new Date());
   useEffect(() => {
@@ -29,62 +41,68 @@ const Landing: React.FC = () => {
   // Format day of the week
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const currentDay = dayNames[currentTime.getDay()];
-  return <div className="min-h-screen flex flex-col lg:flex-row">
+
+  return (
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-4 sm:p-8 relative">
-        {/* Mobile Header Buttons - Stack vertically on small screens */}
-        <div className="absolute top-4 left-4 right-4 flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-0 z-10">
-          <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs sm:text-sm">
-            <Link to="/login">
-              <LogIn className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              Admin Login
-            </Link>
-          </Button>
-          
-          <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs sm:text-sm">
-            <Link to="/code-entry">
-              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              Change Code
-            </Link>
-          </Button>
+        {/* Mobile Header Buttons - Improved mobile layout */}
+        <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-10">
+          <div className="flex flex-col xs:flex-row gap-1 xs:gap-2 sm:gap-0 sm:justify-between">
+            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs px-2 py-1 h-8 xs:h-9 sm:text-sm sm:px-3 sm:py-2 sm:h-9">
+              <Link to="/login">
+                <LogIn className="h-3 w-3 mr-1 xs:mr-2" />
+                <span className="hidden xs:inline">Admin Login</span>
+                <span className="xs:hidden">Admin</span>
+              </Link>
+            </Button>
+            
+            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs px-2 py-1 h-8 xs:h-9 sm:text-sm sm:px-3 sm:py-2 sm:h-9">
+              <Link to="/code-entry">
+                <ArrowLeft className="h-3 w-3 mr-1 xs:mr-2" />
+                <span className="hidden xs:inline">Change Code</span>
+                <span className="xs:hidden">Code</span>
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {/* Current Time Display */}
-        <div className="text-center mb-6 sm:mb-8 mt-16 sm:mt-0">
-          <p className="text-white/70 text-sm mb-4 flex items-center justify-center gap-2">
+        <div className="text-center mb-4 sm:mb-6 lg:mb-8 mt-20 xs:mt-16 sm:mt-0">
+          <p className="text-white/70 text-xs sm:text-sm mb-2 sm:mb-4 flex items-center justify-center gap-2">
             Current Time
           </p>
-          <div className="flex items-center justify-center gap-2 sm:gap-4 text-white font-mono">
+          <div className="flex items-center justify-center gap-1 sm:gap-2 lg:gap-4 text-white font-mono">
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-6xl font-bold">
+              <div className="text-2xl sm:text-3xl lg:text-6xl font-bold">
                 {displayHours.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm text-white/60 mt-1">Hours</div>
+              <div className="text-xs text-white/60 mt-1">Hours</div>
             </div>
-            <div className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white/60">:</div>
+            <div className="text-xl sm:text-2xl lg:text-5xl font-bold text-white/60">:</div>
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-6xl font-bold">
+              <div className="text-2xl sm:text-3xl lg:text-6xl font-bold">
                 {minutes.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm text-white/60 mt-1">Minutes</div>
+              <div className="text-xs text-white/60 mt-1">Minutes</div>
             </div>
-            <div className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white/60">:</div>
+            <div className="text-xl sm:text-2xl lg:text-5xl font-bold text-white/60">:</div>
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-6xl font-bold">
+              <div className="text-2xl sm:text-3xl lg:text-6xl font-bold">
                 {seconds.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm text-white/60 mt-1">Seconds</div>
+              <div className="text-xs text-white/60 mt-1">Seconds</div>
             </div>
-            <div className="text-center ml-2 sm:ml-4">
-              <div className="text-xl sm:text-2xl lg:text-4xl font-bold">
+            <div className="text-center ml-1 sm:ml-2 lg:ml-4">
+              <div className="text-lg sm:text-xl lg:text-4xl font-bold">
                 {ampm}
               </div>
             </div>
           </div>
         </div>
 
-        {/* QR Scanner */}
-        <div className="w-full max-w-sm">
+        {/* QR Scanner - Centered for mobile */}
+        <div className="w-full max-w-xs sm:max-w-sm flex justify-center">
           <QrScanner />
         </div>
       </div>
@@ -148,7 +166,20 @@ const Landing: React.FC = () => {
 
         {/* How It Works Section */}
         <Card className="shadow-lg border-0 bg-blue-50">
-          
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-start gap-3">
+              <QrCode className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-base sm:text-lg font-bold text-blue-800 mb-2">How to Check In</h4>
+                <ul className="space-y-1 text-blue-700 text-xs sm:text-sm">
+                  <li>• Hold your QR code in front of the scanner</li>
+                  <li>• Wait for the green confirmation message</li>
+                  <li>• Students: SMS notification sent to parents</li>
+                  <li>• Teachers: Attendance automatically recorded</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
         </Card>
 
         {/* Important Notice */}
@@ -171,9 +202,32 @@ const Landing: React.FC = () => {
 
         {/* Contact Information */}
         <Card className="shadow-lg border-0">
-          
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-start gap-3">
+              <Phone className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-2">Need Help?</h4>
+                <div className="space-y-2 text-gray-600 text-xs sm:text-sm">
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>+1 (555) 123-4567</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>support@school.edu</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Main Office - Room 101</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Landing;

@@ -22,6 +22,9 @@ const CodeEntry: React.FC = () => {
     e.preventDefault();
     
     if (VALID_CODES.includes(code)) {
+      // Set access flag in localStorage
+      localStorage.setItem("validAccessCode", "true");
+      
       toast.success("Access granted! Welcome to the system.", {
         description: "Redirecting to the main interface..."
       });
