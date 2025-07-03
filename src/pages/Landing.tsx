@@ -174,39 +174,7 @@ const Landing: React.FC = () => {
 
         {/* Contact Information */}
         <Card className="shadow-lg border-0">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">Need Help?</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-green-600" />
-                <div>
-                  <p className="font-medium text-gray-800">Call Office</p>
-                  <p className="text-sm text-gray-600">(555) 123-4567</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-blue-600" />
-                <div>
-                  <p className="font-medium text-gray-800">Email Support</p>
-                  <p className="text-sm text-gray-600">help@school.edu</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Smartphone className="h-5 w-5 text-purple-600" />
-                <div>
-                  <p className="font-medium text-gray-800">Mobile App</p>
-                  <p className="text-sm text-gray-600">Download from app store</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-red-600" />
-                <div>
-                  <p className="font-medium text-gray-800">Visit Office</p>
-                  <p className="text-sm text-gray-600">Main Building, Room 101</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
+          
         </Card>
       </div>
     </div>;
