@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
-import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX } from "lucide-react";
+import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock } from "lucide-react";
 
 const Landing: React.FC = () => {
   // Current time state
@@ -28,6 +29,10 @@ const Landing: React.FC = () => {
                      "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   const currentMonth = monthNames[currentTime.getMonth()];
   const currentDate = currentTime.getDate().toString().padStart(2, '0');
+
+  // Format day of the week
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const currentDay = dayNames[currentTime.getDay()];
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
@@ -111,8 +116,13 @@ const Landing: React.FC = () => {
                   <Key className="h-5 w-5 text-yellow-500" />
                   <span className="text-3xl font-bold text-blue-600">9768</span>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">Sunday Service</h2>
-                <p className="text-gray-600 text-lg">7:30 AM - 12:30 PM</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">{currentDay}</h2>
+                <div className="flex items-center gap-2 text-lg">
+                  <Clock className="h-5 w-5 text-gray-600" />
+                  <span className="text-gray-600 font-mono">
+                    {displayHours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')} {ampm}
+                  </span>
+                </div>
               </div>
             </div>
           </CardContent>
