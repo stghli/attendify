@@ -171,28 +171,7 @@ const Landing: React.FC = () => {
 
         {/* Contact Information */}
         <Card className="shadow-lg border-0">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-start gap-3">
-              <Phone className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-2">Need Help?</h4>
-                <div className="space-y-2 text-xs sm:text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>(555) 123-4567</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>attendance@school.edu</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Main Office - Room 101</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
+          
         </Card>
       </div>
     </div>;
