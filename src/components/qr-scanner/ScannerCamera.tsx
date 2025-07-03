@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { QrReader } from "react-qr-reader";
 import { motion } from "framer-motion";
 
@@ -11,9 +11,14 @@ interface ScannerCameraProps {
 const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
   const [cameraReady, setCameraReady] = useState(false);
 
-  const handleLoad = () => {
-    setCameraReady(true);
-  };
+  useEffect(() => {
+    // Set camera as ready after a short delay to allow initialization
+    const timer = setTimeout(() => {
+      setCameraReady(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <motion.div 
@@ -25,7 +30,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
     >
       <div className="relative h-full w-full">
         {!cameraReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
               <p className="text-sm text-gray-600">Loading camera...</p>
@@ -41,12 +46,10 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
           }}
           scanDelay={500}
           onResult={onScan}
-          onLoad={handleLoad}
           videoStyle={{ 
             width: '100%', 
             height: '100%', 
-            objectFit: 'cover',
-            display: cameraReady ? 'block' : 'none'
+            objectFit: 'cover'
           }}
           containerStyle={{ 
             width: '100%', 
