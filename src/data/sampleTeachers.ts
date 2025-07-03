@@ -10,7 +10,7 @@ const sampleTeachers: Teacher[] = [
     gender: "Female",
     contact: "555-1111",
     assignedClass: "Science",
-    qrCode: "teacher-1-qr",
+    qrCode: "teacher-teacher-1-qr",
     createdAt: new Date().toISOString(),
   },
   {
@@ -21,7 +21,7 @@ const sampleTeachers: Teacher[] = [
     gender: "Male",
     contact: "555-2222",
     assignedClass: "Mathematics",
-    qrCode: "teacher-2-qr",
+    qrCode: "teacher-teacher-2-qr",
     createdAt: new Date().toISOString(),
   },
   {
@@ -32,7 +32,7 @@ const sampleTeachers: Teacher[] = [
     gender: "Female",
     contact: "555-3333",
     assignedClass: "English",
-    qrCode: "teacher-3-qr",
+    qrCode: "teacher-teacher-3-qr",
     createdAt: new Date().toISOString(),
   },
 ];

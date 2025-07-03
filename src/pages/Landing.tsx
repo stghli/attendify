@@ -43,28 +43,28 @@ const Landing: React.FC = () => {
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-4 sm:p-8 relative">
         {/* Mobile Header Buttons - Improved mobile layout */}
-        <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-10">
-          <div className="flex flex-col xs:flex-row gap-1 xs:gap-2 sm:gap-0 sm:justify-between">
-            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs px-2 py-1 h-8 xs:h-9 sm:text-sm sm:px-3 sm:py-2 sm:h-9">
+        <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 z-10">
+          <div className="flex justify-between gap-2">
+            <Button asChild variant="outline" size="sm" className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 text-xs px-3 py-2 h-9 font-medium shadow-lg">
               <Link to="/login">
-                <LogIn className="h-3 w-3 mr-1 xs:mr-2" />
-                <span className="hidden xs:inline">Admin Login</span>
-                <span className="xs:hidden">Admin</span>
+                <LogIn className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Admin Login</span>
+                <span className="sm:hidden">Admin</span>
               </Link>
             </Button>
             
-            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20 text-xs px-2 py-1 h-8 xs:h-9 sm:text-sm sm:px-3 sm:py-2 sm:h-9">
+            <Button asChild variant="outline" size="sm" className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 text-xs px-3 py-2 h-9 font-medium shadow-lg">
               <Link to="/code-entry">
-                <ArrowLeft className="h-3 w-3 mr-1 xs:mr-2" />
-                <span className="hidden xs:inline">Change Code</span>
-                <span className="xs:hidden">Code</span>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Change Code</span>
+                <span className="sm:hidden">Code</span>
               </Link>
             </Button>
           </div>
         </div>
 
         {/* Current Time Display */}
-        <div className="text-center mb-4 sm:mb-6 lg:mb-8 mt-20 xs:mt-16 sm:mt-0">
+        <div className="text-center mb-4 sm:mb-6 lg:mb-8 mt-16 sm:mt-0">
           <p className="text-white/70 text-xs sm:text-sm mb-2 sm:mb-4 flex items-center justify-center gap-2">
             Current Time
           </p>

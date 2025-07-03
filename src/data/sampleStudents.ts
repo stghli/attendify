@@ -12,7 +12,7 @@ const sampleStudents: Student[] = [
     parentPhone: "555-1234",
     role: "student",
     assignedTeacherId: "teacher-1",
-    qrCode: "student-1-qr",
+    qrCode: "student-student-1-qr",
     createdAt: new Date().toISOString(),
     attendance: {
       present: 18,
@@ -30,7 +30,7 @@ const sampleStudents: Student[] = [
     parentPhone: "555-5678",
     role: "student",
     assignedTeacherId: "teacher-1",
-    qrCode: "student-2-qr",
+    qrCode: "student-student-2-qr",
     createdAt: new Date().toISOString(),
     attendance: {
       present: 16,
@@ -48,7 +48,7 @@ const sampleStudents: Student[] = [
     parentPhone: "555-9012",
     role: "student",
     assignedTeacherId: "teacher-2",
-    qrCode: "student-3-qr",
+    qrCode: "student-student-3-qr",
     createdAt: new Date().toISOString(),
     attendance: {
       present: 19,
@@ -66,7 +66,7 @@ const sampleStudents: Student[] = [
     parentPhone: "555-3456",
     role: "student",
     assignedTeacherId: "teacher-2",
-    qrCode: "student-4-qr",
+    qrCode: "student-student-4-qr",
     createdAt: new Date().toISOString(),
     attendance: {
       present: 17,
@@ -84,7 +84,7 @@ const sampleStudents: Student[] = [
     parentPhone: "555-7890",
     role: "student",
     assignedTeacherId: "teacher-1",
-    qrCode: "student-5-qr",
+    qrCode: "student-student-5-qr",
     createdAt: new Date().toISOString(),
     attendance: {
       present: 20,
