@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
-import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock } from "lucide-react";
+import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
 
 const Landing: React.FC = () => {
   // Current time state
@@ -98,10 +98,10 @@ const Landing: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side - Light Background with Event Info */}
-      <div className="lg:w-1/2 bg-gray-50 flex flex-col justify-center p-8">
+      {/* Right Side - Light Background with Enhanced Content */}
+      <div className="lg:w-1/2 bg-gray-50 flex flex-col justify-center p-8 space-y-6">
         {/* Event Card */}
-        <Card className="mb-8 shadow-lg border-0">
+        <Card className="shadow-lg border-0">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
               {/* Date Icon */}
@@ -129,7 +129,7 @@ const Landing: React.FC = () => {
         </Card>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="shadow-md border-0 bg-gray-100">
             <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-gray-600 mx-auto mb-3" />
@@ -155,11 +155,93 @@ const Landing: React.FC = () => {
           </Card>
         </div>
 
-        {/* Footer Note */}
-        <div className="text-center text-gray-500 text-sm leading-relaxed max-w-md mx-auto">
-          <p>Use Mobile or Web App to record your attendance.</p>
-          <p>Contact branch administrators if you need any assistance.</p>
-        </div>
+        {/* How It Works Section */}
+        <Card className="shadow-lg border-0 bg-blue-50">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+              <QrCode className="h-6 w-6" />
+              How to Check In
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</div>
+                <div>
+                  <p className="text-blue-800 font-medium">Scan Your QR Code</p>
+                  <p className="text-blue-600 text-sm">Use the scanner on the left or your mobile device</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</div>
+                <div>
+                  <p className="text-blue-800 font-medium">Instant Check-in</p>
+                  <p className="text-blue-600 text-sm">Your attendance is automatically recorded</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</div>
+                <div>
+                  <p className="text-blue-800 font-medium">SMS Confirmation</p>
+                  <p className="text-blue-600 text-sm">Parents receive instant notification</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Important Notice */}
+        <Card className="shadow-lg border-0 bg-yellow-50 border-l-4 border-l-yellow-400">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-lg font-bold text-yellow-800 mb-2">Important Information</h4>
+                <ul className="space-y-1 text-yellow-700 text-sm">
+                  <li>• Check-in opens at 7:00 AM daily</li>
+                  <li>• Late arrivals after 8:30 AM will be marked accordingly</li>
+                  <li>• Check-out available from 12:00 PM onwards</li>
+                  <li>• Contact office for QR code issues</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Contact Information */}
+        <Card className="shadow-lg border-0">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-bold text-gray-800 mb-4">Need Help?</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-green-600" />
+                <div>
+                  <p className="font-medium text-gray-800">Call Office</p>
+                  <p className="text-sm text-gray-600">(555) 123-4567</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-blue-600" />
+                <div>
+                  <p className="font-medium text-gray-800">Email Support</p>
+                  <p className="text-sm text-gray-600">help@school.edu</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Smartphone className="h-5 w-5 text-purple-600" />
+                <div>
+                  <p className="font-medium text-gray-800">Mobile App</p>
+                  <p className="text-sm text-gray-600">Download from app store</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <MapPin className="h-5 w-5 text-red-600" />
+                <div>
+                  <p className="font-medium text-gray-800">Visit Office</p>
+                  <p className="text-sm text-gray-600">Main Building, Room 101</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
