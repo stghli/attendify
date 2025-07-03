@@ -1,15 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
-
 const Landing: React.FC = () => {
   // Current time state
   const [currentTime, setCurrentTime] = useState(new Date());
-  
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -25,17 +22,14 @@ const Landing: React.FC = () => {
   const displayHours = hours % 12 || 12;
 
   // Format date components
-  const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
-                     "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   const currentMonth = monthNames[currentTime.getMonth()];
   const currentDate = currentTime.getDate().toString().padStart(2, '0');
 
   // Format day of the week
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const currentDay = dayNames[currentTime.getDay()];
-
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+  return <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-8 relative">
         {/* Admin Login Button */}
@@ -157,35 +151,7 @@ const Landing: React.FC = () => {
 
         {/* How It Works Section */}
         <Card className="shadow-lg border-0 bg-blue-50">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
-              <QrCode className="h-6 w-6" />
-              How to Check In
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</div>
-                <div>
-                  <p className="text-blue-800 font-medium">Scan Your QR Code</p>
-                  <p className="text-blue-600 text-sm">Use the scanner on the left or your mobile device</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">2</div>
-                <div>
-                  <p className="text-blue-800 font-medium">Instant Check-in</p>
-                  <p className="text-blue-600 text-sm">Your attendance is automatically recorded</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">3</div>
-                <div>
-                  <p className="text-blue-800 font-medium">SMS Confirmation</p>
-                  <p className="text-blue-600 text-sm">Parents receive instant notification</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
+          
         </Card>
 
         {/* Important Notice */}
@@ -243,8 +209,6 @@ const Landing: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
