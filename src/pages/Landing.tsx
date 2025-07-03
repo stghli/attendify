@@ -5,15 +5,53 @@ import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useTeachers } from "@/context/teachers/TeachersContext";
+import { useAttendance } from "@/context/attendance/AttendanceContext";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const { students } = useStudents();
   const { teachers } = useTeachers();
+  const { attendanceLogs } = useAttendance();
 
   // Calculate totals
   const totalAttendees = students.length + teachers.length;
+
+  // Calculate checked-in counts
+  const getCheckedInCounts = () => {
+    const today = new Date().toDateString();
+    const todayLogs = attendanceLogs.filter(log => 
+      new Date(log.timestamp).toDateString() === today
+    );
+
+    // Get unique users who have checked in today (latest action per user)
+    const userStatuses = new Map();
+    
+    todayLogs.forEach(log => {
+      const existing = userStatuses.get(log.userId);
+      if (!existing || new Date(log.timestamp) > new Date(existing.timestamp)) {
+        userStatuses.set(log.userId, log);
+      }
+    });
+
+    let checkedInTeachers = 0;
+    let checkedInStudents = 0;
+
+    userStatuses.forEach(log => {
+      if (log.action === "time-in") {
+        if (log.userRole === "teacher") {
+          checkedInTeachers++;
+        } else if (log.userRole === "student") {
+          checkedInStudents++;
+        }
+      }
+    });
+
+    return { checkedInTeachers, checkedInStudents };
+  };
+
+  const { checkedInTeachers, checkedInStudents } = getCheckedInCounts();
+  const totalCheckedIn = checkedInTeachers + checkedInStudents;
 
   // Check for valid access code on mount
   useEffect(() => {
@@ -158,15 +196,18 @@ const Landing: React.FC = () => {
           <Card className="shadow-md border-0 bg-green-50">
             <CardContent className="p-4 sm:p-6 text-center">
               <UserCheck className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 mx-auto mb-2 sm:mb-3" />
-              <div className="text-2xl sm:text-3xl font-bold text-green-700">136</div>
+              <div className="text-2xl sm:text-3xl font-bold text-green-700">{totalCheckedIn}</div>
               <div className="text-xs sm:text-sm text-green-600 font-medium">Checked In</div>
+              <div className="text-xs text-green-600 mt-1">
+                {checkedInTeachers} Teachers • {checkedInStudents} Students
+              </div>
             </CardContent>
           </Card>
           
           <Card className="shadow-md border-0 bg-orange-50">
             <CardContent className="p-4 sm:p-6 text-center">
               <UserX className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 mx-auto mb-2 sm:mb-3" />
-              <div className="text-2xl sm:text-3xl font-bold text-orange-700">534</div>
+              <div className="text-2xl sm:text-3xl font-bold text-orange-700">{totalAttendees - totalCheckedIn}</div>
               <div className="text-xs sm:text-sm text-orange-600 font-medium">Not Checked</div>
             </CardContent>
           </Card>
