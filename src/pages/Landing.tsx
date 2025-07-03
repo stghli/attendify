@@ -6,7 +6,7 @@ import QrScanner from "@/components/QrScanner";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useTeachers } from "@/context/teachers/TeachersContext";
 import { useAttendance } from "@/context/attendance/AttendanceContext";
-import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
+import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle, Lock } from "lucide-react";
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -52,6 +52,10 @@ const Landing: React.FC = () => {
 
   const { checkedInTeachers, checkedInStudents } = getCheckedInCounts();
   const totalCheckedIn = checkedInTeachers + checkedInStudents;
+  
+  // Calculate not checked in counts
+  const notCheckedInTeachers = teachers.length - checkedInTeachers;
+  const notCheckedInStudents = students.length - checkedInStudents;
 
   // Check for valid access code on mount
   useEffect(() => {
@@ -102,9 +106,9 @@ const Landing: React.FC = () => {
             
             <Button asChild variant="outline" size="sm" className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 text-xs px-3 py-2 h-9 font-medium shadow-lg">
               <Link to="/code-entry">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Change Code</span>
-                <span className="sm:hidden">Code</span>
+                <Lock className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Lock Screen</span>
+                <span className="sm:hidden">Lock</span>
               </Link>
             </Button>
           </div>
@@ -209,6 +213,9 @@ const Landing: React.FC = () => {
               <UserX className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600 mx-auto mb-2 sm:mb-3" />
               <div className="text-2xl sm:text-3xl font-bold text-orange-700">{totalAttendees - totalCheckedIn}</div>
               <div className="text-xs sm:text-sm text-orange-600 font-medium">Not Checked</div>
+              <div className="text-xs text-orange-600 mt-1">
+                {notCheckedInTeachers} Teachers • {notCheckedInStudents} Students
+              </div>
             </CardContent>
           </Card>
         </div>
