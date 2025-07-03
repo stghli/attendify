@@ -46,18 +46,18 @@ const NavItem = ({ to, icon: Icon, label, onClick }: {
 
 const Navigation: React.FC<NavigationProps> = ({ user }) => {
   const navigationItems = [
-    { to: "/dashboard", icon: Home, label: "Dashboard", roles: ["admin", "teacher", "scanner"] },
+    { to: "/app/dashboard", icon: Home, label: "Dashboard", roles: ["admin", "teacher", "scanner"] },
     ...(user.role === "admin" ? [
-      { to: "/students", icon: GraduationCap, label: "Students", roles: ["admin"] },
-      { to: "/teachers", icon: Users, label: "Teachers", roles: ["admin"] },
-      { to: "/reports", icon: FileText, label: "Reports", roles: ["admin"] },
-      { to: "/settings", icon: Settings, label: "Settings", roles: ["admin"] },
+      { to: "/app/students", icon: GraduationCap, label: "Students", roles: ["admin"] },
+      { to: "/app/teachers", icon: Users, label: "Teachers", roles: ["admin"] },
+      { to: "/app/reports", icon: FileText, label: "Reports", roles: ["admin"] },
+      { to: "/app/settings", icon: Settings, label: "Settings", roles: ["admin"] },
     ] : []),
     ...(user.role === "teacher" ? [
-      { to: "/attendance", icon: Calendar, label: "Attendance", roles: ["teacher"] },
-      { to: "/my-students", icon: Users, label: "My Students", roles: ["teacher"] },
+      { to: "/app/attendance", icon: Calendar, label: "Attendance", roles: ["teacher"] },
+      { to: "/app/my-students", icon: Users, label: "My Students", roles: ["teacher"] },
     ] : []),
-    { to: "/qr-scanner", icon: QrCode, label: "QR Scanner", roles: ["admin", "teacher", "scanner"] },
+    { to: "/app/qr-scanner", icon: QrCode, label: "QR Scanner", roles: ["admin", "teacher", "scanner"] },
   ];
 
   const filteredNavItems = navigationItems.filter(item => 

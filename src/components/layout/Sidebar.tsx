@@ -78,29 +78,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, setIsMobileOpen }) => {
 
         {/* Main navigation */}
         <nav className="flex-1 overflow-auto p-3 space-y-1.5">
-          <NavItem to="/dashboard" icon={Home} label="Dashboard" />
+          <NavItem to="/app/dashboard" icon={Home} label="Dashboard" />
           
           {user.role === "admin" && (
             <>
-              <NavItem to="/students" icon={GraduationCap} label="Students" />
-              <NavItem to="/teachers" icon={Users} label="Teachers" />
-              <NavItem to="/qr-scanner" icon={QrCode} label="QR Scanner" />
-              <NavItem to="/reports" icon={FileText} label="Reports" />
-              <NavItem to="/settings" icon={Settings} label="Settings" />
+              <NavItem to="/app/students" icon={GraduationCap} label="Students" />
+              <NavItem to="/app/teachers" icon={Users} label="Teachers" />
+              <NavItem to="/app/qr-scanner" icon={QrCode} label="QR Scanner" />
+              <NavItem to="/app/reports" icon={FileText} label="Reports" />
+              <NavItem to="/app/settings" icon={Settings} label="Settings" />
             </>
           )}
           
           {user.role === "teacher" && (
             <>
-              <NavItem to="/attendance" icon={Calendar} label="My Attendance" />
-              <NavItem to="/my-students" icon={Users} label="My Students" />
-              <NavItem to="/qr-scanner" icon={QrCode} label="QR Scanner" />
+              <NavItem to="/app/attendance" icon={Calendar} label="My Attendance" />
+              <NavItem to="/app/my-students" icon={Users} label="My Students" />
+              <NavItem to="/app/qr-scanner" icon={QrCode} label="QR Scanner" />
             </>
           )}
           
           {user.role === "scanner" && (
             <>
-              <NavItem to="/qr-scanner" icon={QrCode} label="QR Scanner" />
+              <NavItem to="/app/qr-scanner" icon={QrCode} label="QR Scanner" />
             </>
           )}
         </nav>
