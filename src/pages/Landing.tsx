@@ -3,9 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
+import { useStudents } from "@/context/students/StudentsContext";
+import { useTeachers } from "@/context/teachers/TeachersContext";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
+
 const Landing: React.FC = () => {
   const navigate = useNavigate();
+  const { students } = useStudents();
+  const { teachers } = useTeachers();
+
+  // Calculate totals
+  const totalAttendees = students.length + teachers.length;
 
   // Check for valid access code on mount
   useEffect(() => {
@@ -39,6 +47,7 @@ const Landing: React.FC = () => {
   // Format day of the week
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const currentDay = dayNames[currentTime.getDay()];
+
   return <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-4 sm:p-8 relative">
@@ -138,8 +147,11 @@ const Landing: React.FC = () => {
           <Card className="shadow-md border-0 bg-gray-100">
             <CardContent className="p-4 sm:p-6 text-center">
               <Users className="h-6 w-6 sm:h-8 sm:w-8 text-gray-600 mx-auto mb-2 sm:mb-3" />
-              <div className="text-2xl sm:text-3xl font-bold text-gray-900">670</div>
-              <div className="text-xs sm:text-sm text-gray-600 font-medium">Attendees</div>
+              <div className="text-2xl sm:text-3xl font-bold text-gray-900">{totalAttendees}</div>
+              <div className="text-xs sm:text-sm text-gray-600 font-medium">Total Attendees</div>
+              <div className="text-xs text-gray-500 mt-1">
+                {teachers.length} Teachers • {students.length} Students
+              </div>
             </CardContent>
           </Card>
           
@@ -190,4 +202,5 @@ const Landing: React.FC = () => {
       </div>
     </div>;
 };
+
 export default Landing;
