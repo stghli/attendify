@@ -18,13 +18,13 @@ const AnimatedClockBackground: React.FC = () => {
 
   useEffect(() => {
     // Create floating clock elements
-    const clockElements: ClockElement[] = Array.from({ length: 12 }, (_, i) => ({
+    const clockElements: ClockElement[] = Array.from({ length: 15 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: 30 + Math.random() * 40,
+      size: 20 + Math.random() * 30,
       rotation: Math.random() * 360,
-      opacity: 0.1 + Math.random() * 0.2,
+      opacity: 0.15 + Math.random() * 0.25,
       speed: 0.1 + Math.random() * 0.3,
     }));
     setClocks(clockElements);
@@ -62,37 +62,51 @@ const AnimatedClockBackground: React.FC = () => {
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* Multi-layered gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900"></div>
-      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-purple-800/20 to-blue-800/30"></div>
+      {/* System-themed gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-secondary/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/10 to-accent/15"></div>
       
-      {/* Animated mesh background */}
-      <div className="absolute inset-0 opacity-20">
+      {/* Enhanced animated mesh background */}
+      <div className="absolute inset-0 opacity-30">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-              <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
+            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.5" opacity="0.3"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
       </div>
 
-      {/* Large central clock */}
+      {/* Large central clock - more visible */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <div className="relative w-80 h-80 opacity-10">
+        <div className="relative w-96 h-96 opacity-20">
           {/* Clock face */}
-          <div className="w-full h-full rounded-full border-4 border-white/20 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm">
+          <div className="w-full h-full rounded-full border-4 border-primary/30 bg-gradient-to-br from-card/20 to-primary/10 backdrop-blur-sm shadow-2xl">
             {/* Hour markers */}
             {Array.from({ length: 12 }, (_, i) => (
               <div
                 key={i}
-                className="absolute w-1 h-8 bg-white/30 rounded-full"
+                className="absolute w-1.5 h-10 bg-primary/50 rounded-full"
                 style={{
-                  top: '10px',
+                  top: '15px',
                   left: '50%',
-                  transformOrigin: '50% 150px',
+                  transformOrigin: '50% 177px',
                   transform: `translateX(-50%) rotate(${i * 30}deg)`,
+                }}
+              />
+            ))}
+            
+            {/* Minute markers */}
+            {Array.from({ length: 60 }, (_, i) => i % 5 !== 0 && (
+              <div
+                key={i}
+                className="absolute w-0.5 h-4 bg-primary/30 rounded-full"
+                style={{
+                  top: '20px',
+                  left: '50%',
+                  transformOrigin: '50% 172px',
+                  transform: `translateX(-50%) rotate(${i * 6}deg)`,
                 }}
               />
             ))}
@@ -100,11 +114,11 @@ const AnimatedClockBackground: React.FC = () => {
             {/* Clock hands */}
             {/* Hour hand */}
             <div
-              className="absolute top-1/2 left-1/2 w-1.5 bg-white/60 rounded-full origin-bottom"
+              className="absolute top-1/2 left-1/2 w-2 bg-primary/70 rounded-full origin-bottom shadow-lg"
               style={{
-                height: '80px',
-                marginTop: '-80px',
-                marginLeft: '-3px',
+                height: '90px',
+                marginTop: '-90px',
+                marginLeft: '-4px',
                 transform: `rotate(${hourAngle}deg)`,
                 transition: 'transform 0.5s ease-in-out',
               }}
@@ -112,11 +126,11 @@ const AnimatedClockBackground: React.FC = () => {
             
             {/* Minute hand */}
             <div
-              className="absolute top-1/2 left-1/2 w-1 bg-white/70 rounded-full origin-bottom"
+              className="absolute top-1/2 left-1/2 w-1.5 bg-primary/80 rounded-full origin-bottom shadow-lg"
               style={{
-                height: '110px',
-                marginTop: '-110px',
-                marginLeft: '-2px',
+                height: '130px',
+                marginTop: '-130px',
+                marginLeft: '-3px',
                 transform: `rotate(${minuteAngle}deg)`,
                 transition: 'transform 0.5s ease-in-out',
               }}
@@ -124,10 +138,10 @@ const AnimatedClockBackground: React.FC = () => {
             
             {/* Second hand */}
             <div
-              className="absolute top-1/2 left-1/2 w-0.5 bg-red-400/80 rounded-full origin-bottom"
+              className="absolute top-1/2 left-1/2 w-0.5 bg-destructive/90 rounded-full origin-bottom shadow-lg"
               style={{
-                height: '120px',
-                marginTop: '-120px',
+                height: '140px',
+                marginTop: '-140px',
                 marginLeft: '-1px',
                 transform: `rotate(${secondAngle}deg)`,
                 transition: seconds === 0 ? 'none' : 'transform 0.1s ease-out',
@@ -135,12 +149,12 @@ const AnimatedClockBackground: React.FC = () => {
             />
             
             {/* Center dot */}
-            <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-white/80 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute top-1/2 left-1/2 w-5 h-5 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
           </div>
         </div>
       </div>
 
-      {/* Floating clock icons */}
+      {/* Floating clock icons - more visible */}
       {clocks.map(clock => (
         <div
           key={clock.id}
@@ -154,23 +168,23 @@ const AnimatedClockBackground: React.FC = () => {
         >
           <Clock 
             size={clock.size} 
-            className="text-white/20" 
+            className="text-primary/40" 
           />
         </div>
       ))}
 
       {/* Digital time display */}
-      <div className="absolute top-8 right-8 text-white/40 font-mono text-sm">
+      <div className="absolute top-8 right-8 text-primary/60 font-mono text-lg font-semibold bg-card/20 backdrop-blur-sm px-3 py-1 rounded-lg border border-primary/20">
         {currentTime.toLocaleTimeString()}
       </div>
 
-      {/* Glowing orbs */}
-      <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-      <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }} />
-      <div className="absolute top-3/4 left-1/6 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '5s' }} />
+      {/* System-themed glowing orbs */}
+      <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
+      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }} />
+      <div className="absolute top-3/4 left-1/6 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '5s' }} />
 
       {/* Subtle overlay for better contrast */}
-      <div className="absolute inset-0 bg-black/20"></div>
+      <div className="absolute inset-0 bg-background/10"></div>
     </div>
   );
 };

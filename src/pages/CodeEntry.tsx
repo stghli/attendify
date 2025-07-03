@@ -38,30 +38,30 @@ const CodeEntry: React.FC = () => {
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
       <AnimatedClockBackground />
       
-      <div className="relative z-10 w-full max-w-md">
-        <Card className="shadow-2xl border-0 bg-white/10 backdrop-blur-2xl overflow-hidden rounded-3xl border border-white/20">
-          <CardContent className="p-10">
-            {/* Modern lock icon with glow effect */}
-            <div className="text-center mb-8">
-              <div className="relative inline-block mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl blur-xl opacity-60 animate-pulse"></div>
-                  <Key className="h-10 w-10 text-white relative z-10" />
+      <div className="relative z-10 w-full max-w-sm">
+        <Card className="shadow-2xl border-0 bg-card/80 backdrop-blur-2xl overflow-hidden rounded-3xl border border-border/50">
+          <CardContent className="p-8">
+            {/* Cute lock icon with system colors */}
+            <div className="text-center mb-6">
+              <div className="relative inline-block mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary via-primary/80 to-secondary rounded-2xl flex items-center justify-center mx-auto shadow-xl relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-secondary rounded-2xl blur-lg opacity-60 animate-pulse"></div>
+                  <Key className="h-8 w-8 text-primary-foreground relative z-10" />
                 </div>
               </div>
               
-              <h1 className="text-2xl font-bold text-white mb-3 tracking-tight">
+              <h1 className="text-xl font-bold text-foreground mb-2 tracking-tight">
                 Secure Access
               </h1>
-              <p className="text-white/70 text-sm font-medium">
+              <p className="text-muted-foreground text-sm font-medium">
                 Enter your unique access code
               </p>
             </div>
 
-            {/* Modern OTP Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Compact OTP Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-3">
-                <Label htmlFor="code" className="text-sm font-semibold text-white/90 block text-center">
+                <Label htmlFor="code" className="text-sm font-semibold text-foreground block text-center">
                   Access Code
                 </Label>
                 <div className="flex justify-center">
@@ -69,59 +69,59 @@ const CodeEntry: React.FC = () => {
                     maxLength={4}
                     value={code}
                     onChange={(value) => setCode(value)}
-                    className="gap-3"
+                    className="gap-2"
                   >
                     <InputOTPGroup>
                       <InputOTPSlot 
                         index={0} 
-                        className="w-14 h-14 text-xl font-bold bg-white/10 border-2 border-white/30 rounded-2xl text-white backdrop-blur-sm hover:border-white/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300"
+                        className="w-12 h-12 text-lg font-bold bg-background/50 border-2 border-border rounded-xl text-foreground backdrop-blur-sm hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300"
                       />
                       <InputOTPSlot 
                         index={1} 
-                        className="w-14 h-14 text-xl font-bold bg-white/10 border-2 border-white/30 rounded-2xl text-white backdrop-blur-sm hover:border-white/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300"
+                        className="w-12 h-12 text-lg font-bold bg-background/50 border-2 border-border rounded-xl text-foreground backdrop-blur-sm hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300"
                       />
                       <InputOTPSlot 
                         index={2} 
-                        className="w-14 h-14 text-xl font-bold bg-white/10 border-2 border-white/30 rounded-2xl text-white backdrop-blur-sm hover:border-white/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300"
+                        className="w-12 h-12 text-lg font-bold bg-background/50 border-2 border-border rounded-xl text-foreground backdrop-blur-sm hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300"
                       />
                       <InputOTPSlot 
                         index={3} 
-                        className="w-14 h-14 text-xl font-bold bg-white/10 border-2 border-white/30 rounded-2xl text-white backdrop-blur-sm hover:border-white/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-300"
+                        className="w-12 h-12 text-lg font-bold bg-background/50 border-2 border-border rounded-xl text-foreground backdrop-blur-sm hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all duration-300"
                       />
                     </InputOTPGroup>
                   </InputOTP>
                 </div>
               </div>
 
-              {/* Modern checkbox */}
-              <div className="flex items-center justify-center space-x-3">
+              {/* Cute checkbox */}
+              <div className="flex items-center justify-center space-x-2">
                 <Checkbox
                   id="trust"
                   checked={trustDevice}
                   onCheckedChange={(checked) => setTrustDevice(checked as boolean)}
-                  className="border-2 border-white/30 bg-white/10 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500 rounded-lg backdrop-blur-sm"
+                  className="border-2 border-border bg-background/50 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md backdrop-blur-sm"
                 />
-                <Label htmlFor="trust" className="text-sm text-white/80 cursor-pointer font-medium">
+                <Label htmlFor="trust" className="text-sm text-muted-foreground cursor-pointer font-medium">
                   Remember this device
                 </Label>
               </div>
 
-              {/* Modern gradient button */}
+              {/* Cute gradient button */}
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold rounded-2xl shadow-xl transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border-0 relative overflow-hidden group"
+                className="w-full h-10 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold rounded-xl shadow-lg transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border-0 relative overflow-hidden group"
                 disabled={code.length < 4}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                <Lock className="h-5 w-5 mr-2 relative z-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <Lock className="h-4 w-4 mr-2 relative z-10" />
                 <span className="relative z-10">Access System</span>
               </Button>
 
-              {/* Modern cancel link */}
+              {/* Cute cancel link */}
               <div className="text-center">
                 <button
                   type="button"
-                  className="text-white/70 hover:text-white text-sm font-medium transition-colors duration-300 hover:underline underline-offset-4"
+                  className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors duration-300 hover:underline underline-offset-4"
                   onClick={() => navigate("/")}
                 >
                   Cancel
