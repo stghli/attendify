@@ -1,14 +1,12 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
 import { Key, LogIn, ArrowLeft, Users, UserCheck, UserX, Clock, Smartphone, QrCode, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
-
 const Landing: React.FC = () => {
   const navigate = useNavigate();
-  
+
   // Check for valid access code on mount
   useEffect(() => {
     const hasValidAccess = localStorage.getItem("validAccessCode");
@@ -41,9 +39,7 @@ const Landing: React.FC = () => {
   // Format day of the week
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const currentDay = dayNames[currentTime.getDay()];
-
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+  return <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Dark Background with QR Scanner */}
       <div className="lg:w-1/2 bg-slate-800 flex flex-col items-center justify-center p-4 sm:p-8 relative">
         {/* Mobile Header Buttons - Improved mobile layout */}
@@ -202,32 +198,9 @@ const Landing: React.FC = () => {
 
         {/* Contact Information */}
         <Card className="shadow-lg border-0">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-start gap-3">
-              <Phone className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-2">Need Help?</h4>
-                <div className="space-y-2 text-gray-600 text-xs sm:text-sm">
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>+1 (555) 123-4567</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>support@school.edu</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Main Office - Room 101</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
+          
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
