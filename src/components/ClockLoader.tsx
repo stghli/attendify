@@ -24,7 +24,6 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
         const newProgress = prev + (100 / (duration / 100));
         if (newProgress >= 100) {
           clearInterval(progressTimer);
-          // Call onComplete but don't automatically navigate
           setTimeout(() => {
             onComplete?.();
           }, 500);
@@ -48,13 +47,13 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
   const hourAngle = ((hours % 12) * 30) + (minutes * 0.5) - 90;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Animated background */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
+      {/* Animated background matching system colors */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-blue-500/10 to-indigo-500/10"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1)_0%,transparent_50%)]"></div>
         
-        {/* Floating elements */}
+        {/* Floating elements with system colors */}
         {Array.from({ length: 8 }, (_, i) => (
           <div
             key={i}
@@ -67,7 +66,7 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
           >
             <Clock 
               size={20 + Math.random() * 30} 
-              className="text-blue-400 animate-pulse" 
+              className="text-primary animate-pulse" 
             />
           </div>
         ))}
@@ -75,15 +74,15 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
 
       {/* Main loader */}
       <div className="relative z-10 text-center">
-        {/* Animated clock */}
+        {/* Animated clock with system colors */}
         <div className="relative w-32 h-32 mx-auto mb-8">
           {/* Clock face */}
-          <div className="w-full h-full rounded-full border-4 border-blue-400/30 bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm shadow-2xl relative">
+          <div className="w-full h-full rounded-full border-4 border-primary/30 bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-sm shadow-2xl relative">
             {/* Hour markers */}
             {Array.from({ length: 12 }, (_, i) => (
               <div
                 key={i}
-                className="absolute w-1 h-6 bg-blue-400/60 rounded-full"
+                className="absolute w-1 h-6 bg-primary/60 rounded-full"
                 style={{
                   top: '8px',
                   left: '50%',
@@ -93,9 +92,9 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
               />
             ))}
             
-            {/* Clock hands */}
+            {/* Clock hands with system colors */}
             <div
-              className="absolute top-1/2 left-1/2 w-1 bg-blue-400 rounded-full origin-bottom shadow-lg"
+              className="absolute top-1/2 left-1/2 w-1 bg-primary rounded-full origin-bottom shadow-lg"
               style={{
                 height: '32px',
                 marginTop: '-32px',
@@ -106,7 +105,7 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
             />
             
             <div
-              className="absolute top-1/2 left-1/2 w-0.5 bg-blue-300 rounded-full origin-bottom shadow-lg"
+              className="absolute top-1/2 left-1/2 w-0.5 bg-primary/80 rounded-full origin-bottom shadow-lg"
               style={{
                 height: '44px',
                 marginTop: '-44px',
@@ -117,7 +116,7 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
             />
             
             <div
-              className="absolute top-1/2 left-1/2 w-px bg-red-400 rounded-full origin-bottom shadow-lg"
+              className="absolute top-1/2 left-1/2 w-px bg-secondary rounded-full origin-bottom shadow-lg"
               style={{
                 height: '48px',
                 marginTop: '-48px',
@@ -128,17 +127,17 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
             />
             
             {/* Center dot */}
-            <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
+            <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
           </div>
           
-          {/* Progress ring */}
+          {/* Progress ring with system colors */}
           <div className="absolute inset-0 rounded-full">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"
                 r="45"
-                stroke="rgba(59, 130, 246, 0.2)"
+                stroke="hsl(var(--primary) / 0.2)"
                 strokeWidth="2"
                 fill="transparent"
               />
@@ -146,7 +145,7 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
                 cx="50"
                 cy="50"
                 r="45"
-                stroke="rgb(59, 130, 246)"
+                stroke="hsl(var(--primary))"
                 strokeWidth="2"
                 fill="transparent"
                 strokeDasharray={`${2 * Math.PI * 45}`}
@@ -156,36 +155,36 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
             </svg>
           </div>
           
-          {/* Outer glow */}
-          <div className="absolute inset-0 rounded-full bg-blue-400/20 blur-xl animate-pulse"></div>
+          {/* Outer glow with system colors */}
+          <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse"></div>
         </div>
 
-        {/* Loading text */}
+        {/* Loading text with system colors */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-foreground">
             {progress < 50 ? 'Validating Access' : progress < 90 ? 'Authenticating...' : progress === 100 ? 'Validation Complete' : 'Access Granted'}
           </h2>
-          <p className="text-blue-200/80 text-sm">
+          <p className="text-muted-foreground text-sm">
             {progress < 50 ? 'Please wait while we verify your credentials...' : 
              progress < 90 ? 'Checking security protocols...' : 
              progress === 100 ? 'Security validation completed successfully.' : 'Welcome to the system!'}
           </p>
           
-          {/* Progress bar */}
-          <div className="w-48 mx-auto bg-slate-700/50 rounded-full h-2 overflow-hidden">
+          {/* Progress bar with system colors */}
+          <div className="w-48 mx-auto bg-muted rounded-full h-2 overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-300 ease-out"
+              className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
           
-          <div className="text-blue-300/60 text-xs font-mono">
+          <div className="text-primary/60 text-xs font-mono">
             {Math.round(progress)}% Complete
           </div>
         </div>
 
-        {/* Digital time */}
-        <div className="mt-8 text-blue-200/60 font-mono text-sm">
+        {/* Digital time with system colors */}
+        <div className="mt-8 text-muted-foreground font-mono text-sm">
           {currentTime.toLocaleTimeString()}
         </div>
       </div>
