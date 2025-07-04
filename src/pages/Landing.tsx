@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -12,6 +11,7 @@ import CurrentTimeDisplay from "@/components/landing/CurrentTimeDisplay";
 import EventCard from "@/components/landing/EventCard";
 import StatisticsCards from "@/components/landing/StatisticsCards";
 import ImportantNotice from "@/components/landing/ImportantNotice";
+import ClockLoader from "@/components/ClockLoader";
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +19,18 @@ const Landing: React.FC = () => {
   const { teachers } = useTeachers();
   const { attendanceLogs } = useAttendance();
   const [isSecurityValidated, setIsSecurityValidated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Current time state - always declared
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Always update current time
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Enhanced security validation - runs continuously
   useEffect(() => {
@@ -38,10 +50,18 @@ const Landing: React.FC = () => {
       return true;
     };
 
-    // Initial validation
-    if (validateSecurity()) {
-      setIsSecurityValidated(true);
-    }
+    // Initial validation with loading
+    const initialCheck = async () => {
+      // Show loader for at least 1 second for better UX
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (validateSecurity()) {
+        setIsSecurityValidated(true);
+      }
+      setIsLoading(false);
+    };
+
+    initialCheck();
 
     // Continuous security check every 30 seconds
     const securityInterval = setInterval(() => {
@@ -65,15 +85,14 @@ const Landing: React.FC = () => {
     };
   }, [navigate]);
 
+  // Show loader while validating
+  if (isLoading) {
+    return <ClockLoader />;
+  }
+
   // Don't render anything if security is not validated
   if (!isSecurityValidated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Validating Access...</h1>
-        </div>
-      </div>
-    );
+    return <ClockLoader />;
   }
 
   // Calculate totals
@@ -118,15 +137,6 @@ const Landing: React.FC = () => {
   // Calculate not checked in counts
   const notCheckedInTeachers = teachers.length - checkedInTeachers;
   const notCheckedInStudents = students.length - checkedInStudents;
-
-  // Current time state
-  const [currentTime, setCurrentTime] = useState(new Date());
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
@@ -179,4 +189,3 @@ const Landing: React.FC = () => {
 };
 
 export default Landing;
-
