@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -17,6 +18,21 @@ const Landing: React.FC = () => {
   const { students } = useStudents();
   const { teachers } = useTeachers();
   const { attendanceLogs } = useAttendance();
+
+  // Check for valid access code on mount - redirect immediately if not found
+  useEffect(() => {
+    const hasValidAccess = localStorage.getItem("validAccessCode");
+    if (!hasValidAccess) {
+      navigate("/code-entry", { replace: true });
+      return;
+    }
+  }, [navigate]);
+
+  // Don't render anything if no valid access - prevents flash of content
+  const hasValidAccess = localStorage.getItem("validAccessCode");
+  if (!hasValidAccess) {
+    return null;
+  }
 
   // Calculate totals
   const totalAttendees = students.length + teachers.length;
@@ -60,14 +76,6 @@ const Landing: React.FC = () => {
   // Calculate not checked in counts
   const notCheckedInTeachers = teachers.length - checkedInTeachers;
   const notCheckedInStudents = students.length - checkedInStudents;
-
-  // Check for valid access code on mount
-  useEffect(() => {
-    const hasValidAccess = localStorage.getItem("validAccessCode");
-    if (!hasValidAccess) {
-      navigate("/code-entry");
-    }
-  }, [navigate]);
 
   // Current time state
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -129,3 +137,4 @@ const Landing: React.FC = () => {
 };
 
 export default Landing;
+

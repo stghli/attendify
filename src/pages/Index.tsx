@@ -6,8 +6,16 @@ const Index: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Always redirect to code entry first
-    navigate("/code-entry");
+    // Check if user has valid access code
+    const hasValidAccess = localStorage.getItem("validAccessCode");
+    
+    if (hasValidAccess) {
+      // If they have valid access, go to landing page
+      navigate("/landing", { replace: true });
+    } else {
+      // If no valid access, go to code entry
+      navigate("/code-entry", { replace: true });
+    }
   }, [navigate]);
 
   return (
@@ -20,3 +28,4 @@ const Index: React.FC = () => {
 };
 
 export default Index;
+

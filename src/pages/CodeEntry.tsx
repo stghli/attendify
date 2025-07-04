@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,14 @@ const CodeEntry: React.FC = () => {
   // Valid codes that allow access to the landing page
   const VALID_CODES = ["9768", "1234", "5678"];
 
+  // Check if already has valid access on mount
+  useEffect(() => {
+    const hasValidAccess = localStorage.getItem("validAccessCode");
+    if (hasValidAccess) {
+      navigate("/landing", { replace: true });
+    }
+  }, [navigate]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -28,7 +36,7 @@ const CodeEntry: React.FC = () => {
       toast.success("Access granted! Welcome to the system.", {
         description: "Redirecting to the main interface..."
       });
-      navigate("/landing");
+      navigate("/landing", { replace: true });
     } else {
       toast.error("Invalid access code", {
         description: "Please check your code and try again."
@@ -139,3 +147,4 @@ const CodeEntry: React.FC = () => {
 };
 
 export default CodeEntry;
+
