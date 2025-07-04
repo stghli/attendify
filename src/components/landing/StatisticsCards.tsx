@@ -39,7 +39,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({
             <div className="text-2xl sm:text-3xl font-bold text-gray-900">{totalAttendees}</div>
             <div className="text-xs sm:text-sm text-gray-600 font-medium">Total Attendees</div>
             <div className="text-xs text-gray-500 mt-1">
-              {teachers} Teachers • {students} Students
+              {teachersList.length} Teachers • {studentsList.length} Students
             </div>
           </CardContent>
         </Card>
