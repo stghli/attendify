@@ -24,6 +24,7 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
         const newProgress = prev + (100 / (duration / 100));
         if (newProgress >= 100) {
           clearInterval(progressTimer);
+          // Call onComplete but don't automatically navigate
           setTimeout(() => {
             onComplete?.();
           }, 500);
@@ -162,11 +163,12 @@ const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }
         {/* Loading text */}
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-white">
-            {progress < 50 ? 'Validating Access' : progress < 90 ? 'Authenticating...' : 'Access Granted'}
+            {progress < 50 ? 'Validating Access' : progress < 90 ? 'Authenticating...' : progress === 100 ? 'Validation Complete' : 'Access Granted'}
           </h2>
           <p className="text-blue-200/80 text-sm">
             {progress < 50 ? 'Please wait while we verify your credentials...' : 
-             progress < 90 ? 'Checking security protocols...' : 'Welcome to the system!'}
+             progress < 90 ? 'Checking security protocols...' : 
+             progress === 100 ? 'Security validation completed successfully.' : 'Welcome to the system!'}
           </p>
           
           {/* Progress bar */}

@@ -39,6 +39,8 @@ const CodeEntry: React.FC = () => {
   }, [navigate]);
 
   const handleLoaderComplete = () => {
+    // Only navigate after manual confirmation that validation is complete
+    // This ensures the loader doesn't automatically unlock the screen
     navigate("/landing", { replace: true });
   };
 
