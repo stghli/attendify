@@ -18,20 +18,62 @@ const Landing: React.FC = () => {
   const { students } = useStudents();
   const { teachers } = useTeachers();
   const { attendanceLogs } = useAttendance();
+  const [isSecurityValidated, setIsSecurityValidated] = useState(false);
 
-  // Check for valid access code on mount - redirect immediately if not found
+  // Enhanced security validation - runs continuously
   useEffect(() => {
-    const hasValidAccess = localStorage.getItem("validAccessCode");
-    if (!hasValidAccess) {
-      navigate("/code-entry", { replace: true });
-      return;
+    const validateSecurity = () => {
+      const hasValidAccess = localStorage.getItem("validAccessCode");
+      const accessTime = localStorage.getItem("accessTime");
+      const currentTime = Date.now();
+      
+      // Check if access code exists and is not expired (8 hours)
+      if (!hasValidAccess || !accessTime || (currentTime - parseInt(accessTime)) > 8 * 60 * 60 * 1000) {
+        // Clear expired access
+        localStorage.removeItem("validAccessCode");
+        localStorage.removeItem("accessTime");
+        navigate("/code-entry", { replace: true });
+        return false;
+      }
+      return true;
+    };
+
+    // Initial validation
+    if (validateSecurity()) {
+      setIsSecurityValidated(true);
     }
+
+    // Continuous security check every 30 seconds
+    const securityInterval = setInterval(() => {
+      if (!validateSecurity()) {
+        setIsSecurityValidated(false);
+      }
+    }, 30000);
+
+    // Check on window focus/blur events for additional security
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        validateSecurity();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(securityInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [navigate]);
 
-  // Don't render anything if no valid access - prevents flash of content
-  const hasValidAccess = localStorage.getItem("validAccessCode");
-  if (!hasValidAccess) {
-    return null;
+  // Don't render anything if security is not validated
+  if (!isSecurityValidated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Validating Access...</h1>
+        </div>
+      </div>
+    );
   }
 
   // Calculate totals

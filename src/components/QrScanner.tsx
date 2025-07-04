@@ -1,6 +1,8 @@
 
+
 import React, { useState, useEffect } from "react";
-import { useData } from "@/context/DataContext";
+import { useStudents } from "@/context/students/StudentsContext";
+import { useTeachers } from "@/context/teachers/TeachersContext";
 import { useAttendance } from "@/context/attendance/AttendanceContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -10,7 +12,8 @@ import { ScanHistoryItem } from "./qr-scanner/types";
 import { Clock, AlertTriangle } from "lucide-react";
 
 const QrScanner: React.FC = () => {
-  const { students, teachers } = useData();
+  const { students } = useStudents();
+  const { teachers } = useTeachers();
   const { recordAttendance, getTimeStatus } = useAttendance();
   const [scanning, setScanning] = useState(true);
   const [lastScan, setLastScan] = useState<ScanHistoryItem | null>(null);
@@ -21,31 +24,114 @@ const QrScanner: React.FC = () => {
     if (result && result.text) {
       const qrData = result.text;
       console.log("QR Data scanned:", qrData);
-      console.log("Available students:", students);
-      console.log("Available teachers:", teachers);
+      console.log("Syncing with admin data - Students:", students.length, "Teachers:", teachers.length);
 
       try {
-        // Process QR code data (format: {role}-{userId}-qr or just {role}-{userId})
-        const parts = qrData.split('-');
-        if (parts.length < 2) throw new Error("Invalid QR code format");
-        
-        const role = parts[0];
-        const userId = parts[1];
-        console.log("Looking for user with role:", role, "and ID:", userId);
+        // Enhanced QR code processing to sync with admin data
+        let userId, role, user;
 
-        // Find the user
-        let user;
+        // Try different QR code formats
+        if (qrData.includes('-')) {
+          // Format like "student-1-qr" or "teacher-1-qr"
+          const parts = qrData.split('-');
+          if (parts.length >= 2) {
+            role = parts[0];
+            userId = parts[1];
+          }
+        } else {
+          // Try to parse as JSON or other formats
+          try {
+            const parsedData = JSON.parse(qrData);
+            role = parsedData.role;
+            userId = parsedData.id || parsedData.userId;
+          } catch {
+            // Simple format - try to extract from plain text
+            if (qrData.includes('student')) {
+              role = 'student';
+              userId = qrData.replace(/[^0-9]/g, '');
+            } else if (qrData.includes('teacher')) {
+              role = 'teacher';
+              userId = qrData.replace(/[^0-9]/g, '');
+            }
+          }
+        }
+
+        console.log("Extracted - Role:", role, "User ID:", userId);
+
+        // Search in admin data (students and teachers contexts)
         if (role === "student") {
-          user = students.find(s => s.id === userId);
-          console.log("Found student:", user);
+          // Search by ID first, then by QR code, then by name similarity
+          user = students.find(s => 
+            s.id === userId || 
+            s.id === `student-${userId}` ||
+            s.qrCode === qrData ||
+            s.name.toLowerCase().includes(qrData.toLowerCase())
+          );
+          
+          if (!user && userId) {
+            // Try to find by partial ID match
+            user = students.find(s => s.id.includes(userId));
+          }
+          
+          console.log("Found student in admin data:", user);
         } else if (role === "teacher") {
-          user = teachers.find(t => t.id === userId);
-          console.log("Found teacher:", user);
+          // Search by ID first, then by QR code, then by name similarity
+          user = teachers.find(t => 
+            t.id === userId || 
+            t.id === `teacher-${userId}` ||
+            t.qrCode === qrData ||
+            t.name.toLowerCase().includes(qrData.toLowerCase())
+          );
+          
+          if (!user && userId) {
+            // Try to find by partial ID match
+            user = teachers.find(t => t.id.includes(userId));
+          }
+          
+          console.log("Found teacher in admin data:", user);
+        }
+
+        // If still not found, try broader search across both collections
+        if (!user) {
+          console.log("Trying broader search across all users...");
+          
+          // Search students by any matching criteria
+          user = students.find(s => 
+            qrData.includes(s.id) || 
+            s.qrCode?.includes(qrData) ||
+            qrData.includes(s.name.toLowerCase()) ||
+            s.name.toLowerCase().includes(qrData.toLowerCase())
+          );
+          
+          if (user) {
+            role = "student";
+            userId = user.id;
+            console.log("Found student via broader search:", user);
+          } else {
+            // Search teachers by any matching criteria
+            user = teachers.find(t => 
+              qrData.includes(t.id) || 
+              t.qrCode?.includes(qrData) ||
+              qrData.includes(t.name.toLowerCase()) ||
+              t.name.toLowerCase().includes(qrData.toLowerCase())
+            );
+            
+            if (user) {
+              role = "teacher";
+              userId = user.id;
+              console.log("Found teacher via broader search:", user);
+            }
+          }
         }
 
         if (!user) {
-          console.log("User not found. Available users:", { students, teachers });
-          toast.error("User not found in the system");
+          console.log("User not found in admin data. QR Data:", qrData);
+          console.log("Available students:", students.map(s => ({ id: s.id, name: s.name, qrCode: s.qrCode })));
+          console.log("Available teachers:", teachers.map(t => ({ id: t.id, name: t.name, qrCode: t.qrCode })));
+          
+          toast.error("User not found in admin database", {
+            description: "Please ensure the QR code is registered in the system"
+          });
           return;
         }
 
@@ -60,12 +146,13 @@ const QrScanner: React.FC = () => {
           return;
         }
 
-        // Record attendance
-        recordAttendance(userId, role as "student" | "teacher", action);
+        // Record attendance with synced admin data
+        console.log("Recording attendance for:", { userId: user.id, role, action });
+        recordAttendance(user.id, role as "student" | "teacher", action);
 
         // Create new scan history item
         const newScanItem: ScanHistoryItem = {
-          userId,
+          userId: user.id,
           name: user.name,
           role: role as "student" | "teacher",
           action,
@@ -85,7 +172,9 @@ const QrScanner: React.FC = () => {
 
       } catch (error) {
         console.error("Error processing QR code:", error);
-        toast.error("Invalid QR code. Please try again.");
+        toast.error("Invalid QR code format. Please try again.", {
+          description: "Ensure the QR code is generated by the admin system"
+        });
       }
     }
   };
@@ -124,6 +213,9 @@ const QrScanner: React.FC = () => {
                 <div className="text-xl">{lastScan.name}</div>
                 <div className="text-sm text-white/70 capitalize">{lastScan.role}</div>
                 <div className="text-xs text-white/60">
+                  Synced with Admin Database ✓
+                </div>
+                <div className="text-xs text-white/60">
                   {lastScan.timestamp.toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit'
@@ -145,3 +237,4 @@ const QrScanner: React.FC = () => {
 };
 
 export default QrScanner;
+

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,8 +22,16 @@ const CodeEntry: React.FC = () => {
   // Check if already has valid access on mount
   useEffect(() => {
     const hasValidAccess = localStorage.getItem("validAccessCode");
-    if (hasValidAccess) {
+    const accessTime = localStorage.getItem("accessTime");
+    const currentTime = Date.now();
+    
+    // Check if access is valid and not expired (8 hours)
+    if (hasValidAccess && accessTime && (currentTime - parseInt(accessTime)) < 8 * 60 * 60 * 1000) {
       navigate("/landing", { replace: true });
+    } else {
+      // Clear any expired access
+      localStorage.removeItem("validAccessCode");
+      localStorage.removeItem("accessTime");
     }
   }, [navigate]);
 
@@ -30,8 +39,9 @@ const CodeEntry: React.FC = () => {
     e.preventDefault();
     
     if (VALID_CODES.includes(code)) {
-      // Set access flag in localStorage
+      // Set access flag and time in localStorage
       localStorage.setItem("validAccessCode", "true");
+      localStorage.setItem("accessTime", Date.now().toString());
       
       toast.success("Access granted! Welcome to the system.", {
         description: "Redirecting to the main interface..."
