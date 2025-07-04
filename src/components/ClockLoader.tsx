@@ -2,8 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 
-const ClockLoader: React.FC = () => {
+interface ClockLoaderProps {
+  onComplete?: () => void;
+  duration?: number;
+}
+
+const ClockLoader: React.FC<ClockLoaderProps> = ({ onComplete, duration = 3000 }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -11,6 +17,24 @@ const ClockLoader: React.FC = () => {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const progressTimer = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + (100 / (duration / 100));
+        if (newProgress >= 100) {
+          clearInterval(progressTimer);
+          setTimeout(() => {
+            onComplete?.();
+          }, 500);
+          return 100;
+        }
+        return newProgress;
+      });
+    }, 100);
+
+    return () => clearInterval(progressTimer);
+  }, [duration, onComplete]);
 
   // Get current time components
   const hours = currentTime.getHours();
@@ -106,6 +130,31 @@ const ClockLoader: React.FC = () => {
             <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-blue-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 shadow-lg"></div>
           </div>
           
+          {/* Progress ring */}
+          <div className="absolute inset-0 rounded-full">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                stroke="rgba(59, 130, 246, 0.2)"
+                strokeWidth="2"
+                fill="transparent"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                stroke="rgb(59, 130, 246)"
+                strokeWidth="2"
+                fill="transparent"
+                strokeDasharray={`${2 * Math.PI * 45}`}
+                strokeDashoffset={`${2 * Math.PI * 45 * (1 - progress / 100)}`}
+                className="transition-all duration-300 ease-out"
+              />
+            </svg>
+          </div>
+          
           {/* Outer glow */}
           <div className="absolute inset-0 rounded-full bg-blue-400/20 blur-xl animate-pulse"></div>
         </div>
@@ -113,21 +162,23 @@ const ClockLoader: React.FC = () => {
         {/* Loading text */}
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-white">
-            Validating Access
+            {progress < 50 ? 'Validating Access' : progress < 90 ? 'Authenticating...' : 'Access Granted'}
           </h2>
           <p className="text-blue-200/80 text-sm">
-            Please wait while we verify your credentials...
+            {progress < 50 ? 'Please wait while we verify your credentials...' : 
+             progress < 90 ? 'Checking security protocols...' : 'Welcome to the system!'}
           </p>
           
-          {/* Animated dots */}
-          <div className="flex justify-center space-x-1">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              />
-            ))}
+          {/* Progress bar */}
+          <div className="w-48 mx-auto bg-slate-700/50 rounded-full h-2 overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          
+          <div className="text-blue-300/60 text-xs font-mono">
+            {Math.round(progress)}% Complete
           </div>
         </div>
 

@@ -9,11 +9,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ShieldCheck, Lock, Key, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import AnimatedClockBackground from "@/components/AnimatedClockBackground";
+import ClockLoader from "@/components/ClockLoader";
 
 const CodeEntry: React.FC = () => {
   const [code, setCode] = useState("");
   const [trustDevice, setTrustDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const navigate = useNavigate();
 
   // Valid codes that allow access to the landing page
@@ -27,13 +29,17 @@ const CodeEntry: React.FC = () => {
     
     // Check if access is valid and not expired (8 hours)
     if (hasValidAccess && accessTime && (currentTime - parseInt(accessTime)) < 8 * 60 * 60 * 1000) {
-      navigate("/landing", { replace: true });
+      setShowLoader(true);
     } else {
       // Clear any expired access
       localStorage.removeItem("validAccessCode");
       localStorage.removeItem("accessTime");
     }
   }, [navigate]);
+
+  const handleLoaderComplete = () => {
+    navigate("/landing", { replace: true });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,9 +50,6 @@ const CodeEntry: React.FC = () => {
     }
 
     setIsLoading(true);
-    
-    // Add a slight delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 1000));
     
     if (VALID_CODES.includes(code)) {
       // Set access flag and time in localStorage
@@ -63,10 +66,10 @@ const CodeEntry: React.FC = () => {
         icon: <Sparkles className="h-4 w-4" />
       });
       
-      // Smooth transition delay
+      // Show loader and then navigate
       setTimeout(() => {
-        navigate("/landing", { replace: true });
-      }, 1500);
+        setShowLoader(true);
+      }, 1000);
     } else {
       toast.error("Invalid access code", {
         description: "Please check your code and try again.",
@@ -77,45 +80,50 @@ const CodeEntry: React.FC = () => {
     }
   };
 
+  // Show loader if needed
+  if (showLoader) {
+    return <ClockLoader onComplete={handleLoaderComplete} duration={3000} />;
+  }
+
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
       <AnimatedClockBackground />
       
-      <div className="relative z-10 w-full max-w-sm">
-        <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur-3xl overflow-hidden rounded-2xl border border-border/20 relative">
+      <div className="relative z-10 w-full max-w-xs">
+        <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur-3xl overflow-hidden rounded-3xl border border-border/20 relative">
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-transparent to-secondary/3 rounded-2xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-3xl"></div>
           
-          <CardContent className="p-6 relative z-10">
+          <CardContent className="p-5 relative z-10">
             {/* Compact Header */}
-            <div className="text-center mb-6">
-              <div className="relative inline-block mb-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-primary via-primary/90 to-secondary rounded-2xl flex items-center justify-center mx-auto shadow-xl relative group">
+            <div className="text-center mb-5">
+              <div className="relative inline-block mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary via-primary/90 to-secondary rounded-2xl flex items-center justify-center mx-auto shadow-xl relative group">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-secondary rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300 animate-pulse"></div>
-                  <Key className="h-7 w-7 text-primary-foreground relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                  <Key className="h-6 w-6 text-primary-foreground relative z-10 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 
                 {/* Floating sparkles */}
-                <div className="absolute -top-1 -right-1">
-                  <Sparkles className="h-3 w-3 text-primary/60 animate-pulse" />
+                <div className="absolute -top-0.5 -right-0.5">
+                  <Sparkles className="h-2 w-2 text-primary/60 animate-pulse" />
                 </div>
-                <div className="absolute -bottom-0.5 -left-0.5">
-                  <Sparkles className="h-2 w-2 text-secondary/60 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                <div className="absolute -bottom-0 -left-0">
+                  <Sparkles className="h-1.5 w-1.5 text-secondary/60 animate-pulse" style={{ animationDelay: '0.5s' }} />
                 </div>
               </div>
               
-              <h1 className="text-2xl font-bold text-foreground mb-2 tracking-tight">
+              <h1 className="text-xl font-bold text-foreground mb-1 tracking-tight">
                 Access Portal
               </h1>
-              <p className="text-muted-foreground text-sm font-medium">
+              <p className="text-muted-foreground text-xs font-medium">
                 Enter your access code
               </p>
             </div>
 
             {/* Compact OTP Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-3">
-                <Label htmlFor="code" className="text-sm font-semibold text-foreground block text-center">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="code" className="text-xs font-semibold text-foreground block text-center">
                   4-Digit Code
                 </Label>
                 <div className="flex justify-center">
@@ -123,7 +131,7 @@ const CodeEntry: React.FC = () => {
                     maxLength={4}
                     value={code}
                     onChange={(value) => setCode(value)}
-                    className="gap-2"
+                    className="gap-1.5"
                     disabled={isLoading}
                   >
                     <InputOTPGroup>
@@ -131,7 +139,7 @@ const CodeEntry: React.FC = () => {
                         <InputOTPSlot 
                           key={index}
                           index={index} 
-                          className="w-12 h-12 text-lg font-bold bg-background/80 border-2 border-border/40 rounded-xl text-foreground backdrop-blur-sm hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:scale-105 focus:scale-105 shadow-md hover:shadow-lg"
+                          className="w-10 h-10 text-base font-bold bg-background/80 border-2 border-border/40 rounded-lg text-foreground backdrop-blur-sm hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 hover:scale-105 focus:scale-105 shadow-md hover:shadow-lg"
                         />
                       ))}
                     </InputOTPGroup>
@@ -140,15 +148,15 @@ const CodeEntry: React.FC = () => {
               </div>
 
               {/* Compact checkbox */}
-              <div className="flex items-center justify-center space-x-2 py-1">
+              <div className="flex items-center justify-center space-x-2">
                 <Checkbox
                   id="trust"
                   checked={trustDevice}
                   onCheckedChange={(checked) => setTrustDevice(checked as boolean)}
-                  className="border-2 border-border/40 bg-background/80 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200 w-4 h-4"
+                  className="border-2 border-border/40 bg-background/80 data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-md backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200 w-3.5 h-3.5"
                   disabled={isLoading}
                 />
-                <Label htmlFor="trust" className="text-sm text-muted-foreground cursor-pointer font-medium hover:text-foreground transition-colors duration-200">
+                <Label htmlFor="trust" className="text-xs text-muted-foreground cursor-pointer font-medium hover:text-foreground transition-colors duration-200">
                   Remember for 24 hours
                 </Label>
               </div>
@@ -156,29 +164,29 @@ const CodeEntry: React.FC = () => {
               {/* Compact gradient button */}
               <Button 
                 type="submit" 
-                className="w-full h-10 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground font-semibold text-sm rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border-0 relative overflow-hidden group"
+                className="w-full h-9 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground font-semibold text-xs rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border-0 relative overflow-hidden group"
                 disabled={code.length < 4 || isLoading}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 
                 {isLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2"></div>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-primary-foreground mr-2"></div>
                     <span className="relative z-10">Verifying...</span>
                   </>
                 ) : (
                   <>
-                    <Lock className="h-4 w-4 mr-2 relative z-10 group-hover:rotate-12 transition-transform duration-200" />
+                    <Lock className="h-3 w-3 mr-2 relative z-10 group-hover:rotate-12 transition-transform duration-200" />
                     <span className="relative z-10">Access System</span>
                   </>
                 )}
               </Button>
 
               {/* Compact cancel link */}
-              <div className="text-center pt-2">
+              <div className="text-center pt-1">
                 <button
                   type="button"
-                  className="text-muted-foreground hover:text-foreground text-sm font-medium transition-all duration-200 hover:underline underline-offset-2 hover:scale-105 disabled:opacity-50"
+                  className="text-muted-foreground hover:text-foreground text-xs font-medium transition-all duration-200 hover:underline underline-offset-2 hover:scale-105 disabled:opacity-50"
                   onClick={() => navigate("/")}
                   disabled={isLoading}
                 >
