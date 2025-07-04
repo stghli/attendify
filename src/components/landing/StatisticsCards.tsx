@@ -69,9 +69,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({
       {/* Detailed Lists */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {/* Teachers List */}
-        <Card className="shadow-md border-0 bg-blue-50">
-          
-        </Card>
+        
 
         {/* Students List */}
         <Card className="shadow-md border-0 bg-purple-50">
