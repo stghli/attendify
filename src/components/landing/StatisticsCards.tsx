@@ -1,10 +1,8 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, UserCheck, UserX, GraduationCap, User } from "lucide-react";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useTeachers } from "@/context/teachers/TeachersContext";
-
 interface StatisticsCardsProps {
   totalAttendees: number;
   teachers: number;
@@ -15,7 +13,6 @@ interface StatisticsCardsProps {
   notCheckedInTeachers: number;
   notCheckedInStudents: number;
 }
-
 const StatisticsCards: React.FC<StatisticsCardsProps> = ({
   totalAttendees,
   teachers,
@@ -26,11 +23,13 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({
   notCheckedInTeachers,
   notCheckedInStudents
 }) => {
-  const { teachers: teachersList } = useTeachers();
-  const { students: studentsList } = useStudents();
-
-  return (
-    <div className="space-y-4">
+  const {
+    teachers: teachersList
+  } = useTeachers();
+  const {
+    students: studentsList
+  } = useStudents();
+  return <div className="space-y-4">
       {/* Main Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <Card className="shadow-md border-0 bg-gray-100">
@@ -71,22 +70,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {/* Teachers List */}
         <Card className="shadow-md border-0 bg-blue-50">
-          <CardContent className="p-4">
-            <div className="flex items-center mb-3">
-              <GraduationCap className="h-5 w-5 text-blue-600 mr-2" />
-              <h3 className="text-sm font-semibold text-blue-800">Teachers ({teachersList.length})</h3>
-            </div>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {teachersList.map((teacher) => (
-                <div key={teacher.id} className="flex items-center justify-between text-xs">
-                  <span className="text-blue-700 font-medium truncate">{teacher.name}</span>
-                  <span className="text-blue-600 text-xs bg-blue-100 px-2 py-1 rounded">
-                    {teacher.assignedClass}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
+          
         </Card>
 
         {/* Students List */}
@@ -97,20 +81,16 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({
               <h3 className="text-sm font-semibold text-purple-800">Students ({studentsList.length})</h3>
             </div>
             <div className="space-y-2 max-h-32 overflow-y-auto">
-              {studentsList.map((student) => (
-                <div key={student.id} className="flex items-center justify-between text-xs">
+              {studentsList.map(student => <div key={student.id} className="flex items-center justify-between text-xs">
                   <span className="text-purple-700 font-medium truncate">{student.name}</span>
                   <span className="text-purple-600 text-xs bg-purple-100 px-2 py-1 rounded">
                     {student.class}
                   </span>
-                </div>
-              ))}
+                </div>)}
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default StatisticsCards;
