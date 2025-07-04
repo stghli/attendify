@@ -9,13 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ShieldCheck, Lock, Key, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import AnimatedClockBackground from "@/components/AnimatedClockBackground";
-import ClockLoader from "@/components/ClockLoader";
 
 const CodeEntry: React.FC = () => {
   const [code, setCode] = useState("");
   const [trustDevice, setTrustDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
   const navigate = useNavigate();
 
   // Valid codes that allow access to the landing page
@@ -29,7 +27,7 @@ const CodeEntry: React.FC = () => {
     
     // Check if access is valid and not expired (8 hours)
     if (hasValidAccess && accessTime && (currentTime - parseInt(accessTime)) < 8 * 60 * 60 * 1000) {
-      // If they have valid access, go directly to landing without loader
+      // If they have valid access, go directly to landing
       navigate("/landing", { replace: true });
     } else {
       // Clear any expired access
@@ -37,12 +35,6 @@ const CodeEntry: React.FC = () => {
       localStorage.removeItem("accessTime");
     }
   }, [navigate]);
-
-  const handleLoaderComplete = () => {
-    // Only navigate after manual confirmation that validation is complete
-    // This ensures the loader doesn't automatically unlock the screen
-    navigate("/landing", { replace: true });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,10 +61,9 @@ const CodeEntry: React.FC = () => {
         icon: <Sparkles className="h-4 w-4" />
       });
       
-      // Show loader only after successful code entry
+      // Go directly to landing page without loader
       setTimeout(() => {
-        setIsLoading(false);
-        setShowLoader(true);
+        navigate("/landing", { replace: true });
       }, 1000);
     } else {
       toast.error("Invalid access code", {
@@ -83,11 +74,6 @@ const CodeEntry: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-  // Show loader only after valid code entry
-  if (showLoader) {
-    return <ClockLoader onComplete={handleLoaderComplete} duration={3000} />;
-  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden">
