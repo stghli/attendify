@@ -21,7 +21,7 @@ const CodeEntry: React.FC = () => {
   // Valid codes that allow access to the landing page
   const VALID_CODES = ["9768", "1234", "5678"];
 
-  // Check if already has valid access on mount
+  // Check if already has valid access on mount - but don't auto-redirect
   useEffect(() => {
     const hasValidAccess = localStorage.getItem("validAccessCode");
     const accessTime = localStorage.getItem("accessTime");
@@ -29,7 +29,8 @@ const CodeEntry: React.FC = () => {
     
     // Check if access is valid and not expired (8 hours)
     if (hasValidAccess && accessTime && (currentTime - parseInt(accessTime)) < 8 * 60 * 60 * 1000) {
-      setShowLoader(true);
+      // If they have valid access, go directly to landing without loader
+      navigate("/landing", { replace: true });
     } else {
       // Clear any expired access
       localStorage.removeItem("validAccessCode");
@@ -66,8 +67,9 @@ const CodeEntry: React.FC = () => {
         icon: <Sparkles className="h-4 w-4" />
       });
       
-      // Show loader and then navigate
+      // Show loader only after successful code entry
       setTimeout(() => {
+        setIsLoading(false);
         setShowLoader(true);
       }, 1000);
     } else {
@@ -80,7 +82,7 @@ const CodeEntry: React.FC = () => {
     }
   };
 
-  // Show loader if needed
+  // Show loader only after valid code entry
   if (showLoader) {
     return <ClockLoader onComplete={handleLoaderComplete} duration={3000} />;
   }
