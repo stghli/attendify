@@ -73,20 +73,7 @@ const StatisticsCards: React.FC<StatisticsCardsProps> = ({
 
         {/* Students List */}
         <Card className="shadow-md border-0 bg-purple-50">
-          <CardContent className="p-4">
-            <div className="flex items-center mb-3">
-              <User className="h-5 w-5 text-purple-600 mr-2" />
-              <h3 className="text-sm font-semibold text-purple-800">Students ({studentsList.length})</h3>
-            </div>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {studentsList.map(student => <div key={student.id} className="flex items-center justify-between text-xs">
-                  <span className="text-purple-700 font-medium truncate">{student.name}</span>
-                  <span className="text-purple-600 text-xs bg-purple-100 px-2 py-1 rounded">
-                    {student.class}
-                  </span>
-                </div>)}
-            </div>
-          </CardContent>
+          
         </Card>
       </div>
     </div>;
