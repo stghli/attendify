@@ -10,6 +10,16 @@ export interface User {
   createdAt: string;
 }
 
+// Class type
+export interface Class {
+  id: string;
+  name: string;
+  description?: string;
+  teacherId?: string;
+  studentIds: string[];
+  createdAt: string;
+}
+
 // Admin user type
 export interface Admin extends User {
   email: string;

@@ -12,6 +12,7 @@ import {
   FileText,
   Settings,
   QrCode,
+  BookOpen,
   Menu,
   X,
   ChevronRight
@@ -82,6 +83,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ user, isMobileMenuOpen, setIsMo
     ...(user.role === "admin" ? [
       { to: "/app/students", icon: GraduationCap, label: "Students", roles: ["admin"] },
       { to: "/app/teachers", icon: Users, label: "Teachers", roles: ["admin"] },
+      { to: "/app/classes", icon: BookOpen, label: "Classes", roles: ["admin"] },
       { to: "/app/reports", icon: FileText, label: "Reports", roles: ["admin"] },
       { to: "/app/settings", icon: Settings, label: "Settings", roles: ["admin"] },
     ] : []),
