@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Logo from "./header/Logo";
@@ -16,37 +17,44 @@ const Header: React.FC = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-white/50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-3 lg:px-4">
-        <div className="flex h-12 items-center justify-between">
-          {/* Logo */}
-          <Logo />
+    <>
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-white/50 shadow-lg">
+        <div className="max-w-7xl mx-auto px-3 lg:px-4">
+          <div className="flex h-14 items-center justify-between">
+            {/* Logo */}
+            <Logo />
 
-          {/* Desktop Navigation */}
-          <Navigation user={user} />
+            {/* Desktop Navigation */}
+            <Navigation user={user} />
 
-          {/* Search Bar */}
-          <SearchBar />
+            {/* Search Bar - Hidden on smaller screens */}
+            <div className="hidden md:flex">
+              <SearchBar />
+            </div>
 
-          {/* Right Section */}
-          <div className="flex items-center gap-2">
-            <UserActions user={user} logout={logout} />
-            <MobileMenu 
-              user={user} 
-              isMobileMenuOpen={isMobileMenuOpen} 
-              setIsMobileMenuOpen={setIsMobileMenuOpen} 
-            />
+            {/* Right Section */}
+            <div className="flex items-center gap-2">
+              <div className="hidden lg:flex">
+                <UserActions user={user} logout={logout} />
+              </div>
+              <MobileMenu 
+                user={user} 
+                isMobileMenuOpen={isMobileMenuOpen} 
+                setIsMobileMenuOpen={setIsMobileMenuOpen} 
+              />
+            </div>
           </div>
         </div>
-
-        {/* Mobile Navigation Menu Content */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden pb-3">
-            {/* This content is handled by MobileMenu component */}
-          </div>
-        )}
-      </div>
-    </header>
+      </header>
+      
+      {/* Overlay backdrop for mobile menu */}
+      {isMobileMenuOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 z-30 bg-black/10 backdrop-blur-[2px]"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+    </>
   );
 };
 
