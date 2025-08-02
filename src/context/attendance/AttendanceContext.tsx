@@ -224,14 +224,37 @@ export const AttendanceProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const student = user;
       // Make sure we're only accessing parentPhone for students
       if ('parentPhone' in student) {
-        const actionText = action === "time-in" ? "arrived at" : "left";
-        const timeString = new Date().toLocaleTimeString([], {
+        const now = new Date();
+        const dateString = now.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        const timeString = now.toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit'
         });
         
-        const lateText = isLate ? (action === "time-in" ? " (Late Arrival)" : " (Late Pickup)") : "";
-        const message = `${student.name} has ${actionText} school at ${timeString}${lateText}. ${scripture.verse} - ${scripture.reference}`;
+        let message = "";
+        
+        if (action === "time-in") {
+          message = `Dear Parent/Guardian,
+
+This is to inform you that your child, ${student.name}, from ${student.class || 'N/A'}, has checked in at Honeyberry International School on ${dateString} at ${timeString}.
+
+We're excited to have them present and ready to learn today.
+
+— Honeyberry International School`;
+        } else {
+          message = `Dear Parent/Guardian,
+
+Your child, ${student.name}, from ${student.class || 'N/A'}, has checked out of Honeyberry International School on ${dateString} at ${timeString}.
+
+Thank you for entrusting us with your child's education and safety. We look forward to seeing them tomorrow.
+
+— Honeyberry International School`;
+        }
         
         // Send SMS via SmsContext
         addSmsLog({
