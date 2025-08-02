@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
 
@@ -29,13 +29,10 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <DataProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <Routes>
               {/* Public routes that don't require authentication */}
               <Route path="/public" element={<PublicLayout />}>
                 <Route path="qr-scanner" element={<PublicQrScannerPage />} />
@@ -62,11 +59,8 @@ const App = () => (
                 
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </TooltipProvider>
-        </DataProvider>
-      </AuthProvider>
-    </BrowserRouter>
+      </Routes>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
