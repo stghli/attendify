@@ -18,6 +18,7 @@ import QrScannerPage from "@/pages/QrScannerPage";
 import PublicQrScannerPage from "@/pages/PublicQrScannerPage";
 import StudentsPage from "@/pages/StudentsPage";
 import TeachersPage from "@/pages/TeachersPage";
+import ClassesPage from "@/pages/ClassesPage";
 import AttendancePage from "@/pages/AttendancePage";
 import MyStudentsPage from "@/pages/MyStudentsPage";
 import ReportsPage from "@/pages/ReportsPage";
@@ -52,6 +53,7 @@ const App = () => (
                 <Route path="qr-scanner" element={<QrScannerPage />} />
                 <Route path="students" element={<StudentsPage />} />
                 <Route path="teachers" element={<TeachersPage />} />
+                <Route path="classes" element={<ClassesPage />} />
                 <Route path="attendance" element={<AttendancePage />} />
                 <Route path="my-students" element={<MyStudentsPage />} />
                 <Route path="reports" element={<ReportsPage />} />
