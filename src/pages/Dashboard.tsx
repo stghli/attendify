@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useData } from "@/context/DataContext";
 import { User, Users, Calendar, QrCode, Clock, TrendingUp, Activity, Bell, BarChart } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,9 +18,8 @@ import QuickActions from "@/components/dashboard/QuickActions";
 import LandingPageControl from "@/components/dashboard/LandingPageControl";
 
 const Dashboard: React.FC = () => {
-  const { authState } = useAuth();
+  const { profile: user } = useUserProfile();
   const { students, teachers, attendanceLogs, smsLogs } = useData();
-  const user = authState.user;
   const [activeTab, setActiveTab] = useState("overview");
 
   const todayLogs = attendanceLogs.filter(

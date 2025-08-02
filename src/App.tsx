@@ -3,16 +3,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
 
 import Layout from "@/components/layout/Layout";
 import PublicLayout from "@/components/layout/PublicLayout";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
 import CodeEntry from "@/pages/CodeEntry";
 import Landing from "@/pages/Landing";
-import Login from "@/pages/Login";
+import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import QrScannerPage from "@/pages/QrScannerPage";
 import PublicQrScannerPage from "@/pages/PublicQrScannerPage";
@@ -30,9 +31,12 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <Routes>
+      <BrowserRouter>
+        <AuthProvider>
+          <DataProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
               {/* Public routes that don't require authentication */}
               <Route path="/public" element={<PublicLayout />}>
                 <Route path="qr-scanner" element={<PublicQrScannerPage />} />
@@ -42,10 +46,14 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/code-entry" element={<CodeEntry />} />
               <Route path="/landing" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/auth" element={<Auth />} />
               
               {/* Protected routes with layout */}
-              <Route path="/app" element={<Layout />}>
+              <Route path="/app" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="qr-scanner" element={<QrScannerPage />} />
                 <Route path="students" element={<StudentsPage />} />
@@ -59,7 +67,10 @@ const App = () => (
                 
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
-      </Routes>
+            </Routes>
+          </DataProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

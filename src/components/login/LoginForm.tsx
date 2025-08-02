@@ -23,9 +23,12 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
   const [isLoading, setIsLoading] = useState(false);
-  
-  const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect to new auth page since this login form is now deprecated
+  React.useEffect(() => {
+    navigate('/auth');
+  }, [navigate]);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -36,24 +39,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ animationActive }) => {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    if (!data.email || !data.password) {
-      toast.error("Please enter both email and password");
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      const success = await login(data.email, data.password);
-      if (success) {
-        toast.success("Login successful!");
-        navigate("/app/dashboard");
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    // This form is deprecated, redirect to new auth page
+    navigate('/auth');
   };
 
   return (

@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import Logo from "./header/Logo";
 import Navigation from "./header/Navigation";
 import SearchBar from "./header/SearchBar";
@@ -8,11 +9,11 @@ import UserActions from "./header/UserActions";
 import MobileMenu from "./header/MobileMenu";
 
 const Header: React.FC = () => {
-  const { authState, logout } = useAuth();
-  const { user } = authState;
+  const { user, signOut } = useAuth();
+  const { profile } = useUserProfile();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  if (!user) {
+  if (!user || !profile) {
     return null;
   }
 
@@ -25,7 +26,7 @@ const Header: React.FC = () => {
             <Logo />
 
             {/* Desktop Navigation */}
-            <Navigation user={user} />
+            <Navigation user={profile} />
 
             {/* Search Bar - Hidden on smaller screens */}
             <div className="hidden md:flex">
@@ -35,10 +36,10 @@ const Header: React.FC = () => {
             {/* Right Section */}
             <div className="flex items-center gap-2">
               <div className="hidden lg:flex">
-                <UserActions user={user} logout={logout} />
+                <UserActions user={profile} logout={signOut} />
               </div>
               <MobileMenu 
-                user={user} 
+                user={profile} 
                 isMobileMenuOpen={isMobileMenuOpen} 
                 setIsMobileMenuOpen={setIsMobileMenuOpen} 
               />

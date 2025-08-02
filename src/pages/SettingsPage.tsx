@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useData } from "@/context/DataContext";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -78,14 +79,14 @@ const userFormSchema = z.object({
 type UserFormValues = z.infer<typeof userFormSchema>;
 
 const SettingsPage: React.FC = () => {
-  const { authState } = useAuth();
+  const { profile: user } = useUserProfile();
   const { toast } = useToast();
   const { users = [], addUser, deleteUser } = useData();
   const [activeTab, setActiveTab] = useState("users");
   const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false);
   
   // Only admins can access this page
-  if (authState.user?.role !== "admin") {
+  if (user?.role !== "admin") {
     return (
       <div className="flex items-center justify-center h-[80vh] flex-col">
         <Shield className="h-16 w-16 text-muted-foreground mb-4" />

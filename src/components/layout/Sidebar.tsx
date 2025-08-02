@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -24,8 +25,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, setIsMobileOpen }) => {
-  const { authState, logout } = useAuth();
-  const { user } = authState;
+  const { signOut } = useAuth();
+  const { profile: user } = useUserProfile();
 
   const closeMobileSidebar = () => {
     setIsMobileOpen(false);
@@ -125,7 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, setIsMobileOpen }) => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={logout}
+              onClick={signOut}
               className="hover:bg-sidebar-accent/40 hover:text-destructive"
             >
               <LogOut className="h-4 w-4 text-sidebar-foreground" />

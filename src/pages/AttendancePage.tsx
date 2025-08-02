@@ -1,15 +1,15 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useData } from "@/context/DataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 const AttendancePage: React.FC = () => {
-  const { authState } = useAuth();
+  const { profile: user } = useUserProfile();
   const { attendanceLogs } = useData();
-  const user = authState.user;
 
   const [dateFilter, setDateFilter] = useState<string>("all");
 

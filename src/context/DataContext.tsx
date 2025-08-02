@@ -7,7 +7,6 @@ import sampleStudents from "@/data/sampleStudents";
 import sampleTeachers from "@/data/sampleTeachers";
 import sampleAttendanceLogs from "@/data/sampleAttendanceLogs";
 import sampleSmsLogs from "@/data/sampleSmsLogs";
-import { SAMPLE_USERS } from "@/context/AuthContext";
 
 // Define the data context type
 interface DataContextType {
@@ -55,7 +54,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [teachers, setTeachers] = useState<Teacher[]>(sampleTeachers);
   const [attendanceLogs, setAttendanceLogs] = useState<AttendanceLog[]>(sampleAttendanceLogs);
   const [smsLogs, setSmsLogs] = useState<SMSLog[]>(sampleSmsLogs);
-  const [users, setUsers] = useState<any[]>(SAMPLE_USERS);
+  const [users, setUsers] = useState<any[]>([]);
 
   // Student CRUD operations
   const addStudent = (student: Omit<Student, "id" | "qrCode" | "createdAt">) => {

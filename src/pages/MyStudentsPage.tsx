@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useData } from "@/context/DataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Calendar as CalendarIcon } from "lucide-react";
 
 const MyStudentsPage: React.FC = () => {
-  const { authState } = useAuth();
+  const { profile: user } = useUserProfile();
   const { getStudentsByTeacher, attendanceLogs } = useData();
-  const user = authState.user;
 
   const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
   const [dateFilter, setDateFilter] = useState<string>("today");

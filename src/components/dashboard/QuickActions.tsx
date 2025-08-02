@@ -8,6 +8,7 @@ import { useAttendance } from "@/context/attendance/AttendanceContext";
 import { useSmsNotifications } from "@/context/sms/SmsContext";
 import { useStudents } from "@/context/students/StudentsContext";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 interface QuickActionsProps {
   userRole: string;
@@ -19,7 +20,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
   const { recordAttendance } = useAttendance();
   const { addSmsLog } = useSmsNotifications();
   const { students } = useStudents();
-  const { authState } = useAuth();
+  const { profile: user } = useUserProfile();
 
   const handleQrScan = () => {
     navigate('/app/qr-scanner');
@@ -59,7 +60,6 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
 
   const handleMarkPresent = () => {
     // For teachers to mark their students present
-    const user = authState.user;
     if (!user || user.role !== 'teacher') return;
 
     // This would typically open a dialog to select students to mark present

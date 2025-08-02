@@ -5,19 +5,22 @@ import Header from "@/components/layout/Header";
 import { useAuth } from "@/context/AuthContext";
 
 const Layout: React.FC = () => {
-  const { authState } = useAuth();
-  const { isAuthenticated, isLoading } = authState;
-  const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    // If not loading and not authenticated, redirect to login
-    if (!isLoading && !isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, isLoading, navigate]);
+  // Show loading state while auth is being determined
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // If not authenticated, don't render anything (redirection will happen)
-  if (!isAuthenticated) {
+  // If not authenticated, the ProtectedRoute component will handle redirection
+  if (!user) {
     return null;
   }
 
