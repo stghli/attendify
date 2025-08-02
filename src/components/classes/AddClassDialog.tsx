@@ -59,7 +59,7 @@ export function AddClassDialog() {
     addClass({
       name: values.name,
       description: values.description || undefined,
-      teacherId: values.teacherId || undefined,
+      teacherId: values.teacherId === "unassigned" ? undefined : values.teacherId,
       studentIds: [],
     });
     
@@ -126,7 +126,7 @@ export function AddClassDialog() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">No teacher assigned</SelectItem>
+                      <SelectItem value="unassigned">No teacher assigned</SelectItem>
                       {teachers.map((teacher) => (
                         <SelectItem key={teacher.id} value={teacher.id}>
                           {teacher.name}
