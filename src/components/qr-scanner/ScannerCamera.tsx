@@ -45,7 +45,16 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
             height: { ideal: 640 }
           }}
           scanDelay={500}
-          onResult={onScan}
+          onResult={(result, error) => {
+            if (error) {
+              console.error("QR Scanner error:", error);
+              onError(error);
+              return;
+            }
+            if (result) {
+              onScan(result);
+            }
+          }}
           videoStyle={{ 
             width: '100%', 
             height: '100%', 
@@ -55,6 +64,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
             width: '100%', 
             height: '100%' 
           }}
+          videoId="qr-video"
         />
         
         {cameraReady && (
