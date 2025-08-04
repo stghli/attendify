@@ -24,8 +24,6 @@ const QrCodeModal: React.FC<QrCodeModalProps> = ({
   userName,
   userRole,
 }) => {
-  // For a real QR code, we'd use a format that could be parsed like: userRole-userId-qr
-  const qrValue = `${userRole}-${userId}-qr`;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -40,7 +38,7 @@ const QrCodeModal: React.FC<QrCodeModalProps> = ({
         </DialogHeader>
         <div className="flex justify-center p-4">
           <QrCodeGenerator
-            value={qrValue}
+            userId={userId}
             userName={userName}
             userRole={userRole}
             size={200}

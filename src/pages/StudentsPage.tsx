@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useData } from "@/context/DataContext";
+import { useStudents, useDeleteStudent } from "@/hooks/useStudents";
+import { useTeachers } from "@/hooks/useTeachers";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
@@ -7,7 +8,7 @@ import QrCodeModal from "@/components/QrCodeModal";
 import StudentCard from "@/components/students/StudentCard";
 import { AddStudentDialog } from "@/components/students/AddStudentDialog";
 import ClassFilterTabs from "@/components/students/ClassFilterTabs";
-import { Student } from "@/types";
+import { Student } from "@/hooks/useStudents";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +21,9 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const StudentsPage: React.FC = () => {
-  const { students, teachers, deleteStudent } = useData();
+  const { data: students = [] } = useStudents();
+  const { data: teachers = [] } = useTeachers();
+  const deleteStudent = useDeleteStudent();
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
@@ -77,7 +80,7 @@ const StudentsPage: React.FC = () => {
   
   const confirmDelete = () => {
     if (studentToDelete) {
-      deleteStudent(studentToDelete.id);
+      deleteStudent.mutate(studentToDelete.id);
       setStudentToDelete(null);
     }
   };

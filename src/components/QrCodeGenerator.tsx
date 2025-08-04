@@ -5,20 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Download, Printer } from "lucide-react";
 import { toast } from "sonner";
+import { generateQRCodeData } from "@/utils/qrCode";
 
 interface QrCodeGeneratorProps {
-  value: string;
+  userId: string;
   userName: string;
-  userRole: string;
+  userRole: 'student' | 'teacher';
   size?: number;
 }
 
 const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({ 
-  value, 
+  userId, 
   userName, 
   userRole, 
   size = 200 
 }) => {
+  const qrValue = generateQRCodeData(userId, userRole, userName);
   const handleDownload = () => {
     const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
     if (!canvas) {
@@ -115,7 +117,7 @@ const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({
           <div id="qr-print-area">
             <QRCodeSVG 
               id="qr-canvas"
-              value={value}
+              value={qrValue}
               size={size}
               level="H"
               includeMargin={true}

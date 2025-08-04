@@ -1,8 +1,8 @@
 
 
 import React, { useState } from "react";
-import { useStudents } from "@/context/students/StudentsContext";
-import { useData } from "@/context/DataContext";
+import { useAddStudent } from "@/hooks/useStudents";
+import { useTeachers } from "@/hooks/useTeachers";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,8 +21,8 @@ import { toast } from "sonner";
 
 export const AddStudentDialog = () => {
   const [open, setOpen] = useState(false);
-  const { addStudent } = useStudents();
-  const { teachers } = useData();
+  const addStudent = useAddStudent();
+  const { data: teachers = [] } = useTeachers();
 
   const form = useForm<StudentFormInput>({
     resolver: zodResolver(studentFormSchema),
@@ -43,17 +43,17 @@ export const AddStudentDialog = () => {
       const validatedData = studentFormSchema.parse(data);
       
       const studentData = {
+        user_id: crypto.randomUUID(), // Generate a user_id for now
         name: validatedData.name,
         gender: validatedData.gender,
-        age: validatedData.age, // This is now a number after schema transform
+        age: validatedData.age,
         address: validatedData.address,
-        parentPhone: validatedData.parentPhone,
-        assignedTeacherId: validatedData.assignedTeacherId,
+        parent_phone: validatedData.parentPhone,
         class: validatedData.class,
-        role: "student" as const,
+        qr_code: `student-${Date.now()}-qr`,
       };
       
-      await addStudent(studentData);
+      await addStudent.mutateAsync(studentData);
       toast.success("Student added successfully!");
       form.reset();
       setOpen(false);
@@ -64,8 +64,8 @@ export const AddStudentDialog = () => {
   };
 
   // Get all unique classes from existing students
-  const { students } = useStudents();
-  const classes = Array.from(new Set(students.map(student => student.class).filter(Boolean)));
+  const { data: existingStudents = [] } = useStudents();
+  const classes = Array.from(new Set(existingStudents.map(student => student.class).filter(Boolean))) as string[];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

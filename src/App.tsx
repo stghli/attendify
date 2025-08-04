@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
-import { DataProvider } from "@/context/DataContext";
 
 import Layout from "@/components/layout/Layout";
 import PublicLayout from "@/components/layout/PublicLayout";
@@ -33,42 +32,40 @@ const App = () => (
     <TooltipProvider>
       <BrowserRouter>
         <AuthProvider>
-          <DataProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              {/* Public routes that don't require authentication */}
-              <Route path="/public" element={<PublicLayout />}>
-                <Route path="qr-scanner" element={<PublicQrScannerPage />} />
-              </Route>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            {/* Public routes that don't require authentication */}
+            <Route path="/public" element={<PublicLayout />}>
+              <Route path="qr-scanner" element={<PublicQrScannerPage />} />
+            </Route>
+            
+            {/* Entry point - starts with code entry */}
+            <Route path="/" element={<Index />} />
+            <Route path="/code-entry" element={<CodeEntry />} />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
+            
+            {/* Protected routes with layout */}
+            <Route path="/app" element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="qr-scanner" element={<QrScannerPage />} />
+              <Route path="students" element={<StudentsPage />} />
+              <Route path="teachers" element={<TeachersPage />} />
+              <Route path="classes" element={<ClassesPage />} />
+              <Route path="attendance" element={<AttendancePage />} />
+              <Route path="my-students" element={<MyStudentsPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+            </Route>
               
-              {/* Entry point - starts with code entry */}
-              <Route path="/" element={<Index />} />
-              <Route path="/code-entry" element={<CodeEntry />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              
-              {/* Protected routes with layout */}
-              <Route path="/app" element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="qr-scanner" element={<QrScannerPage />} />
-                <Route path="students" element={<StudentsPage />} />
-                <Route path="teachers" element={<TeachersPage />} />
-                <Route path="classes" element={<ClassesPage />} />
-                <Route path="attendance" element={<AttendancePage />} />
-                <Route path="my-students" element={<MyStudentsPage />} />
-                <Route path="reports" element={<ReportsPage />} />
-                <Route path="settings" element={<SettingsPage />} />
-              </Route>
-                
-              {/* Catch-all route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </DataProvider>
+            {/* Catch-all route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

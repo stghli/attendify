@@ -1,233 +1,187 @@
-
-
-import React, { useState, useEffect } from "react";
-import { useStudents } from "@/context/students/StudentsContext";
-import { useTeachers } from "@/context/teachers/TeachersContext";
-import { useAttendance } from "@/context/attendance/AttendanceContext";
-import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "sonner";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScannerCamera from "./qr-scanner/ScannerCamera";
-import { ScanHistoryItem } from "./qr-scanner/types";
-import { Clock, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Clock, User, CheckCircle, AlertCircle } from "lucide-react";
+import { parseQRCodeData } from "@/utils/qrCode";
+import { useStudents } from "@/hooks/useStudents";
+import { useTeachers } from "@/hooks/useTeachers";
+import { useRecordAttendance, getTimeStatus } from "@/hooks/useAttendance";
+import { toast } from "sonner";
+
+interface ScanResult {
+  name: string;
+  role: 'student' | 'teacher';
+  action: 'time-in' | 'time-out';
+  timestamp: string;
+  isLate: boolean;
+  userId: string;
+}
 
 const QrScanner: React.FC = () => {
-  const { students } = useStudents();
-  const { teachers } = useTeachers();
-  const { recordAttendance, getTimeStatus } = useAttendance();
   const [scanning, setScanning] = useState(true);
-  const [lastScan, setLastScan] = useState<ScanHistoryItem | null>(null);
+  const [lastScan, setLastScan] = useState<ScanResult | null>(null);
   
-  const timeStatus = getTimeStatus();
-
-  const handleScan = (result: any) => {
-    if (result && result.text) {
-      const qrData = result.text;
-      console.log("QR Data scanned:", qrData);
-      console.log("Syncing with admin data - Students:", students.length, "Teachers:", teachers.length);
-
-      try {
-        // Enhanced QR code processing to sync with admin data
-        let userId, role, user;
-
-        // Try different QR code formats
-        if (qrData.includes('-')) {
-          // Format like "student-1-qr" or "teacher-1-qr"
-          const parts = qrData.split('-');
-          if (parts.length >= 2) {
-            role = parts[0];
-            userId = parts[1];
-          }
-        } else {
-          // Try to parse as JSON or other formats
-          try {
-            const parsedData = JSON.parse(qrData);
-            role = parsedData.role;
-            userId = parsedData.id || parsedData.userId;
-          } catch {
-            // Simple format - try to extract from plain text
-            if (qrData.includes('student')) {
-              role = 'student';
-              userId = qrData.replace(/[^0-9]/g, '');
-            } else if (qrData.includes('teacher')) {
-              role = 'teacher';
-              userId = qrData.replace(/[^0-9]/g, '');
-            }
-          }
-        }
-
-        console.log("Extracted - Role:", role, "User ID:", userId);
-
-        // Search in admin data (students and teachers contexts)
-        if (role === "student") {
-          // Search by ID first, then by QR code, then by name similarity
-          user = students.find(s => 
-            s.id === userId || 
-            s.id === `student-${userId}` ||
-            s.qrCode === qrData ||
-            s.name.toLowerCase().includes(qrData.toLowerCase())
-          );
-          
-          if (!user && userId) {
-            // Try to find by partial ID match
-            user = students.find(s => s.id.includes(userId));
-          }
-          
-          console.log("Found student in admin data:", user);
-        } else if (role === "teacher") {
-          // Search by ID first, then by QR code, then by name similarity
-          user = teachers.find(t => 
-            t.id === userId || 
-            t.id === `teacher-${userId}` ||
-            t.qrCode === qrData ||
-            t.name.toLowerCase().includes(qrData.toLowerCase())
-          );
-          
-          if (!user && userId) {
-            // Try to find by partial ID match
-            user = teachers.find(t => t.id.includes(userId));
-          }
-          
-          console.log("Found teacher in admin data:", user);
-        }
-
-        // If still not found, try broader search across both collections
-        if (!user) {
-          console.log("Trying broader search across all users...");
-          
-          // Search students by any matching criteria
-          user = students.find(s => 
-            qrData.includes(s.id) || 
-            s.qrCode?.includes(qrData) ||
-            qrData.includes(s.name.toLowerCase()) ||
-            s.name.toLowerCase().includes(qrData.toLowerCase())
-          );
-          
-          if (user) {
-            role = "student";
-            userId = user.id;
-            console.log("Found student via broader search:", user);
-          } else {
-            // Search teachers by any matching criteria
-            user = teachers.find(t => 
-              qrData.includes(t.id) || 
-              t.qrCode?.includes(qrData) ||
-              qrData.includes(t.name.toLowerCase()) ||
-              t.name.toLowerCase().includes(qrData.toLowerCase())
-            );
-            
-            if (user) {
-              role = "teacher";
-              userId = user.id;
-              console.log("Found teacher via broader search:", user);
-            }
-          }
-        }
-
-        if (!user) {
-          console.log("User not found in admin data. QR Data:", qrData);
-          console.log("Available students:", students.map(s => ({ id: s.id, name: s.name, qrCode: s.qrCode })));
-          console.log("Available teachers:", teachers.map(t => ({ id: t.id, name: t.name, qrCode: t.qrCode })));
-          
-          toast.error("User not found in admin database", {
-            description: "Please ensure the QR code is registered in the system"
-          });
-          return;
-        }
-
-        // Determine action based on time
-        let action: "time-in" | "time-out";
-        if (timeStatus.canCheckIn) {
-          action = "time-in";
-        } else if (timeStatus.canCheckOut) {
-          action = "time-out";
-        } else {
-          toast.error(`Attendance not available. ${timeStatus.message}`);
-          return;
-        }
-
-        // Record attendance with synced admin data
-        console.log("Recording attendance for:", { userId: user.id, role, action });
-        recordAttendance(user.id, role as "student" | "teacher", action);
-
-        // Create new scan history item
-        const newScanItem: ScanHistoryItem = {
-          userId: user.id,
-          name: user.name,
-          role: role as "student" | "teacher",
-          action,
-          timestamp: new Date()
-        };
-
-        // Update last scan info
-        setLastScan(newScanItem);
-
-        // Stop scanning temporarily 
-        setScanning(false);
-
-        // Auto restart scanning after 3 seconds
-        setTimeout(() => {
-          setScanning(true);
-        }, 3000);
-
-      } catch (error) {
-        console.error("Error processing QR code:", error);
-        toast.error("Invalid QR code format. Please try again.", {
-          description: "Ensure the QR code is generated by the admin system"
-        });
+  const { data: students = [], isLoading: studentsLoading } = useStudents();
+  const { data: teachers = [], isLoading: teachersLoading } = useTeachers();
+  const recordAttendance = useRecordAttendance();
+  
+  const handleScan = async (result: any) => {
+    if (!result) return;
+    
+    try {
+      const qrString = result.getText ? result.getText() : result.text || result;
+      const qrData = parseQRCodeData(qrString);
+      
+      if (!qrData) {
+        toast.error("Invalid QR code format");
+        return;
       }
+      
+      // Find user in database
+      let user = null;
+      let userName = qrData.user_name;
+      
+      if (qrData.user_role === 'student') {
+        user = students.find(s => s.id === qrData.user_id || s.user_id === qrData.user_id);
+      } else {
+        user = teachers.find(t => t.id === qrData.user_id || t.user_id === qrData.user_id);
+      }
+      
+      if (user) {
+        userName = user.name;
+      } else if (userName === 'Unknown') {
+        toast.error("User not found in database");
+        return;
+      }
+      
+      // Determine action based on time
+      const timeStatus = getTimeStatus();
+      const action: 'time-in' | 'time-out' = timeStatus.suggestedAction || 'time-in';
+      const isLate = action === 'time-in' ? timeStatus.isLateCheckIn : timeStatus.isEarlyCheckOut;
+      
+      // Record attendance
+      await recordAttendance.mutateAsync({
+        userId: user?.id || qrData.user_id,
+        userRole: qrData.user_role,
+        action,
+        userName,
+      });
+      
+      // Update UI
+      const scanResult: ScanResult = {
+        name: userName,
+        role: qrData.user_role,
+        action,
+        timestamp: new Date().toISOString(),
+        isLate,
+        userId: user?.id || qrData.user_id,
+      };
+      
+      setLastScan(scanResult);
+      setScanning(false);
+      
+    } catch (error) {
+      console.error("Error processing QR scan:", error);
+      toast.error("Failed to process QR code");
     }
   };
 
   const handleError = (error: any) => {
-    console.error("QR Scanner Error:", error);
-    toast.error("Error accessing camera. Please check permissions.");
+    console.error("Camera error:", error);
+    toast.error("Camera error. Please check permissions.");
   };
 
+  const resetScanner = () => {
+    setScanning(true);
+    setLastScan(null);
+  };
+
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  if (studentsLoading || teachersLoading) {
+    return (
+      <div className="max-w-md mx-auto">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p>Loading user data...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-sm mx-auto space-y-4">
+    <div className="max-w-md mx-auto">
       <AnimatePresence mode="wait">
         {scanning ? (
           <motion.div
             key="scanner"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="flex justify-center"
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
           >
             <ScannerCamera onScan={handleScan} onError={handleError} />
           </motion.div>
         ) : (
-          <motion.div 
+          <motion.div
             key="result"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center text-white border border-white/20 mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
           >
             {lastScan && (
-              <div className="space-y-3">
-                <div className="text-2xl font-bold text-green-400">
-                  ✓ {lastScan.action === "time-in" ? "Checked In" : "Checked Out"}
-                </div>
-                <div className="text-xl">{lastScan.name}</div>
-                <div className="text-sm text-white/70 capitalize">{lastScan.role}</div>
-                <div className="text-xs text-white/60">
-                  Synced with Admin Database ✓
-                </div>
-                <div className="text-xs text-white/60">
-                  {lastScan.timestamp.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </div>
-                {((lastScan.action === "time-in" && timeStatus.isLateCheckIn) || 
-                  (lastScan.action === "time-out" && timeStatus.isLateCheckOut)) && (
-                  <div className="text-sm text-orange-300 font-medium">
-                    ⚠️ {lastScan.action === "time-in" ? "Late Arrival" : "Late Pickup"}
+              <Card className="overflow-hidden">
+                <CardContent className="p-6">
+                  <div className="text-center space-y-4">
+                    <div className="flex justify-center">
+                      {lastScan.action === 'time-in' ? (
+                        <CheckCircle className="h-12 w-12 text-green-500" />
+                      ) : (
+                        <AlertCircle className="h-12 w-12 text-blue-500" />
+                      )}
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold">{lastScan.name}</h3>
+                      <Badge variant="outline" className="mt-1">
+                        <User className="h-3 w-3 mr-1" />
+                        {lastScan.role}
+                      </Badge>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <span className="text-sm">
+                          {lastScan.action === 'time-in' ? 'Checked In' : 'Checked Out'} at{' '}
+                          {formatTime(lastScan.timestamp)}
+                        </span>
+                      </div>
+                      
+                      {lastScan.isLate && (
+                        <Badge variant="destructive" className="text-xs">
+                          {lastScan.action === 'time-in' ? 'Late Arrival' : 'Early Departure'}
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <Button onClick={resetScanner} className="w-full">
+                      Scan Next
+                    </Button>
                   </div>
-                )}
-              </div>
+                </CardContent>
+              </Card>
             )}
           </motion.div>
         )}
@@ -237,4 +191,3 @@ const QrScanner: React.FC = () => {
 };
 
 export default QrScanner;
-
