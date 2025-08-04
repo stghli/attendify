@@ -1,6 +1,4 @@
-
-import React, { useState, useEffect } from "react";
-import { QrReader } from "react-qr-reader";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 interface ScannerCameraProps {
@@ -11,37 +9,48 @@ interface ScannerCameraProps {
 const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     console.log("ScannerCamera component mounted");
-    // Check for camera permissions
-    navigator.permissions?.query({ name: 'camera' as PermissionName })
-      .then(result => {
-        console.log("Camera permission status:", result.state);
-      })
-      .catch(err => {
-        console.log("Camera permission check failed:", err);
-      });
-
-    // Set camera as ready after a short delay to allow initialization
-    const timer = setTimeout(() => {
-      console.log("Setting camera as ready");
-      setCameraReady(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    startCamera();
+    return () => {
+      stopCamera();
+    };
   }, []);
 
-  const handleResult = (result: any, error: any) => {
-    if (error) {
-      console.error("QR Scanner error:", error);
-      setCameraError(error.message || "Camera access failed");
+  const startCamera = async () => {
+    try {
+      console.log("Requesting camera access...");
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 640 },
+          height: { ideal: 640 }
+        } 
+      });
+      
+      console.log("Camera access granted");
+      setStream(mediaStream);
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        videoRef.current.play();
+        setCameraReady(true);
+        setCameraError(null);
+      }
+    } catch (error: any) {
+      console.error("Camera access failed:", error);
+      setCameraError(error.message || "Camera access denied");
       onError(error);
-      return;
     }
-    if (result) {
-      console.log("QR Code scanned successfully:", result);
-      onScan(result);
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
     }
   };
 
@@ -61,6 +70,12 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
                 <>
                   <div className="text-red-500 text-sm mb-2">Camera Error</div>
                   <p className="text-xs text-gray-600">{cameraError}</p>
+                  <button 
+                    onClick={startCamera}
+                    className="mt-2 px-3 py-1 bg-blue-500 text-white text-xs rounded"
+                  >
+                    Retry
+                  </button>
                 </>
               ) : (
                 <>
@@ -72,27 +87,19 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
           </div>
         )}
         
-        <QrReader
-          constraints={{ 
-            facingMode: "environment",
-            width: { ideal: 640 },
-            height: { ideal: 640 }
-          }}
-          scanDelay={500}
-          onResult={handleResult}
-          videoStyle={{ 
+        <video
+          ref={videoRef}
+          style={{ 
             width: '100%', 
             height: '100%', 
             objectFit: 'cover'
           }}
-          containerStyle={{ 
-            width: '100%', 
-            height: '100%' 
-          }}
-          videoId="qr-video"
+          autoPlay
+          playsInline
+          muted
         />
         
-        {cameraReady && (
+        {cameraReady && !cameraError && (
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 flex items-center justify-center p-8">
               <div className="relative w-3/4 h-3/4 border-2 border-dashed border-white/80 rounded-lg">
@@ -110,10 +117,10 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
         )}
         
         {/* Simple instruction text */}
-        {cameraReady && (
+        {cameraReady && !cameraError && (
           <div className="absolute bottom-4 left-0 right-0 text-center">
             <div className="bg-black/50 text-white text-sm px-3 py-1 rounded-full mx-auto inline-block">
-              Scan QR Code
+              Point camera at QR code
             </div>
           </div>
         )}
