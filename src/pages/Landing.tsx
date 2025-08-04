@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import QrScanner from "@/components/QrScanner";
-import { useStudents } from "@/context/students/StudentsContext";
-import { useTeachers } from "@/context/teachers/TeachersContext";
-import { useAttendance } from "@/context/attendance/AttendanceContext";
+import { useStudents } from "@/hooks/useStudents";
+import { useTeachers } from "@/hooks/useTeachers";
+import { useAttendanceLogs } from "@/hooks/useAttendance";
 import LandingHeader from "@/components/landing/LandingHeader";
 import CurrentTimeDisplay from "@/components/landing/CurrentTimeDisplay";
 import EventCard from "@/components/landing/EventCard";
@@ -15,9 +15,9 @@ import ClockLoader from "@/components/ClockLoader";
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
-  const { students } = useStudents();
-  const { teachers } = useTeachers();
-  const { attendanceLogs } = useAttendance();
+  const { data: students = [], isLoading: studentsLoading } = useStudents();
+  const { data: teachers = [], isLoading: teachersLoading } = useTeachers();
+  const { data: attendanceLogs = [], isLoading: attendanceLoading } = useAttendanceLogs();
   const [isSecurityValidated, setIsSecurityValidated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -85,8 +85,8 @@ const Landing: React.FC = () => {
     };
   }, [navigate]);
 
-  // Show loader while validating
-  if (isLoading) {
+  // Show loader while validating or loading data
+  if (isLoading || studentsLoading || teachersLoading || attendanceLoading) {
     return <ClockLoader />;
   }
 
@@ -109,9 +109,9 @@ const Landing: React.FC = () => {
     const userStatuses = new Map();
     
     todayLogs.forEach(log => {
-      const existing = userStatuses.get(log.userId);
+      const existing = userStatuses.get(log.user_id);
       if (!existing || new Date(log.timestamp) > new Date(existing.timestamp)) {
-        userStatuses.set(log.userId, log);
+        userStatuses.set(log.user_id, log);
       }
     });
 
@@ -120,9 +120,9 @@ const Landing: React.FC = () => {
 
     userStatuses.forEach(log => {
       if (log.action === "time-in") {
-        if (log.userRole === "teacher") {
+        if (log.user_role === "teacher") {
           checkedInTeachers++;
-        } else if (log.userRole === "student") {
+        } else if (log.user_role === "student") {
           checkedInStudents++;
         }
       }
