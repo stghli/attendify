@@ -128,11 +128,11 @@ const StudentsPage: React.FC = () => {
         {filteredStudents.map(student => (
           <StudentCard
             key={student.id}
-            student={student}
-            teacherName={getTeacherName(student.assignedTeacherId)}
-            onViewQR={handleViewQR}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
+            student={student as any}
+            teacherName={getTeacherName(student.user_id)}
+            onViewQR={handleViewQR as any}
+            onEdit={handleEdit as any}
+            onDelete={handleDelete as any}
           />
         ))}
         
