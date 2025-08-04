@@ -1,7 +1,7 @@
 
 
 import React, { useState } from "react";
-import { useAddStudent } from "@/hooks/useStudents";
+import { useAddStudent, useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
 import { Button } from "@/components/ui/button";
 import {
