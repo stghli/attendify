@@ -22,20 +22,40 @@ const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = ({
 }) => {
   const qrValue = generateQRCodeData(userId, userRole, userName);
   const handleDownload = () => {
-    const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
-    if (!canvas) {
+    const element = document.getElementById('qr-canvas');
+    if (!element || element.tagName !== 'svg') {
       toast.error("Could not generate QR code image");
       return;
     }
 
-    const url = canvas.toDataURL("image/png");
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${userRole}-${userName}-qr.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("QR code downloaded successfully");
+    const svgElement = element as unknown as SVGElement;
+
+    // Create canvas and draw SVG onto it
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width || size;
+      canvas.height = img.height || size;
+      ctx?.drawImage(img, 0, 0);
+      
+      // Download the canvas as PNG
+      const pngUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = pngUrl;
+      link.download = `${userRole}-${userName}-qr.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      URL.revokeObjectURL(url);
+      toast.success("QR code downloaded successfully");
+    };
+    img.src = url;
   };
 
   const handlePrint = () => {
