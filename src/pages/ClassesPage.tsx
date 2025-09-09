@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
-import { useClasses } from "@/context/classes/ClassesContext";
-import { useData } from "@/context/DataContext";
+import { useClasses, useDeleteClass } from "@/hooks/useClasses";
+import { useTeachers } from "@/hooks/useTeachers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Search, 
   Plus, 
-  Users, 
   GraduationCap, 
   BookOpen,
   PenSquare,
@@ -30,10 +29,11 @@ import {
 import { Class } from "@/types";
 
 const ClassesPage: React.FC = () => {
-  const { classes, deleteClass } = useClasses();
-  const { students, teachers } = useData();
+  const { data: classes = [], isLoading: classesLoading } = useClasses();
+  const { data: teachers = [] } = useTeachers();
+  const deleteClass = useDeleteClass();
   const [searchTerm, setSearchTerm] = useState("");
-  const [classToDelete, setClassToDelete] = useState<Class | null>(null);
+  const [classToDelete, setClassToDelete] = useState<any | null>(null);
 
   const filteredClasses = classes.filter(cls =>
     cls.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -46,20 +46,31 @@ const ClassesPage: React.FC = () => {
     return teacher ? teacher.name : "Unknown Teacher";
   };
 
-  const getStudentCount = (studentIds: string[]): number => {
-    return studentIds.length;
-  };
-
-  const handleDelete = (cls: Class) => {
+  const handleDelete = (cls: any) => {
     setClassToDelete(cls);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (classToDelete) {
-      deleteClass(classToDelete.id);
-      setClassToDelete(null);
+      try {
+        await deleteClass.mutateAsync(classToDelete.id);
+        setClassToDelete(null);
+      } catch (error) {
+        console.error("Error deleting class:", error);
+      }
     }
   };
+
+  if (classesLoading) {
+    return (
+      <div className="space-y-6 p-4">
+        <div className="flex flex-col space-y-1">
+          <h1 className="text-xl font-bold tracking-tight">Classes</h1>
+          <p className="text-sm text-muted-foreground">Loading classes...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-4">
@@ -121,30 +132,20 @@ const ClassesPage: React.FC = () => {
               )}
 
               {/* Info grid */}
-              <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+              <div className="grid grid-cols-1 gap-2 mb-3 text-xs">
                 <div className="flex items-center gap-1.5">
                   <GraduationCap className="h-3 w-3 text-blue-500" />
-                  <span className="truncate">{getTeacherName(cls.teacherId)}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Users className="h-3 w-3 text-emerald-500" />
-                  <span>{getStudentCount(cls.studentIds)} students</span>
+                  <span className="truncate">{getTeacherName(cls.teacher_id)}</span>
                 </div>
               </div>
 
               {/* Status badges */}
               <div className="flex gap-1 mb-3">
                 <Badge 
-                  variant={cls.teacherId ? "default" : "secondary"} 
+                  variant={cls.teacher_id ? "default" : "secondary"} 
                   className="text-xs px-2 py-0.5"
                 >
-                  {cls.teacherId ? "Assigned" : "No Teacher"}
-                </Badge>
-                <Badge 
-                  variant={cls.studentIds.length > 0 ? "default" : "outline"} 
-                  className="text-xs px-2 py-0.5"
-                >
-                  {cls.studentIds.length > 0 ? `${cls.studentIds.length} Students` : "Empty"}
+                  {cls.teacher_id ? "Assigned" : "No Teacher"}
                 </Badge>
               </div>
               
