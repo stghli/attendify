@@ -47,17 +47,14 @@ export const AddStudentDialog = () => {
     }
 
     try {
-      // Parse and validate the data to get the transformed types
-      const validatedData = studentFormSchema.parse(data);
-      
       const studentData = {
         user_id: user.id,
-        name: validatedData.name,
-        gender: validatedData.gender,
-        age: validatedData.age,
-        address: validatedData.address,
-        parent_phone: validatedData.parentPhone,
-        class: validatedData.class,
+        name: data.name,
+        gender: data.gender,
+        age: typeof data.age === 'string' ? Number(data.age) : data.age,
+        address: data.address,
+        parent_phone: data.parentPhone,
+        class: data.class,
         qr_code: `student-${user.id}-${Date.now()}-qr`,
       };
       
