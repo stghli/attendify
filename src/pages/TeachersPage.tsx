@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { useData } from "@/context/DataContext";
+import { useTeachers, useDeleteTeacher } from "@/hooks/useTeachers";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -22,23 +22,46 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 const TeachersPage: React.FC = () => {
-  const { teachers, getStudentsByTeacher } = useData();
+  const { data: teachers = [], isLoading: teachersLoading } = useTeachers();
+  const deleteTeacher = useDeleteTeacher();
   const [selectedTeacher, setSelectedTeacher] = useState<any>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [teacherToDelete, setTeacherToDelete] = useState<any>(null);
 
   const handleViewQR = (teacher: any) => {
     setSelectedTeacher(teacher);
     setIsQrModalOpen(true);
   };
 
+  const handleDeleteTeacher = async (teacher: any) => {
+    if (confirm(`Are you sure you want to delete ${teacher.name}?`)) {
+      try {
+        await deleteTeacher.mutateAsync(teacher.id);
+      } catch (error) {
+        console.error("Error deleting teacher:", error);
+      }
+    }
+  };
+
   const filteredTeachers = searchQuery
     ? teachers.filter(teacher => 
         teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
         teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        teacher.assignedClass.toLowerCase().includes(searchQuery.toLowerCase())
+        (teacher.assigned_class && teacher.assigned_class.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : teachers;
+
+  if (teachersLoading) {
+    return (
+      <div className="space-y-6 p-4">
+        <div className="flex flex-col space-y-1">
+          <h1 className="text-xl font-bold tracking-tight">Teachers</h1>
+          <p className="text-sm text-muted-foreground">Loading teachers...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-4">
@@ -87,7 +110,7 @@ const TeachersPage: React.FC = () => {
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span>ID: {teacher.id.split('-')[1]}</span>
                     <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs px-1.5 py-0.5">
-                      {teacher.assignedClass}
+                      {teacher.assigned_class || "No Class"}
                     </Badge>
                   </div>
                 </div>
@@ -111,7 +134,7 @@ const TeachersPage: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Users className="h-3 w-3 text-orange-500" />
-                  <span>{getStudentsByTeacher(teacher.id).length} students</span>
+                  <span>Students</span>
                 </div>
               </div>
               
@@ -125,7 +148,12 @@ const TeachersPage: React.FC = () => {
                   <PenSquare className="h-3 w-3" />
                 </Button>
                 
-                <Button variant="outline" size="sm" className="flex-1 h-7 text-xs px-2 text-red-600 hover:bg-red-50 border-red-200">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1 h-7 text-xs px-2 text-red-600 hover:bg-red-50 border-red-200"
+                  onClick={() => handleDeleteTeacher(teacher)}
+                >
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
