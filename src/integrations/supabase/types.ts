@@ -7,23 +7,249 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
+  // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "12.2.12 (cd3cf9e)"
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance_logs: {
+        Row: {
+          action: string
+          id: string
+          processed: boolean | null
+          status: string | null
+          timestamp: string
+          user_id: string
+          user_name: string
+          user_role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          action: string
+          id?: string
+          processed?: boolean | null
+          status?: string | null
+          timestamp?: string
+          user_id: string
+          user_name: string
+          user_role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          action?: string
+          id?: string
+          processed?: boolean | null
+          status?: string | null
+          timestamp?: string
+          user_id?: string
+          user_name?: string
+          user_role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
+      classes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          teacher_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sms_logs: {
+        Row: {
+          id: string
+          message: string
+          parent_phone: string
+          sent_at: string | null
+          status: string | null
+          student_id: string
+          student_name: string
+          timestamp: string
+        }
+        Insert: {
+          id?: string
+          message: string
+          parent_phone: string
+          sent_at?: string | null
+          status?: string | null
+          student_id: string
+          student_name: string
+          timestamp?: string
+        }
+        Update: {
+          id?: string
+          message?: string
+          parent_phone?: string
+          sent_at?: string | null
+          status?: string | null
+          student_id?: string
+          student_name?: string
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sms_logs_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          address: string | null
+          age: number | null
+          class: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          name: string
+          parent_phone: string | null
+          qr_code: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          age?: number | null
+          class?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          name: string
+          parent_phone?: string | null
+          qr_code?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          age?: number | null
+          class?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          name?: string
+          parent_phone?: string | null
+          qr_code?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teachers: {
+        Row: {
+          assigned_class: string | null
+          contact: string | null
+          created_at: string
+          email: string
+          gender: string | null
+          id: string
+          name: string
+          qr_code: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_class?: string | null
+          contact?: string | null
+          created_at?: string
+          email: string
+          gender?: string | null
+          id?: string
+          name: string
+          qr_code?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_class?: string | null
+          contact?: string | null
+          created_at?: string
+          email?: string
+          gender?: string | null
+          id?: string
+          name?: string
+          qr_code?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_admin_user: {
+        Args: { user_email: string; user_password: string; user_name: string }
+        Returns: Json
+      }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "admin" | "teacher" | "student" | "scanner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +376,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["admin", "teacher", "student", "scanner"],
+    },
   },
 } as const
