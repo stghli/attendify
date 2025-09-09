@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAddStudent, useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
+import { useClasses } from "@/hooks/useClasses";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -70,9 +71,9 @@ export const AddStudentDialog = () => {
     }
   };
 
-  // Get all unique classes from existing students
-  const { data: existingStudents = [] } = useStudents();
-  const classes = Array.from(new Set(existingStudents.map(student => student.class).filter(Boolean))) as string[];
+  // Get classes from database
+  const { data: classesData = [] } = useClasses();
+  const classes = classesData.map(cls => cls.name);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
