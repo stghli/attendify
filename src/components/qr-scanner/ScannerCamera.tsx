@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { BrowserMultiFormatReader } from '@zxing/library';
 
 interface ScannerCameraProps {
   onScan: (result: any) => void;
@@ -11,14 +12,60 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const codeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
+  const scanningRef = useRef<boolean>(false);
 
   useEffect(() => {
     console.log("ScannerCamera component mounted");
+    codeReaderRef.current = new BrowserMultiFormatReader();
     startCamera();
     return () => {
       stopCamera();
+      stopScanning();
     };
   }, []);
+
+  useEffect(() => {
+    if (cameraReady && !cameraError) {
+      // Start scanning when camera is ready
+      setTimeout(() => startScanning(), 500);
+    }
+  }, [cameraReady, cameraError]);
+
+  const startScanning = async () => {
+    if (!codeReaderRef.current || !videoRef.current || scanningRef.current) return;
+    
+    try {
+      scanningRef.current = true;
+      console.log("Starting QR code scanning...");
+      
+      await codeReaderRef.current.decodeFromVideoDevice(
+        undefined, // use default video device
+        videoRef.current,
+        (result, error) => {
+          if (result) {
+            console.log("QR Code detected:", result.getText());
+            onScan(result.getText());
+            scanningRef.current = false;
+          }
+          if (error && !(error.name === 'NotFoundException')) {
+            console.error("QR scanning error:", error);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Failed to start QR scanning:", error);
+      scanningRef.current = false;
+    }
+  };
+
+  const stopScanning = () => {
+    if (codeReaderRef.current && scanningRef.current) {
+      console.log("Stopping QR code scanning...");
+      codeReaderRef.current.reset();
+      scanningRef.current = false;
+    }
+  };
 
   const startCamera = async () => {
     try {
