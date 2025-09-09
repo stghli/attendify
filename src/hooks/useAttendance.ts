@@ -32,10 +32,22 @@ export const useAttendanceLogs = () => {
       const { data, error } = await supabase
         .from('attendance_logs')
         .select('*')
-        .order('timestamp', { ascending: false });
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as AttendanceLog[];
+      
+      const mappedLogs = data.map(log => ({
+        id: log.id,
+        user_id: log.user_id,
+        user_name: log.user_name,
+        user_role: log.user_role as 'student' | 'teacher',
+        timestamp: log.created_at,
+        action: log.action as 'time-in' | 'time-out',
+        status: log.status,
+        processed: log.processed
+      })) as AttendanceLog[];
+      
+      return mappedLogs;
     },
   });
 };

@@ -43,7 +43,7 @@ export const useUserProfile = () => {
             id: user.id,
             name: data.name,
             email: data.email,
-            role: data.role
+            role: (data.role as 'admin' | 'teacher' | 'student' | 'scanner') || 'student'
           });
         }
       } catch (error) {
