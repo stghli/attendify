@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAddStudent, useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +24,7 @@ export const AddStudentDialog = () => {
   const [open, setOpen] = useState(false);
   const addStudent = useAddStudent();
   const { data: teachers = [] } = useTeachers();
+  const { user } = useAuth();
 
   const form = useForm<StudentFormInput>({
     resolver: zodResolver(studentFormSchema),
@@ -38,19 +40,24 @@ export const AddStudentDialog = () => {
   });
 
   const onSubmit = async (data: StudentFormInput) => {
+    if (!user) {
+      toast.error("You must be logged in to add a student");
+      return;
+    }
+
     try {
       // Parse and validate the data to get the transformed types
       const validatedData = studentFormSchema.parse(data);
       
       const studentData = {
-        user_id: crypto.randomUUID(), // Generate a user_id for now
+        user_id: user.id,
         name: validatedData.name,
         gender: validatedData.gender,
         age: validatedData.age,
         address: validatedData.address,
         parent_phone: validatedData.parentPhone,
         class: validatedData.class,
-        qr_code: `student-${Date.now()}-qr`,
+        qr_code: `student-${user.id}-${Date.now()}-qr`,
       };
       
       await addStudent.mutateAsync(studentData);

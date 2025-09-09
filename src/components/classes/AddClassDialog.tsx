@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
-import { useClasses } from "@/context/classes/ClassesContext";
-import { useData } from "@/context/DataContext";
+import { useAddClass } from "@/hooks/useClasses";
+import { useTeachers } from "@/hooks/useTeachers";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,8 +42,8 @@ const classFormSchema = z.object({
 type ClassFormValues = z.infer<typeof classFormSchema>;
 
 export function AddClassDialog() {
-  const { addClass } = useClasses();
-  const { teachers } = useData();
+  const addClass = useAddClass();
+  const { data: teachers = [] } = useTeachers();
   const [open, setOpen] = useState(false);
 
   const form = useForm<ClassFormValues>({
@@ -55,16 +55,19 @@ export function AddClassDialog() {
     },
   });
 
-  const onSubmit = (values: ClassFormValues) => {
-    addClass({
-      name: values.name,
-      description: values.description || undefined,
-      teacherId: values.teacherId === "unassigned" ? undefined : values.teacherId,
-      studentIds: [],
-    });
-    
-    form.reset();
-    setOpen(false);
+  const onSubmit = async (values: ClassFormValues) => {
+    try {
+      await addClass.mutateAsync({
+        name: values.name,
+        description: values.description || undefined,
+        teacher_id: values.teacherId === "unassigned" ? undefined : values.teacherId,
+      });
+      
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error adding class:", error);
+    }
   };
 
   return (

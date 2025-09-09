@@ -13,21 +13,22 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useTeachers } from "@/context/teachers/TeachersContext";
+import { useAddTeacher } from "@/hooks/useTeachers";
+import { useClasses } from "@/hooks/useClasses";
+import { useAuth } from "@/context/AuthContext";
 import { teacherFormSchema, TeacherFormValues } from "./TeacherFormSchema";
 import TeacherFormFields from "./TeacherFormFields";
-import { useStudents } from "@/context/students/StudentsContext";
+import { toast } from "sonner";
 
 interface AddTeacherDialogProps {
   trigger?: React.ReactNode;
 }
 
 const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
-  const { addTeacher } = useTeachers();
-  const { getAllClasses } = useStudents();
+  const addTeacher = useAddTeacher();
+  const { data: classes = [] } = useClasses();
+  const { user } = useAuth();
   const [open, setOpen] = React.useState(false);
-  
-  const classes = getAllClasses();
   
   const form = useForm<TeacherFormValues>({
     resolver: zodResolver(teacherFormSchema),
@@ -40,22 +41,30 @@ const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
     },
   });
   
-  const onSubmit = (values: TeacherFormValues) => {
-    const teacherData = {
-      name: values.name,
-      email: values.email,
-      role: "teacher" as const,
-      gender: values.gender,
-      contact: values.contact,
-      assignedClass: values.assignedClass,
-      qrCode: `teacher-${Date.now()}-qr`,
-      createdAt: new Date().toISOString(),
-    };
-    
-    addTeacher(teacherData);
-    
-    form.reset();
-    setOpen(false);
+  const onSubmit = async (values: TeacherFormValues) => {
+    if (!user) {
+      toast.error("You must be logged in to add a teacher");
+      return;
+    }
+
+    try {
+      const teacherData = {
+        user_id: user.id,
+        name: values.name,
+        email: values.email,
+        gender: values.gender,
+        contact: values.contact,
+        assigned_class: values.assignedClass,
+        qr_code: `teacher-${user.id}-${Date.now()}-qr`,
+      };
+      
+      await addTeacher.mutateAsync(teacherData);
+      
+      form.reset();
+      setOpen(false);
+    } catch (error) {
+      console.error("Error adding teacher:", error);
+    }
   };
   
   return (
@@ -75,7 +84,7 @@ const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
             <TeacherFormFields 
               control={form.control}
-              classes={classes}
+              classes={classes.map(c => c.name)}
             />
             
             <DialogFooter className="pt-4">
