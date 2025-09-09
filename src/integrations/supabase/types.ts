@@ -14,7 +14,185 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          processed: boolean
+          status: string
+          user_id: string
+          user_name: string
+          user_role: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          processed?: boolean
+          status: string
+          user_id: string
+          user_name: string
+          user_role: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          processed?: boolean
+          status?: string
+          user_id?: string
+          user_name?: string
+          user_role?: string
+        }
+        Relationships: []
+      }
+      classes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          teacher_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          address: string | null
+          age: number | null
+          class: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          name: string
+          parent_phone: string | null
+          qr_code: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          age?: number | null
+          class?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          name: string
+          parent_phone?: string | null
+          qr_code?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          age?: number | null
+          class?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          name?: string
+          parent_phone?: string | null
+          qr_code?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teachers: {
+        Row: {
+          assigned_class: string | null
+          contact: string | null
+          created_at: string
+          email: string
+          gender: string | null
+          id: string
+          name: string
+          qr_code: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_class?: string | null
+          contact?: string | null
+          created_at?: string
+          email: string
+          gender?: string | null
+          id?: string
+          name: string
+          qr_code?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_class?: string | null
+          contact?: string | null
+          created_at?: string
+          email?: string
+          gender?: string | null
+          id?: string
+          name?: string
+          qr_code?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
