@@ -91,7 +91,14 @@ const QrScanner: React.FC = () => {
 
   const handleError = (error: any) => {
     console.error("Camera error:", error);
-    toast.error("Camera error. Please check permissions.");
+    // Only show toast errors for actual camera permission/access issues
+    if (error?.name === 'NotAllowedError' || 
+        error?.name === 'NotFoundError' ||
+        error?.message?.toLowerCase().includes('permission') ||
+        error?.message?.toLowerCase().includes('access') ||
+        error?.message?.toLowerCase().includes('denied')) {
+      toast.error("Camera access required. Please allow camera permissions.");
+    }
   };
 
   const resetScanner = () => {
