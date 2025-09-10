@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { BrowserMultiFormatReader } from '@zxing/library';
 
 interface ScannerCameraProps {
   onScan: (result: any) => void;
@@ -11,17 +12,62 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const scanIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const codeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
+  const scanningRef = useRef<boolean>(false);
 
   useEffect(() => {
     console.log("ScannerCamera component mounted");
+    codeReaderRef.current = new BrowserMultiFormatReader();
     startCamera();
     return () => {
       stopCamera();
       stopScanning();
     };
   }, []);
+
+  useEffect(() => {
+    if (cameraReady && !cameraError) {
+      // Start scanning when camera is ready
+      setTimeout(() => startScanning(), 1000);
+    }
+  }, [cameraReady, cameraError]);
+
+  const startScanning = async () => {
+    if (!codeReaderRef.current || !videoRef.current || scanningRef.current) return;
+    
+    try {
+      scanningRef.current = true;
+      console.log("Starting QR code scanning...");
+      
+      await codeReaderRef.current.decodeFromVideoDevice(
+        undefined, // use default video device
+        videoRef.current,
+        (result, error) => {
+          if (result) {
+            console.log("QR Code detected:", result.getText());
+            onScan(result.getText());
+            scanningRef.current = false;
+          }
+          // Ignore NotFoundException errors as they're normal when no QR code is visible
+          if (error && error.name !== 'NotFoundException') {
+            console.error("QR scanning error:", error);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Failed to start QR scanning:", error);
+      scanningRef.current = false;
+      setCameraError("Failed to start QR scanning");
+    }
+  };
+
+  const stopScanning = () => {
+    if (codeReaderRef.current && scanningRef.current) {
+      console.log("Stopping QR code scanning...");
+      codeReaderRef.current.reset();
+      scanningRef.current = false;
+    }
+  };
 
   const startCamera = async () => {
     try {
@@ -43,7 +89,6 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
           videoRef.current?.play();
           setCameraReady(true);
           setCameraError(null);
-          startScanning();
         };
       }
     } catch (error: any) {
@@ -53,43 +98,6 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
     }
   };
 
-  const startScanning = () => {
-    if (scanIntervalRef.current) return;
-    
-    console.log("Starting QR code scanning...");
-    scanIntervalRef.current = setInterval(() => {
-      scanForQRCode();
-    }, 500); // Scan every 500ms
-  };
-
-  const stopScanning = () => {
-    if (scanIntervalRef.current) {
-      clearInterval(scanIntervalRef.current);
-      scanIntervalRef.current = null;
-    }
-  };
-
-  const scanForQRCode = () => {
-    if (!videoRef.current || !canvasRef.current) return;
-    
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-    
-    if (!context || video.readyState !== video.HAVE_ENOUGH_DATA) return;
-    
-    // Set canvas size to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    
-    // Draw current video frame to canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-    // For now, we'll simulate QR detection by looking for user input
-    // In a real implementation, you'd use a QR detection library here
-    // This is a placeholder that demonstrates the camera is working
-  };
-
   const stopCamera = () => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
@@ -97,12 +105,6 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
     }
   };
 
-  const handleManualInput = () => {
-    const input = prompt("Enter QR code data for testing:");
-    if (input) {
-      onScan(input);
-    }
-  };
 
   return (
     <motion.div 
@@ -123,16 +125,9 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
                   <p className="text-xs text-gray-600 mb-3">{cameraError}</p>
                   <button 
                     onClick={startCamera}
-                    className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 mb-2"
+                    className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
                   >
                     Try Again
-                  </button>
-                  <br />
-                  <button 
-                    onClick={handleManualInput}
-                    className="px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600"
-                  >
-                    Manual Input (for testing)
                   </button>
                 </>
               ) : (
@@ -158,12 +153,6 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
           muted
         />
         
-        {/* Hidden Canvas for QR Processing */}
-        <canvas
-          ref={canvasRef}
-          style={{ display: 'none' }}
-        />
-        
         {/* Scanning Overlay */}
         {cameraReady && !cameraError && (
           <div className="absolute inset-0 pointer-events-none">
@@ -185,15 +174,9 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
         {/* Instructions */}
         {cameraReady && !cameraError && (
           <div className="absolute bottom-4 left-0 right-0 text-center">
-            <div className="bg-black/50 text-white text-sm px-3 py-1 rounded-full mx-auto inline-block mb-2">
+            <div className="bg-black/50 text-white text-sm px-3 py-1 rounded-full mx-auto inline-block">
               Point camera at QR code
             </div>
-            <button 
-              onClick={handleManualInput}
-              className="bg-white/20 text-white text-xs px-2 py-1 rounded"
-            >
-              Manual Input
-            </button>
           </div>
         )}
       </div>
