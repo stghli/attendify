@@ -46,11 +46,14 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
     console.log("QrReader onResult called", { result, error });
     
     if (error) {
-      console.error("QR scanning error:", error);
-      if (error.name !== 'NotFoundException' && error.name !== 'NotFoundError') {
-        setCameraError(error?.message || "Camera error occurred");
+      // Only show errors for actual camera/permission issues, not QR detection failures
+      if (error.name === 'NotAllowedError' || error.name === 'NotFoundError' || 
+          error.message?.includes('permission') || error.message?.includes('camera')) {
+        console.error("Camera permission error:", error);
+        setCameraError(error?.message || "Camera access denied");
         onError(error);
       }
+      // Ignore normal QR detection errors (like "e2" errors)
       return;
     }
 
