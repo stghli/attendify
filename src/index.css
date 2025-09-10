@@ -191,6 +191,50 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* HTML5 QR Code Scanner Styles */
+#qr-scanner-div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#qr-scanner-div video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+}
+
+#qr-scanner-div #qr-shaded-region {
+  border-radius: 12px !important;
+}
+
+#qr-scanner-div #qr-scanner-button-camera-permission,
+#qr-scanner-div #qr-scanner-button-camera-start,
+#qr-scanner-div #qr-scanner-button-file-selection {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  margin: 4px !important;
+}
+
+#qr-scanner-div #qr-scanner-button-camera-permission:hover,
+#qr-scanner-div #qr-scanner-button-camera-start:hover,
+#qr-scanner-div #qr-scanner-button-file-selection:hover {
+  opacity: 0.9 !important;
+}
+
+#qr-scanner-div select {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  margin: 4px !important;
+}
+
 /* Smooth transitions for all interactive elements */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
