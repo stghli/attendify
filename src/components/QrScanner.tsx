@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScannerCamera from "./qr-scanner/ScannerCamera";
+import ManualInput from "./qr-scanner/ManualInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, User, CheckCircle, AlertCircle } from "lucide-react";
+import { Clock, User, CheckCircle, AlertCircle, KeyboardIcon } from "lucide-react";
 import { parseQRCodeData } from "@/utils/qrCode";
 import { useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
@@ -21,7 +22,7 @@ interface ScanResult {
 }
 
 const QrScanner: React.FC = () => {
-  const [scanning, setScanning] = useState(true);
+  const [mode, setMode] = useState<'scanner' | 'manual' | 'result'>('scanner');
   const [lastScan, setLastScan] = useState<ScanResult | null>(null);
   
   const { data: students = [], isLoading: studentsLoading } = useStudents();
@@ -81,7 +82,7 @@ const QrScanner: React.FC = () => {
       };
       
       setLastScan(scanResult);
-      setScanning(false);
+      setMode('result');
       
     } catch (error) {
       console.error("Error processing QR scan:", error);
@@ -101,9 +102,58 @@ const QrScanner: React.FC = () => {
     }
   };
 
+  const handleManualInput = async (studentId: string) => {
+    try {
+      // Find student by ID  
+      const student = students.find(s => s.id === studentId || s.id === studentId);
+      
+      if (!student) {
+        toast.error("Student not found");
+        return;
+      }
+
+      // Determine action based on time
+      const timeStatus = getTimeStatus();
+      const action: 'time-in' | 'time-out' = timeStatus.suggestedAction || 'time-in';
+      const isLate = action === 'time-in' ? timeStatus.isLateCheckIn : timeStatus.isEarlyCheckOut;
+
+      // Record attendance
+      await recordAttendance.mutateAsync({
+        userId: student.id,
+        userRole: 'student',
+        action,
+        userName: student.name,
+      });
+
+      // Update UI
+      const scanResult: ScanResult = {
+        name: student.name,
+        role: 'student',
+        action,
+        timestamp: new Date().toISOString(),
+        isLate,
+        userId: student.id,
+      };
+
+      setLastScan(scanResult);
+      setMode('result');
+    } catch (error) {
+      console.error("Error processing manual input:", error);
+      toast.error("Failed to mark attendance");
+    }
+  };
+
   const resetScanner = () => {
-    setScanning(true);
+    setMode('scanner');
     setLastScan(null);
+  };
+
+  const showManualInput = () => {
+    setMode('manual');
+  };
+
+  const backToScanner = () => {
+    setMode('scanner');
   };
 
   const formatTime = (timestamp: string) => {
@@ -129,16 +179,31 @@ const QrScanner: React.FC = () => {
   return (
     <div className="max-w-md mx-auto">
       <AnimatePresence mode="wait">
-        {scanning ? (
+        {mode === 'scanner' ? (
           <motion.div
             key="scanner"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
+            className="space-y-4"
           >
             <ScannerCamera onScan={handleScan} onError={handleError} />
+            <Button 
+              onClick={showManualInput} 
+              variant="outline" 
+              className="w-full"
+            >
+              <KeyboardIcon className="h-4 w-4 mr-2" />
+              Enter Student ID Manually
+            </Button>
           </motion.div>
+        ) : mode === 'manual' ? (
+          <ManualInput 
+            key="manual"
+            onSubmit={handleManualInput} 
+            onBackToScanner={backToScanner}
+          />
         ) : (
           <motion.div
             key="result"

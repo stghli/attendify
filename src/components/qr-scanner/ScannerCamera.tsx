@@ -39,21 +39,34 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
       scanningRef.current = true;
       console.log("Starting QR code scanning...");
       
-      await codeReaderRef.current.decodeFromVideoDevice(
-        undefined, // use default video device
-        videoRef.current,
-        (result, error) => {
+      // Use continuous decode instead of decodeFromVideoDevice for better detection
+      const decodeLoop = async () => {
+        if (!scanningRef.current || !codeReaderRef.current || !videoRef.current) return;
+        
+        try {
+          const result = await codeReaderRef.current.decodeFromVideoElement(videoRef.current);
           if (result) {
             console.log("QR Code detected:", result.getText());
             onScan(result.getText());
             scanningRef.current = false;
+            return;
           }
-          // Ignore NotFoundException errors as they're normal when no QR code is visible
-          if (error && error.name !== 'NotFoundException') {
+        } catch (error: any) {
+          // NotFoundException is normal when no QR code is visible
+          if (error.name !== 'NotFoundException') {
             console.error("QR scanning error:", error);
           }
         }
-      );
+        
+        // Continue scanning
+        if (scanningRef.current) {
+          setTimeout(() => decodeLoop(), 100);
+        }
+      };
+      
+      // Start the decode loop
+      decodeLoop();
+      
     } catch (error) {
       console.error("Failed to start QR scanning:", error);
       scanningRef.current = false;
