@@ -39,33 +39,21 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
       scanningRef.current = true;
       console.log("Starting QR code scanning...");
       
-      // Use continuous decode instead of decodeFromVideoDevice for better detection
-      const decodeLoop = async () => {
-        if (!scanningRef.current || !codeReaderRef.current || !videoRef.current) return;
-        
-        try {
-          const result = await codeReaderRef.current.decodeFromVideoElement(videoRef.current);
-          if (result) {
-            console.log("QR Code detected:", result.getText());
-            onScan(result.getText());
-            scanningRef.current = false;
-            return;
+      // Use decodeFromVideoDevice for better QR detection
+      codeReaderRef.current.decodeFromVideoDevice(undefined, videoRef.current, (result, error) => {
+        if (result) {
+          console.log("QR Code detected:", result.getText());
+          // Provide visual feedback with vibration if available
+          if (navigator.vibrate) {
+            navigator.vibrate(200);
           }
-        } catch (error: any) {
-          // NotFoundException is normal when no QR code is visible
-          if (error.name !== 'NotFoundException') {
-            console.error("QR scanning error:", error);
-          }
+          onScan(result.getText());
         }
         
-        // Continue scanning
-        if (scanningRef.current) {
-          setTimeout(() => decodeLoop(), 100);
+        if (error && error.name !== 'NotFoundException') {
+          console.error("QR scanning error:", error);
         }
-      };
-      
-      // Start the decode loop
-      decodeLoop();
+      });
       
     } catch (error) {
       console.error("Failed to start QR scanning:", error);
@@ -75,9 +63,13 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
   };
 
   const stopScanning = () => {
-    if (codeReaderRef.current && scanningRef.current) {
+    if (codeReaderRef.current) {
       console.log("Stopping QR code scanning...");
-      codeReaderRef.current.reset();
+      try {
+        codeReaderRef.current.reset();
+      } catch (error) {
+        console.log("Scanner reset error (normal):", error);
+      }
       scanningRef.current = false;
     }
   };
@@ -170,15 +162,22 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
         {cameraReady && !cameraError && (
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 flex items-center justify-center p-8">
-              <div className="relative w-3/4 h-3/4 border-2 border-dashed border-white/80 rounded-lg">
+              <div className="relative w-3/4 h-3/4 border-2 border-dashed border-green-400 rounded-lg animate-pulse">
                 {/* Corner markers */}
-                <div className="absolute -top-2 -left-2 w-5 h-5 border-t-2 border-l-2 border-white"></div>
-                <div className="absolute -top-2 -right-2 w-5 h-5 border-t-2 border-r-2 border-white"></div>
-                <div className="absolute -bottom-2 -left-2 w-5 h-5 border-b-2 border-l-2 border-white"></div>
-                <div className="absolute -bottom-2 -right-2 w-5 h-5 border-b-2 border-r-2 border-white"></div>
+                <div className="absolute -top-2 -left-2 w-6 h-6 border-t-4 border-l-4 border-green-400 rounded-tl-lg"></div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 border-t-4 border-r-4 border-green-400 rounded-tr-lg"></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 border-b-4 border-l-4 border-green-400 rounded-bl-lg"></div>
+                <div className="absolute -bottom-2 -right-2 w-6 h-6 border-b-4 border-r-4 border-green-400 rounded-br-lg"></div>
                 
-                {/* Scanning effect */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-white/60 animate-[scan_2s_ease-in-out_infinite]"></div>
+                {/* Scanning line */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-400 to-transparent animate-[scan_2s_ease-in-out_infinite]"></div>
+              </div>
+            </div>
+            
+            {/* Success indicator overlay */}
+            <div className="absolute top-4 left-4 right-4 text-center">
+              <div className="bg-green-500/80 text-white text-sm px-3 py-1 rounded-full mx-auto inline-block font-medium">
+                🔍 Scanning for QR Code...
               </div>
             </div>
           </div>

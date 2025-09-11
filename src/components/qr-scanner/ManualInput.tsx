@@ -47,14 +47,21 @@ const ManualInput: React.FC<ManualInputProps> = ({ onSubmit, onBackToScanner }) 
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
+              <label className="block text-sm font-medium mb-2">
+                Student ID Number
+              </label>
               <Input
                 type="text"
-                placeholder="Student ID"
+                placeholder="Enter student ID (e.g., STU001)"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-                className="text-center text-lg"
+                className="text-center text-lg font-mono"
                 autoFocus
+                maxLength={20}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Enter the unique student identification number
+              </p>
             </div>
             <Button 
               type="submit" 
