@@ -123,6 +123,7 @@ export type Database = {
           name: string
           parent_phone: string | null
           qr_code: string | null
+          student_id: string | null
           updated_at: string
           user_id: string
         }
@@ -136,6 +137,7 @@ export type Database = {
           name: string
           parent_phone?: string | null
           qr_code?: string | null
+          student_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -149,6 +151,7 @@ export type Database = {
           name?: string
           parent_phone?: string | null
           qr_code?: string | null
+          student_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -198,7 +201,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_student_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
