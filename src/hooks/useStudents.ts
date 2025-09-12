@@ -6,6 +6,7 @@ export type Student = {
   id: string;
   user_id: string;
   name: string;
+  student_id?: string;
   age?: number;
   gender?: string;
   class?: string;
@@ -98,6 +99,24 @@ export const useDeleteStudent = () => {
     },
     onError: (error: any) => {
       toast.error(`Failed to delete student: ${error.message}`);
+    },
+  });
+};
+
+export const useValidateStudentId = () => {
+  return useMutation({
+    mutationFn: async (studentId: string) => {
+      const { data, error } = await supabase
+        .from('students')
+        .select('id, name, student_id')
+        .eq('student_id', studentId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to validate student ID: ${error.message}`);
     },
   });
 };

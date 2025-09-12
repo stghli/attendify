@@ -3,26 +3,42 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { KeyboardIcon, QrCode } from "lucide-react";
+import { KeyboardIcon, QrCode, AlertCircle, CheckCircle } from "lucide-react";
+import { useValidateStudentId } from "@/hooks/useStudents";
+import { toast } from "sonner";
 
 interface ManualInputProps {
-  onSubmit: (studentId: string) => void;
+  onSubmit: (studentData: { id: string; name: string; student_id: string }) => void;
   onBackToScanner: () => void;
 }
 
 const ManualInput: React.FC<ManualInputProps> = ({ onSubmit, onBackToScanner }) => {
   const [studentId, setStudentId] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationResult, setValidationResult] = useState<{ id: string; name: string; student_id: string } | null>(null);
+  const validateStudentId = useValidateStudentId();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleValidate = async () => {
     if (!studentId.trim()) return;
 
-    setIsSubmitting(true);
     try {
-      onSubmit(studentId.trim());
-    } finally {
-      setIsSubmitting(false);
+      const result = await validateStudentId.mutateAsync(studentId.trim().toUpperCase());
+      if (result) {
+        setValidationResult(result);
+        toast.success(`Student found: ${result.name}`);
+      } else {
+        setValidationResult(null);
+        toast.error("Student ID not found in database");
+      }
+    } catch (error) {
+      setValidationResult(null);
+      console.error("Validation error:", error);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validationResult) {
+      onSubmit(validationResult);
     }
   };
 
@@ -50,25 +66,57 @@ const ManualInput: React.FC<ManualInputProps> = ({ onSubmit, onBackToScanner }) 
               <label className="block text-sm font-medium mb-2">
                 Student ID Number
               </label>
-              <Input
-                type="text"
-                placeholder="Enter student ID (e.g., STU001)"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                className="text-center text-lg font-mono"
-                autoFocus
-                maxLength={20}
-              />
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="Enter student ID (e.g., STU001234)"
+                  value={studentId}
+                  onChange={(e) => {
+                    setStudentId(e.target.value);
+                    setValidationResult(null);
+                  }}
+                  className="text-center text-lg font-mono flex-1"
+                  autoFocus
+                  maxLength={20}
+                />
+                <Button 
+                  type="button"
+                  onClick={handleValidate}
+                  disabled={!studentId.trim() || validateStudentId.isPending}
+                  variant="outline"
+                >
+                  {validateStudentId.isPending ? "..." : "Check"}
+                </Button>
+              </div>
+              
+              {validationResult && (
+                <div className="mt-2 p-2 bg-green-50 dark:bg-green-950 rounded-md flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span className="text-green-700 dark:text-green-300">
+                    Found: {validationResult.name} (ID: {validationResult.student_id})
+                  </span>
+                </div>
+              )}
+              
+              {validateStudentId.isError && (
+                <div className="mt-2 p-2 bg-red-50 dark:bg-red-950 rounded-md flex items-center gap-2 text-sm">
+                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <span className="text-red-700 dark:text-red-300">
+                    Student ID not found. Please check and try again.
+                  </span>
+                </div>
+              )}
+              
               <p className="text-xs text-muted-foreground mt-1">
-                Enter the unique student identification number
+                Enter the student ID and click "Check" to validate
               </p>
             </div>
             <Button 
               type="submit" 
               className="w-full"
-              disabled={!studentId.trim() || isSubmitting}
+              disabled={!validationResult}
             >
-              {isSubmitting ? "Processing..." : "Mark Attendance"}
+              Mark Attendance
             </Button>
           </form>
           

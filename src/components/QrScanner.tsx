@@ -102,37 +102,29 @@ const QrScanner: React.FC = () => {
     }
   };
 
-  const handleManualInput = async (studentId: string) => {
+  const handleManualInput = async (studentData: { id: string; name: string; student_id: string }) => {
     try {
-      // Find student by ID  
-      const student = students.find(s => s.id === studentId || s.id === studentId);
-      
-      if (!student) {
-        toast.error("Student not found");
-        return;
-      }
-
       // Determine action based on time
       const timeStatus = getTimeStatus();
       const action: 'time-in' | 'time-out' = timeStatus.suggestedAction || 'time-in';
       const isLate = action === 'time-in' ? timeStatus.isLateCheckIn : timeStatus.isEarlyCheckOut;
 
-      // Record attendance
+      // Record attendance using the validated student data
       await recordAttendance.mutateAsync({
-        userId: student.id,
+        userId: studentData.id,
         userRole: 'student',
         action,
-        userName: student.name,
+        userName: studentData.name,
       });
 
       // Update UI
       const scanResult: ScanResult = {
-        name: student.name,
+        name: studentData.name,
         role: 'student',
         action,
         timestamp: new Date().toISOString(),
         isLate,
-        userId: student.id,
+        userId: studentData.id,
       };
 
       setLastScan(scanResult);
