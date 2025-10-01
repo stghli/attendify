@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useStudents, useDeleteStudent } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
+import { useClasses } from "@/hooks/useClasses";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
@@ -23,6 +24,7 @@ import {
 const StudentsPage: React.FC = () => {
   const { data: students = [] } = useStudents();
   const { data: teachers = [] } = useTeachers();
+  const { data: classes = [] } = useClasses();
   const deleteStudent = useDeleteStudent();
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
@@ -31,13 +33,26 @@ const StudentsPage: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
   
-  // Get all unique classes
-  const classes = Array.from(new Set(students.map(student => student.class)));
+  // Helper to get class name from class_id
+  const getClassName = (classId: string | null | undefined): string => {
+    if (!classId) return "Unassigned";
+    const classData = classes.find(c => c.id === classId);
+    return classData ? classData.name : "Unassigned";
+  };
+  
+  // Get all unique class names for filtering
+  const uniqueClassNames = Array.from(new Set(
+    students
+      .map(student => getClassName(student.class_id))
+      .filter(name => name !== "Unassigned")
+  ));
   
   // Count students in each class
   const studentsCount: Record<string, number> = {};
-  classes.forEach(cls => {
-    studentsCount[cls] = students.filter(student => student.class === cls).length;
+  uniqueClassNames.forEach(className => {
+    studentsCount[className] = students.filter(
+      student => getClassName(student.class_id) === className
+    ).length;
   });
   
   // Filter students based on search term and selected class
@@ -45,7 +60,7 @@ const StudentsPage: React.FC = () => {
     let result = students;
     
     if (selectedClass !== "all") {
-      result = result.filter(student => student.class === selectedClass);
+      result = result.filter(student => getClassName(student.class_id) === selectedClass);
     }
     
     if (searchTerm) {
@@ -53,12 +68,12 @@ const StudentsPage: React.FC = () => {
       result = result.filter(
         student =>
           student.name.toLowerCase().includes(term) ||
-          student.class.toLowerCase().includes(term)
+          getClassName(student.class_id).toLowerCase().includes(term)
       );
     }
     
     setFilteredStudents(result);
-  }, [students, searchTerm, selectedClass]);
+  }, [students, searchTerm, selectedClass, classes]);
 
   const getTeacherName = (teacherId: string): string => {
     const teacher = teachers.find(t => t.id === teacherId);
@@ -117,7 +132,7 @@ const StudentsPage: React.FC = () => {
       
       {/* Class filter tabs */}
       <ClassFilterTabs
-        classes={classes}
+        classes={uniqueClassNames}
         selectedClass={selectedClass}
         onSelectClass={setSelectedClass}
         studentsCount={studentsCount}
