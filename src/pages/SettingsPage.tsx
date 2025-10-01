@@ -85,6 +85,17 @@ const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("users");
   const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false);
   
+  // Form hook must be called before any conditional returns
+  const form = useForm<UserFormValues>({
+    resolver: zodResolver(userFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "scanner",
+      password: "",
+    },
+  });
+  
   // Only admins can access this page
   if (user?.role !== "admin") {
     return (
@@ -97,16 +108,6 @@ const SettingsPage: React.FC = () => {
       </div>
     );
   }
-
-  const form = useForm<UserFormValues>({
-    resolver: zodResolver(userFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      role: "scanner",
-      password: "",
-    },
-  });
 
   const onSubmit = (data: UserFormValues) => {
     // Add user to the system
