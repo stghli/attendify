@@ -2,8 +2,16 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Bell, LogOut } from "lucide-react";
+import { Bell, LogOut, User, Settings } from "lucide-react";
 
 interface User {
   name: string;
@@ -41,33 +49,42 @@ const UserActions: React.FC<UserActionsProps> = ({ user, logout }) => {
         <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
       </Button>
 
-      {/* User Info */}
-      <div className="hidden md:flex items-center gap-3 px-3 py-2 rounded-md border bg-muted/50">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`} alt={user.name} />
-          <AvatarFallback className="text-xs">
-            {user.name.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col gap-0.5">
-          <span className="text-sm font-medium">
-            {user.name}
-          </span>
-          <Badge className={`${getRoleBadgeClass(user.role)} capitalize text-xs w-fit`}>
-            {user.role}
-          </Badge>
-        </div>
-      </div>
-
-      {/* Logout */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={logout}
-        className="hover:bg-destructive/10 hover:text-destructive"
-      >
-        <LogOut className="h-5 w-5" />
-      </Button>
+      {/* Profile Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="flex items-center gap-2">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`} alt={user.name} />
+              <AvatarFallback className="text-xs">
+                {user.name.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden md:flex flex-col items-start">
+              <span className="text-sm font-medium">{user.name}</span>
+              <Badge className={`${getRoleBadgeClass(user.role)} capitalize text-xs`}>
+                {user.role}
+              </Badge>
+            </div>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <User className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={logout} className="text-destructive">
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

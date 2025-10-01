@@ -26,7 +26,6 @@ interface AddTeacherDialogProps {
 
 const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
   const addTeacher = useAddTeacher();
-  const { data: classes = [] } = useClasses();
   const { user } = useAuth();
   const [open, setOpen] = React.useState(false);
   
@@ -34,10 +33,9 @@ const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
     resolver: zodResolver(teacherFormSchema),
     defaultValues: {
       name: "",
-      gender: "",
       email: "",
-      contact: "",
-      assignedClass: "",
+      phone: "",
+      subject: "",
     },
   });
   
@@ -49,13 +47,10 @@ const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
 
     try {
       const teacherData = {
-        user_id: user.id,
         name: values.name,
         email: values.email,
-        gender: values.gender,
-        contact: values.contact,
-        assigned_class: values.assignedClass,
-        qr_code: `teacher-${user.id}-${Date.now()}-qr`,
+        phone: values.phone || null,
+        subject: values.subject || null,
       };
       
       await addTeacher.mutateAsync(teacherData);
@@ -84,7 +79,6 @@ const AddTeacherDialog: React.FC<AddTeacherDialogProps> = ({ trigger }) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
             <TeacherFormFields 
               control={form.control}
-              classes={classes.map(c => c.name)}
             />
             
             <DialogFooter className="pt-4">

@@ -48,7 +48,7 @@ const TeachersPage: React.FC = () => {
     ? teachers.filter(teacher => 
         teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
         teacher.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (teacher.assigned_class && teacher.assigned_class.toLowerCase().includes(searchQuery.toLowerCase()))
+        (teacher.subject && teacher.subject.toLowerCase().includes(searchQuery.toLowerCase()))
       )
     : teachers;
 
@@ -108,10 +108,12 @@ const TeachersPage: React.FC = () => {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-base truncate">{teacher.name}</h3>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>ID: {teacher.id.split('-')[1]}</span>
-                    <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs px-1.5 py-0.5">
-                      {teacher.assigned_class || "No Class"}
-                    </Badge>
+                    <span>ID: {teacher.id.split('-')[0].slice(0, 8)}</span>
+                    {teacher.subject && (
+                      <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs px-1.5 py-0.5">
+                        {teacher.subject}
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </div>
@@ -120,22 +122,16 @@ const TeachersPage: React.FC = () => {
             <CardContent className="px-4 py-3 pt-1">
               {/* Compact info grid */}
               <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 col-span-2">
                   <Mail className="h-3 w-3 text-blue-500" />
-                  <span className="truncate">{teacher.email.split('@')[0]}</span>
+                  <span className="truncate">{teacher.email}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone className="h-3 w-3 text-emerald-500" />
-                  <span className="truncate">{teacher.contact}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <UserRound className="h-3 w-3 text-violet-500" />
-                  <span className="truncate">{teacher.gender}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Users className="h-3 w-3 text-orange-500" />
-                  <span>Students</span>
-                </div>
+                {teacher.phone && (
+                  <div className="flex items-center gap-1.5 col-span-2">
+                    <Phone className="h-3 w-3 text-emerald-500" />
+                    <span className="truncate">{teacher.phone}</span>
+                  </div>
+                )}
               </div>
               
               {/* Compact action buttons */}

@@ -20,12 +20,10 @@ import { TeacherFormValues } from "./TeacherFormSchema";
 
 interface TeacherFormFieldsProps {
   control: Control<TeacherFormValues>;
-  classes: string[];
 }
 
 const TeacherFormFields: React.FC<TeacherFormFieldsProps> = ({
   control,
-  classes,
 }) => {
   return (
     <>
@@ -38,29 +36,6 @@ const TeacherFormFields: React.FC<TeacherFormFieldsProps> = ({
             <FormControl>
               <Input placeholder="Enter teacher's full name" {...field} />
             </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="gender"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Gender</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select gender" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -82,12 +57,12 @@ const TeacherFormFields: React.FC<TeacherFormFieldsProps> = ({
 
       <FormField
         control={control}
-        name="contact"
+        name="phone"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Contact Number</FormLabel>
+            <FormLabel>Phone Number</FormLabel>
             <FormControl>
-              <Input placeholder="Enter contact number" {...field} />
+              <Input placeholder="Enter phone number" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -96,24 +71,13 @@ const TeacherFormFields: React.FC<TeacherFormFieldsProps> = ({
 
       <FormField
         control={control}
-        name="assignedClass"
+        name="subject"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Assigned Class</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select class" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {classes.map((className) => (
-                  <SelectItem key={className} value={className}>
-                    {className}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormLabel>Subject</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter subject (e.g., Math, Science)" {...field} />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}

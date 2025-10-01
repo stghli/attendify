@@ -4,13 +4,11 @@ import { toast } from 'sonner';
 
 export type Teacher = {
   id: string;
-  user_id: string;
+  user_id?: string | null;
   name: string;
   email: string;
-  gender?: string;
-  contact?: string;
-  assigned_class?: string;
-  qr_code?: string;
+  phone?: string | null;
+  subject?: string | null;
   created_at: string;
   updated_at: string;
 };
