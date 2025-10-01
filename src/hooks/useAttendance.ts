@@ -4,13 +4,13 @@ import { toast } from 'sonner';
 
 export type AttendanceLog = {
   id: string;
-  user_id: string;
-  user_name: string;
-  user_role: 'student' | 'teacher';
-  action: 'time-in' | 'time-out';
-  status?: string;
-  processed?: boolean;
-  timestamp: string;
+  student_id: string;
+  student_name: string;
+  check_in_time: string;
+  status: string;
+  notes?: string;
+  scanned_by?: string | null;
+  created_at: string;
 };
 
 const morningScriptures = [
@@ -35,19 +35,7 @@ export const useAttendanceLogs = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      
-      const mappedLogs = data.map(log => ({
-        id: log.id,
-        user_id: log.user_id,
-        user_name: log.user_name,
-        user_role: log.user_role as 'student' | 'teacher',
-        timestamp: log.created_at,
-        action: log.action as 'time-in' | 'time-out',
-        status: log.status,
-        processed: log.processed
-      })) as AttendanceLog[];
-      
-      return mappedLogs;
+      return data as AttendanceLog[];
     },
   });
 };
@@ -56,21 +44,21 @@ export const useRecordAttendance = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ userId, userRole, action, userName }: {
-      userId: string;
-      userRole: 'student' | 'teacher';
-      action: 'time-in' | 'time-out';
-      userName: string;
+    mutationFn: async ({ studentId, studentName, notes }: {
+      studentId: string;
+      studentName: string;
+      notes?: string;
     }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
       const { data, error } = await supabase
         .from('attendance_logs')
         .insert([{
-          user_id: userId,
-          user_name: userName,
-          user_role: userRole,
-          action,
-          status: 'entry',
-          processed: false,
+          student_id: studentId,
+          student_name: studentName,
+          status: 'present',
+          notes: notes || '',
+          scanned_by: user?.id || null,
         }])
         .select()
         .single();
@@ -82,14 +70,13 @@ export const useRecordAttendance = () => {
       queryClient.invalidateQueries({ queryKey: ['attendance-logs'] });
       
       // Get random scripture and greeting
-      const isCheckin = variables.action === 'time-in';
-      const scriptures = isCheckin ? morningScriptures : eveningScriptures;
+      const scriptures = morningScriptures;
       const randomScripture = scriptures[Math.floor(Math.random() * scriptures.length)];
       
       const currentHour = new Date().getHours();
-      const isLate = isCheckin ? currentHour > 8 : currentHour < 15;
+      const isLate = currentHour > 8;
       
-      const greeting = getGreeting(variables.userName, isCheckin, isLate);
+      const greeting = getGreeting(variables.studentName, true, isLate);
       
       toast.success(greeting, {
         description: `"${randomScripture.text}" - ${randomScripture.reference}`,

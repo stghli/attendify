@@ -102,36 +102,20 @@ const Landing: React.FC = () => {
   const getCheckedInCounts = () => {
     const today = new Date().toDateString();
     const todayLogs = attendanceLogs.filter(log => 
-      new Date(log.timestamp).toDateString() === today
+      new Date(log.created_at).toDateString() === today
     );
 
-    // Get unique users who have checked in today (latest action per user)
-    const userStatuses = new Map();
+    // Count unique students
+    const uniqueStudents = new Set(todayLogs.map(log => log.student_id));
+    const checkedInStudents = uniqueStudents.size;
     
-    todayLogs.forEach(log => {
-      const existing = userStatuses.get(log.user_id);
-      if (!existing || new Date(log.timestamp) > new Date(existing.timestamp)) {
-        userStatuses.set(log.user_id, log);
-      }
-    });
-
-    let checkedInTeachers = 0;
-    let checkedInStudents = 0;
-
-    userStatuses.forEach(log => {
-      if (log.action === "time-in") {
-        if (log.user_role === "teacher") {
-          checkedInTeachers++;
-        } else if (log.user_role === "student") {
-          checkedInStudents++;
-        }
-      }
-    });
-
-    return { checkedInTeachers, checkedInStudents };
+    return {
+      students: checkedInStudents,
+      teachers: 0 // Teachers not tracked separately in this version
+    };
   };
 
-  const { checkedInTeachers, checkedInStudents } = getCheckedInCounts();
+  const { students: checkedInStudents, teachers: checkedInTeachers } = getCheckedInCounts();
   const totalCheckedIn = checkedInTeachers + checkedInStudents;
   
   // Calculate not checked in counts

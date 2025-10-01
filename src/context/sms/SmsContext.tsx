@@ -1,7 +1,8 @@
-
 import React, { createContext, useState, useContext } from "react";
 import { SMSLog } from "@/types";
 import { toast } from "sonner";
+import { sanitizePhoneNumber, sanitizeSmsMessage } from "@/utils/validation";
+import { logger } from "@/utils/logger";
 
 // Mock data
 const initialSmsLogs: SMSLog[] = [
@@ -34,24 +35,37 @@ const SmsContext = createContext<SmsContextType>({
 export const SmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [smsLogs, setSmsLogs] = useState<SMSLog[]>(initialSmsLogs);
 
-  // Add SMS log
+  // Add SMS log with input sanitization
   const addSmsLog = (logData: {
     studentId: string;
     studentName: string;
     parentPhone: string;
     message: string;
   }) => {
-    const newSmsLog: SMSLog = {
-      id: `sms-${Date.now()}`,
-      ...logData,
-      timestamp: new Date().toISOString(),
-      status: "delivered", // In a real app, this would depend on the SMS API response
-    };
-    
-    setSmsLogs([newSmsLog, ...smsLogs]);
-    
-    // In a real app, you would integrate with Twilio or another SMS provider here
-    console.log(`SMS sent to ${logData.parentPhone}: ${logData.message}`);
+    try {
+      // Sanitize and validate inputs
+      const sanitizedPhone = sanitizePhoneNumber(logData.parentPhone);
+      const sanitizedMessage = sanitizeSmsMessage(logData.message);
+      
+      const newSmsLog: SMSLog = {
+        id: `sms-${Date.now()}`,
+        studentId: logData.studentId,
+        studentName: logData.studentName,
+        parentPhone: sanitizedPhone,
+        message: sanitizedMessage,
+        timestamp: new Date().toISOString(),
+        status: "delivered",
+      };
+      
+      setSmsLogs([newSmsLog, ...smsLogs]);
+      
+      // Log only in development (no PII in production logs)
+      logger.log('SMS notification queued for student:', logData.studentName);
+      
+    } catch (error) {
+      toast.error("Invalid phone number or message format");
+      logger.error("SMS validation error:", error);
+    }
   };
 
   return (

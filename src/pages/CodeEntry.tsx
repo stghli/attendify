@@ -9,15 +9,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ShieldCheck, Lock, Key, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import AnimatedClockBackground from "@/components/AnimatedClockBackground";
+import { supabase } from "@/integrations/supabase/client";
+import { accessCodeSchema } from "@/utils/validation";
 
 const CodeEntry: React.FC = () => {
   const [code, setCode] = useState("");
   const [trustDevice, setTrustDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  // Valid codes that allow access to the landing page
-  const VALID_CODES = ["9768", "1234", "5678"];
 
   // Check if already has valid access on mount - but don't auto-redirect
   useEffect(() => {
@@ -39,38 +38,55 @@ const CodeEntry: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (code.length !== 4) {
-      toast.error("Please enter a 4-digit code");
+    // Validate code format
+    try {
+      accessCodeSchema.parse(code);
+    } catch {
+      toast.error("Please enter a valid 4-digit code");
       return;
     }
 
     setIsLoading(true);
     
-    if (VALID_CODES.includes(code)) {
-      // Set access flag and time in localStorage
-      localStorage.setItem("validAccessCode", "true");
-      localStorage.setItem("accessTime", Date.now().toString());
-      
-      if (trustDevice) {
-        // Extended time for trusted devices (24 hours)
-        localStorage.setItem("trustedDevice", "true");
+    try {
+      // Validate code against database using RPC function
+      const { data: isValid, error } = await supabase.rpc('validate_access_code', {
+        input_code: code
+      });
+
+      if (error) throw error;
+
+      if (isValid) {
+        // Set access flag and time in localStorage
+        localStorage.setItem("validAccessCode", "true");
+        localStorage.setItem("accessTime", Date.now().toString());
+        
+        if (trustDevice) {
+          // Extended time for trusted devices (24 hours)
+          localStorage.setItem("trustedDevice", "true");
+        }
+        
+        toast.success("Access granted! Welcome to the system.", {
+          description: "Redirecting to the main interface...",
+          icon: <Sparkles className="h-4 w-4" />
+        });
+        
+        // Go directly to landing page without loader
+        setTimeout(() => {
+          navigate("/landing", { replace: true });
+        }, 1000);
+      } else {
+        toast.error("Invalid access code", {
+          description: "Please check your code and try again.",
+          icon: <ShieldCheck className="h-4 w-4" />
+        });
+        setCode("");
+        setIsLoading(false);
       }
-      
-      toast.success("Access granted! Welcome to the system.", {
-        description: "Redirecting to the main interface...",
-        icon: <Sparkles className="h-4 w-4" />
+    } catch (error) {
+      toast.error("Error validating code", {
+        description: "Please try again later."
       });
-      
-      // Go directly to landing page without loader
-      setTimeout(() => {
-        navigate("/landing", { replace: true });
-      }, 1000);
-    } else {
-      toast.error("Invalid access code", {
-        description: "Please check your code and try again.",
-        icon: <ShieldCheck className="h-4 w-4" />
-      });
-      setCode("");
       setIsLoading(false);
     }
   };

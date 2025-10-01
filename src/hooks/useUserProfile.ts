@@ -30,30 +30,47 @@ export const useUserProfile = () => {
           .single();
 
         if (error) {
-          console.error('Error fetching profile:', error);
-          // Fallback to user metadata if profile doesn't exist
+          // Fetch role from user_roles table for fallback
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
           setProfile({
             id: user.id,
             name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
             email: user.email || '',
-            role: user.user_metadata?.role || 'student'
+            role: (roleData?.role as 'admin' | 'teacher' | 'student' | 'scanner') || user.user_metadata?.role || 'student'
           });
         } else if (data) {
+          // Fetch role from user_roles table
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
           setProfile({
             id: user.id,
             name: data.name,
             email: data.email,
-            role: (data.role as 'admin' | 'teacher' | 'student' | 'scanner') || 'student'
+            role: (roleData?.role as 'admin' | 'teacher' | 'student' | 'scanner') || 'student'
           });
         }
       } catch (error) {
-        console.error('Error fetching profile:', error);
-        // Fallback profile
+        // Fallback profile on error
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
         setProfile({
           id: user.id,
           name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
           email: user.email || '',
-          role: user.user_metadata?.role || 'student'
+          role: (roleData?.role as 'admin' | 'teacher' | 'student' | 'scanner') || user.user_metadata?.role || 'student'
         });
       } finally {
         setLoading(false);

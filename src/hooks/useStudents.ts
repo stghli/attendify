@@ -4,15 +4,15 @@ import { toast } from 'sonner';
 
 export type Student = {
   id: string;
-  user_id: string;
+  user_id?: string | null;
   name: string;
-  student_id?: string;
-  age?: number;
-  gender?: string;
-  class?: string;
-  address?: string;
-  parent_phone?: string;
-  qr_code?: string;
+  age?: number | null;
+  gender?: string | null;
+  class_id?: string | null;
+  address?: string | null;
+  parent_phone: string;
+  teacher_id?: string | null;
+  qr_code?: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -105,18 +105,18 @@ export const useDeleteStudent = () => {
 
 export const useValidateStudentId = () => {
   return useMutation({
-    mutationFn: async (studentId: string) => {
+    mutationFn: async (qrCode: string) => {
       const { data, error } = await supabase
         .from('students')
-        .select('id, name, student_id')
-        .eq('student_id', studentId)
+        .select('id, name, qr_code')
+        .eq('qr_code', qrCode)
         .maybeSingle();
       
       if (error) throw error;
-      return data;
+      return data ? { id: data.id, name: data.name, student_id: data.qr_code || '' } : null;
     },
     onError: (error: any) => {
-      toast.error(`Failed to validate student ID: ${error.message}`);
+      toast.error(`Failed to validate student: ${error.message}`);
     },
   });
 };

@@ -65,10 +65,9 @@ const QrScanner: React.FC = () => {
       
       // Record attendance
       await recordAttendance.mutateAsync({
-        userId: user?.id || qrData.user_id,
-        userRole: qrData.user_role,
-        action,
-        userName,
+        studentId: qrData.user_id,
+        studentName: userName,
+        notes: '',
       });
       
       // Update UI
@@ -111,10 +110,9 @@ const QrScanner: React.FC = () => {
 
       // Record attendance using the validated student data
       await recordAttendance.mutateAsync({
-        userId: studentData.id,
-        userRole: 'student',
-        action,
-        userName: studentData.name,
+        studentId: studentData.id,
+        studentName: studentData.name,
+        notes: '',
       });
 
       // Update UI

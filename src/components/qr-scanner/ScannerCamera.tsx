@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { BrowserMultiFormatReader } from '@zxing/library';
+import { logger } from "@/utils/logger";
 
 interface ScannerCameraProps {
   onScan: (result: any) => void;
@@ -16,7 +17,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
   const scanningRef = useRef<boolean>(false);
 
   useEffect(() => {
-    console.log("ScannerCamera component mounted");
+    logger.log("ScannerCamera component mounted");
     codeReaderRef.current = new BrowserMultiFormatReader();
     startCamera();
     return () => {
@@ -37,12 +38,12 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
     
     try {
       scanningRef.current = true;
-      console.log("Starting QR code scanning...");
+      logger.log("Starting QR code scanning...");
       
       // Use decodeFromVideoDevice for better QR detection
       codeReaderRef.current.decodeFromVideoDevice(undefined, videoRef.current, (result, error) => {
         if (result) {
-          console.log("QR Code detected:", result.getText());
+          logger.log("QR Code detected:", result.getText());
           // Provide visual feedback with vibration if available
           if (navigator.vibrate) {
             navigator.vibrate(200);
@@ -51,12 +52,12 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
         }
         
         if (error && error.name !== 'NotFoundException') {
-          console.error("QR scanning error:", error);
+          logger.error("QR scanning error:", error);
         }
       });
       
     } catch (error) {
-      console.error("Failed to start QR scanning:", error);
+      logger.error("Failed to start QR scanning:", error);
       scanningRef.current = false;
       setCameraError("Failed to start QR scanning");
     }
@@ -64,11 +65,11 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
 
   const stopScanning = () => {
     if (codeReaderRef.current) {
-      console.log("Stopping QR code scanning...");
+      logger.log("Stopping QR code scanning...");
       try {
         codeReaderRef.current.reset();
       } catch (error) {
-        console.log("Scanner reset error (normal):", error);
+        logger.log("Scanner reset error (normal):", error);
       }
       scanningRef.current = false;
     }
@@ -85,7 +86,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
         } 
       });
       
-      console.log("Camera access granted");
+      logger.log("Camera access granted");
       setStream(mediaStream);
       
       if (videoRef.current) {
@@ -97,7 +98,7 @@ const ScannerCamera: React.FC<ScannerCameraProps> = ({ onScan, onError }) => {
         };
       }
     } catch (error: any) {
-      console.error("Camera access failed:", error);
+      logger.error("Camera access failed:", error);
       setCameraError(error.message || "Camera access denied. Please allow camera access.");
       onError(error);
     }
