@@ -4,7 +4,6 @@ import { useAuth } from "@/context/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import Logo from "./header/Logo";
 import Navigation from "./header/Navigation";
-import SearchBar from "./header/SearchBar";
 import UserActions from "./header/UserActions";
 import MobileMenu from "./header/MobileMenu";
 
@@ -19,22 +18,17 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-white/50 shadow-lg">
-        <div className="max-w-7xl mx-auto px-3 lg:px-4">
-          <div className="flex h-14 items-center justify-between">
+      <header className="sticky top-0 z-40 bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Logo />
 
             {/* Desktop Navigation */}
             <Navigation user={profile} />
 
-            {/* Search Bar - Hidden on smaller screens */}
-            <div className="hidden md:flex">
-              <SearchBar />
-            </div>
-
             {/* Right Section */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="hidden lg:flex">
                 <UserActions user={profile} logout={signOut} />
               </div>
@@ -51,7 +45,7 @@ const Header: React.FC = () => {
       {/* Overlay backdrop for mobile menu */}
       {isMobileMenuOpen && (
         <div 
-          className="lg:hidden fixed inset-0 z-30 bg-black/10 backdrop-blur-[2px]"
+          className="lg:hidden fixed inset-0 z-30 bg-black/20"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

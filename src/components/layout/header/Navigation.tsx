@@ -32,16 +32,15 @@ const NavItem = ({ to, icon: Icon, label, onClick }: {
     onClick={onClick}
     className={({ isActive }) =>
       cn(
-        "flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium transition-all duration-300 hover:bg-white/80 hover:shadow-md hover:scale-105 group relative overflow-hidden",
+        "flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors hover:text-primary",
         isActive
-          ? "bg-white/90 text-primary shadow-md backdrop-blur-sm border border-white/50"
-          : "text-gray-700 hover:text-primary"
+          ? "text-primary border-b-2 border-primary"
+          : "text-muted-foreground"
       )
     }
   >
-    <Icon className="h-3.5 w-3.5 transition-transform group-hover:scale-110" />
-    <span className="hidden sm:inline text-xs">{label}</span>
-    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/5 translate-x-[100%] group-hover:translate-x-0 transition-transform duration-300 rounded-full"></div>
+    <Icon className="h-4 w-4" />
+    <span className="hidden sm:inline">{label}</span>
   </NavLink>
 );
 
@@ -67,7 +66,7 @@ const Navigation: React.FC<NavigationProps> = ({ user }) => {
   );
 
   return (
-    <nav className="hidden lg:flex items-center gap-1">
+    <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
       {filteredNavItems.map((item) => (
         <NavItem
           key={item.to}
