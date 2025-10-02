@@ -55,40 +55,39 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({ logs }) => {
   };
   
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-none rounded-xl">
-      <div className="absolute h-1.5 w-full bg-gradient-to-r from-blue-600 to-indigo-500"></div>
-      <CardHeader className="pt-6">
+    <Card className="border">
+      <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold flex items-center">
-            <Activity className="h-5 w-5 mr-2 text-blue-600" />
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <Activity className="h-5 w-5" />
             Recent Activities
           </CardTitle>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 font-medium">
-            {logs.length} activities
+          <Badge variant="outline">
+            {logs.length}
           </Badge>
         </div>
-        <CardDescription>Latest system activities across the platform</CardDescription>
+        <CardDescription>Latest system activities</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4 max-h-[300px] overflow-auto pr-2 custom-scrollbar">
+        <div className="space-y-4 max-h-[400px] overflow-auto">
           {logs.map((log) => {
             const { icon: Icon, iconBg, iconColor, title, description, badge, badgeColor } = getActivityDetails(log);
             
             return (
-              <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0 hover:bg-muted/20 p-2 rounded-lg transition-colors duration-200">
-                <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 shadow-sm ${iconBg}`}>
+              <div key={log.id} className="flex items-center justify-between border-b pb-3 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-md flex items-center justify-center ${iconBg}`}>
                     <Icon className={`h-5 w-5 ${iconColor}`} />
                   </div>
                   <div>
-                    <p className="font-medium">{title}</p>
+                    <p className="font-medium text-sm">{title}</p>
                     <p className="text-xs text-muted-foreground">
                       {description}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col items-end">
-                  <Badge variant="outline" className={`${badgeColor} mb-1 font-medium`}>
+                <div className="flex flex-col items-end gap-1">
+                  <Badge variant="outline" className={`${badgeColor} text-xs`}>
                     {badge}
                   </Badge>
                   <p className="text-xs text-muted-foreground">

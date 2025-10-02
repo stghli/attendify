@@ -56,10 +56,10 @@ const Dashboard: React.FC = () => {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="space-y-4 sm:space-y-6 max-w-[1600px] mx-auto p-3 sm:p-4 lg:p-6">
+    <div className="min-h-screen bg-background">
+      <div className="space-y-6 max-w-[1600px] mx-auto p-6">
         {/* Dashboard Header with greeting and tabs */}
-        <div className="flex flex-col gap-4 sm:gap-6">
+        <div className="flex flex-col gap-6">
           <DashboardHeader userName={user?.name || ''} />
           
           <Tabs 
@@ -67,16 +67,16 @@ const Dashboard: React.FC = () => {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid grid-cols-3 w-full sm:w-auto bg-white/80 backdrop-blur-sm border border-white/50 shadow-lg rounded-xl">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg text-xs sm:text-sm">Overview</TabsTrigger>
-              <TabsTrigger value="attendance" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg text-xs sm:text-sm">Attendance</TabsTrigger>
-              <TabsTrigger value="analytics" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg text-xs sm:text-sm">Analytics</TabsTrigger>
+            <TabsList className="grid grid-cols-3 w-full sm:w-auto">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="attendance">Attendance</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-4 sm:space-y-6">
+            <TabsContent value="overview" className="space-y-6">
               {/* Quick Actions */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/50 shadow-xl">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
+              <div className="border rounded-lg p-6">
+                <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
                 <QuickActions userRole={user?.role || ''} />
               </div>
 
@@ -85,8 +85,8 @@ const Dashboard: React.FC = () => {
                 <LandingPageControl />
               )}
 
-              {/* Stat Cards Grid - Mobile Optimized */}
-              <div className="grid gap-3 sm:gap-4 lg:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Stat Cards Grid */}
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 {user?.role === "admin" && (
                   <>
                     <StatCard 
@@ -167,21 +167,19 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Recent Activities Section */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/50 shadow-xl">
-                <RecentActivities logs={[...attendanceLogs, ...smsLogs].sort((a, b) => 
-                  new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-                ).slice(0, 10)} />
-              </div>
+              <RecentActivities logs={[...attendanceLogs, ...smsLogs].sort((a, b) => 
+                new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+              ).slice(0, 10)} />
             </TabsContent>
 
-            <TabsContent value="attendance" className="space-y-4 sm:space-y-6">
+            <TabsContent value="attendance" className="space-y-6">
               {/* Attendance Trend Chart */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/50 shadow-xl">
+              <div className="border rounded-lg p-6">
                 <AttendanceTrendChart />
               </div>
 
-              {/* Detailed Cards - Mobile Stacked */}
-              <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
+              {/* Detailed Cards */}
+              <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
                 <AttendanceLogs 
                   logs={attendanceLogs} 
                   todayLogsCount={todayLogs.length} 
@@ -200,14 +198,14 @@ const Dashboard: React.FC = () => {
               </div>
             </TabsContent>
 
-            <TabsContent value="analytics" className="space-y-4 sm:space-y-6">
+            <TabsContent value="analytics" className="space-y-6">
               {/* Analytics content */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/50 shadow-xl">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+              <div className="border rounded-lg p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <BarChart className="h-5 w-5" />
                   Analytics & Reports
                 </h3>
-                <p className="text-gray-600 mb-4">Detailed analytics and reporting features coming soon.</p>
+                <p className="text-muted-foreground mb-4">Detailed analytics and reporting features coming soon.</p>
                 <AttendanceTrendChart />
               </div>
             </TabsContent>
