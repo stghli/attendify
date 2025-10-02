@@ -1,48 +1,60 @@
-
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Monitor, Eye, EyeOff, Settings, ExternalLink } from "lucide-react";
+import { Monitor, EyeOff, Settings, ExternalLink, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useLandingPageSettings } from "@/hooks/useLandingPageSettings";
+import { useAccessCodes } from "@/hooks/useAccessCodes";
 
 const LandingPageControl: React.FC = () => {
-  const [isLandingEnabled, setIsLandingEnabled] = useState(true);
-  const [accessCode] = useState("9768");
   const navigate = useNavigate();
+  const { settings, isLoading, updateSettings } = useLandingPageSettings();
+  const { accessCodes, isLoading: codesLoading } = useAccessCodes();
 
   const handleToggleLanding = () => {
-    setIsLandingEnabled(!isLandingEnabled);
-    toast.success(`Landing page ${!isLandingEnabled ? 'enabled' : 'disabled'}`);
+    if (settings) {
+      updateSettings({ is_enabled: !settings.is_enabled });
+    }
   };
 
   const handleViewLanding = () => {
     navigate("/landing");
   };
 
+  if (isLoading || codesLoading) {
+    return (
+      <Card className="border rounded-lg p-6 bg-card shadow-sm">
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </Card>
+    );
+  }
+
+  const isLandingEnabled = settings?.is_enabled ?? true;
+  const activeCode = accessCodes?.[0]?.code || "No active code";
+
   return (
-    <Card className="bg-white/70 backdrop-blur-sm border border-white/50 shadow-xl">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <Monitor className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <CardTitle className="text-lg">Landing Page Control</CardTitle>
-            <p className="text-sm text-muted-foreground">Manage public access to QR scanner</p>
-          </div>
+    <Card className="border rounded-lg p-6 bg-card shadow-sm">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="h-1 w-8 bg-primary rounded-full" />
+        <h3 className="text-lg font-semibold">Landing Page Control</h3>
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <p className="text-sm text-muted-foreground">Manage public access to QR scanner</p>
         </div>
         <Badge 
           variant={isLandingEnabled ? "default" : "secondary"}
-          className={isLandingEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}
+          className={isLandingEnabled ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}
         >
           {isLandingEnabled ? "Active" : "Disabled"}
         </Badge>
-      </CardHeader>
+      </div>
       
-      <CardContent className="space-y-4">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <p className="font-medium">Public Access</p>
@@ -62,8 +74,8 @@ const LandingPageControl: React.FC = () => {
               <p className="font-medium">Access Code</p>
               <p className="text-sm text-muted-foreground">Current event access code</p>
             </div>
-            <Badge variant="outline" className="font-mono text-lg px-3 py-1">
-              {accessCode}
+            <Badge variant="outline" className="font-mono text-lg px-3 py-1 bg-primary/5">
+              {activeCode}
             </Badge>
           </div>
           
@@ -97,7 +109,7 @@ const LandingPageControl: React.FC = () => {
             </p>
           </div>
         )}
-      </CardContent>
+      </div>
     </Card>
   );
 };

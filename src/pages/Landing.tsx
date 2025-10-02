@@ -6,6 +6,7 @@ import QrScanner from "@/components/QrScanner";
 import { useStudents } from "@/hooks/useStudents";
 import { useTeachers } from "@/hooks/useTeachers";
 import { useAttendanceLogs } from "@/hooks/useAttendance";
+import { useLandingPageSettings } from "@/hooks/useLandingPageSettings";
 import LandingHeader from "@/components/landing/LandingHeader";
 import CurrentTimeDisplay from "@/components/landing/CurrentTimeDisplay";
 import EventCard from "@/components/landing/EventCard";
@@ -18,6 +19,7 @@ const Landing: React.FC = () => {
   const { data: students = [], isLoading: studentsLoading } = useStudents();
   const { data: teachers = [], isLoading: teachersLoading } = useTeachers();
   const { data: attendanceLogs = [], isLoading: attendanceLoading } = useAttendanceLogs();
+  const { settings, isLoading: settingsLoading } = useLandingPageSettings();
   const [isSecurityValidated, setIsSecurityValidated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,6 +37,12 @@ const Landing: React.FC = () => {
   // Enhanced security validation - runs continuously
   useEffect(() => {
     const validateSecurity = () => {
+      // First check if landing page is enabled
+      if (settings && !settings.is_enabled) {
+        navigate("/", { replace: true });
+        return false;
+      }
+
       const hasValidAccess = localStorage.getItem("validAccessCode");
       const accessTime = localStorage.getItem("accessTime");
       const currentTime = Date.now();
@@ -61,32 +69,35 @@ const Landing: React.FC = () => {
       setIsLoading(false);
     };
 
-    initialCheck();
+    // Only run validation after settings are loaded
+    if (!settingsLoading) {
+      initialCheck();
 
-    // Continuous security check every 30 seconds
-    const securityInterval = setInterval(() => {
-      if (!validateSecurity()) {
-        setIsSecurityValidated(false);
-      }
-    }, 30000);
+      // Continuous security check every 30 seconds
+      const securityInterval = setInterval(() => {
+        if (!validateSecurity()) {
+          setIsSecurityValidated(false);
+        }
+      }, 30000);
 
-    // Check on window focus/blur events for additional security
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        validateSecurity();
-      }
-    };
+      // Check on window focus/blur events for additional security
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          validateSecurity();
+        }
+      };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    return () => {
-      clearInterval(securityInterval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [navigate]);
+      return () => {
+        clearInterval(securityInterval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  }, [navigate, settings, settingsLoading]);
 
   // Show loader while validating or loading data
-  if (isLoading || studentsLoading || teachersLoading || attendanceLoading) {
+  if (isLoading || studentsLoading || teachersLoading || attendanceLoading || settingsLoading) {
     return <ClockLoader />;
   }
 
