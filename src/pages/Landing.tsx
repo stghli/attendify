@@ -73,12 +73,12 @@ const Landing: React.FC = () => {
     if (!settingsLoading) {
       initialCheck();
 
-      // Continuous security check every 30 seconds
-      const securityInterval = setInterval(() => {
-        if (!validateSecurity()) {
-          setIsSecurityValidated(false);
-        }
-      }, 30000);
+    // Continuous security check every 30 seconds
+    const securityInterval = setInterval(async () => {
+      if (!(await validateSecurity())) {
+        setIsSecurityValidated(false);
+      }
+    }, 30000);
 
       // Check on window focus/blur events for additional security
       const handleVisibilityChange = () => {

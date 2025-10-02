@@ -1,21 +1,94 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Monitor, EyeOff, Settings, ExternalLink, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useLandingPageSettings } from "@/hooks/useLandingPageSettings";
-import { useAccessCodes } from "@/hooks/useAccessCodes";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const LandingPageControl: React.FC = () => {
+  const [isLandingEnabled, setIsLandingEnabled] = useState(true);
+  const [accessCode, setAccessCode] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const navigate = useNavigate();
-  const { settings, isLoading, updateSettings } = useLandingPageSettings();
-  const { accessCodes, isLoading: codesLoading } = useAccessCodes();
 
-  const handleToggleLanding = () => {
-    if (settings) {
-      updateSettings({ is_enabled: !settings.is_enabled });
+  // Fetch landing page settings
+  useEffect(() => {
+    fetchSettings();
+    fetchAccessCode();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('landing_page_settings')
+        .select('*')
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setIsLandingEnabled(data.is_enabled);
+      }
+    } catch (error) {
+      console.error('Error fetching landing page settings:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchAccessCode = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('access_codes')
+        .select('code')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      if (data) {
+        setAccessCode(data.code);
+      }
+    } catch (error) {
+      console.error('Error fetching access code:', error);
+    }
+  };
+
+  const handleToggleLanding = async () => {
+    setIsUpdating(true);
+    try {
+      const newStatus = !isLandingEnabled;
+      
+      // Get the settings ID first
+      const { data: settings, error: fetchError } = await supabase
+        .from('landing_page_settings')
+        .select('id')
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      const { error } = await supabase
+        .from('landing_page_settings')
+        .update({ 
+          is_enabled: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', settings.id);
+
+      if (error) throw error;
+
+      setIsLandingEnabled(newStatus);
+      toast.success(`Landing page ${newStatus ? 'enabled' : 'disabled'}`);
+    } catch (error) {
+      console.error('Error updating landing page settings:', error);
+      toast.error('Failed to update landing page settings');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -23,38 +96,37 @@ const LandingPageControl: React.FC = () => {
     navigate("/landing");
   };
 
-  if (isLoading || codesLoading) {
+  if (isLoading) {
     return (
-      <Card className="border rounded-lg p-6 bg-card shadow-sm">
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </div>
+      <Card className="border shadow-sm">
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </CardContent>
       </Card>
     );
   }
 
-  const isLandingEnabled = settings?.is_enabled ?? true;
-  const activeCode = accessCodes?.[0]?.code || "No active code";
-
   return (
-    <Card className="border rounded-lg p-6 bg-card shadow-sm">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="h-1 w-8 bg-primary rounded-full" />
-        <h3 className="text-lg font-semibold">Landing Page Control</h3>
-      </div>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <p className="text-sm text-muted-foreground">Manage public access to QR scanner</p>
+    <Card className="border shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Monitor className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <CardTitle className="text-lg">Landing Page Control</CardTitle>
+            <p className="text-sm text-muted-foreground">Manage public access to QR scanner</p>
+          </div>
         </div>
         <Badge 
           variant={isLandingEnabled ? "default" : "secondary"}
-          className={isLandingEnabled ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}
+          className={isLandingEnabled ? "bg-green-100 text-green-800 border-green-200" : "bg-red-100 text-red-800 border-red-200"}
         >
           {isLandingEnabled ? "Active" : "Disabled"}
         </Badge>
-      </div>
+      </CardHeader>
       
-      <div className="space-y-4">
+      <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <p className="font-medium">Public Access</p>
@@ -65,6 +137,7 @@ const LandingPageControl: React.FC = () => {
           <Switch 
             checked={isLandingEnabled} 
             onCheckedChange={handleToggleLanding}
+            disabled={isUpdating}
           />
         </div>
         
@@ -74,8 +147,8 @@ const LandingPageControl: React.FC = () => {
               <p className="font-medium">Access Code</p>
               <p className="text-sm text-muted-foreground">Current event access code</p>
             </div>
-            <Badge variant="outline" className="font-mono text-lg px-3 py-1 bg-primary/5">
-              {activeCode}
+            <Badge variant="outline" className="font-mono text-lg px-3 py-1">
+              {accessCode || "No active code"}
             </Badge>
           </div>
           
@@ -109,7 +182,7 @@ const LandingPageControl: React.FC = () => {
             </p>
           </div>
         )}
-      </div>
+      </CardContent>
     </Card>
   );
 };
