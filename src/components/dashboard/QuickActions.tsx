@@ -78,10 +78,12 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       <Button 
         variant="outline" 
-        className="h-24 flex flex-col items-center justify-center gap-2"
+        className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
         onClick={handleQrScan}
       >
-        <QrCode className="h-5 w-5" />
+        <div className="rounded-lg bg-primary/10 p-2">
+          <QrCode className="h-5 w-5 text-primary" />
+        </div>
         <span className="text-sm font-medium">Scan QR Code</span>
       </Button>
 
@@ -89,19 +91,23 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
         <>
           <Button 
             variant="outline"
-            className="h-24 flex flex-col items-center justify-center gap-2"
+            className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
             onClick={handleAddStudent}
           >
-            <UserPlus className="h-5 w-5" />
+            <div className="rounded-lg bg-primary/10 p-2">
+              <UserPlus className="h-5 w-5 text-primary" />
+            </div>
             <span className="text-sm font-medium">Add Student</span>
           </Button>
 
           <Button 
             variant="outline"
-            className="h-24 flex flex-col items-center justify-center gap-2"
+            className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
             onClick={handleSendAlert}
           >
-            <Bell className="h-5 w-5" />
+            <div className="rounded-lg bg-primary/10 p-2">
+              <Bell className="h-5 w-5 text-primary" />
+            </div>
             <span className="text-sm font-medium">Send Alert</span>
           </Button>
         </>
@@ -111,19 +117,23 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
         <>
           <Button 
             variant="outline"
-            className="h-24 flex flex-col items-center justify-center gap-2"
+            className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
             onClick={handleMyStudents}
           >
-            <UserPlus className="h-5 w-5" />
+            <div className="rounded-lg bg-primary/10 p-2">
+              <UserPlus className="h-5 w-5 text-primary" />
+            </div>
             <span className="text-sm font-medium">My Students</span>
           </Button>
 
           <Button 
             variant="outline"
-            className="h-24 flex flex-col items-center justify-center gap-2"
+            className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
             onClick={handleMarkPresent}
           >
-            <Clock className="h-5 w-5" />
+            <div className="rounded-lg bg-primary/10 p-2">
+              <Clock className="h-5 w-5 text-primary" />
+            </div>
             <span className="text-sm font-medium">Mark Present</span>
           </Button>
         </>
@@ -131,10 +141,12 @@ const QuickActions: React.FC<QuickActionsProps> = ({ userRole }) => {
 
       <Button 
         variant="outline" 
-        className="h-24 flex flex-col items-center justify-center gap-2"
+        className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary/50 hover:bg-primary/5 transition-colors"
         onClick={handleViewRecords}
       >
-        <Calendar className="h-5 w-5" />
+        <div className="rounded-lg bg-primary/10 p-2">
+          <Calendar className="h-5 w-5 text-primary" />
+        </div>
         <span className="text-sm font-medium">View Records</span>
       </Button>
     </div>

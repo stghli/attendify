@@ -36,13 +36,16 @@ const StatCard: React.FC<StatCardProps> = ({
   subtitleHighlight,
 }) => {
   return (
-    <Card className="border">
+    <Card className="border shadow-sm relative overflow-hidden group">
+      {/* Subtle left accent bar */}
+      <div className={cn("absolute left-0 top-0 bottom-0 w-1", iconBgColor)} />
+      
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
-        <div className={cn(`inline-flex items-center justify-center rounded-md ${iconBgColor} p-2`)}>
-          <Icon className={`h-4 w-4 ${iconColor}`} />
+        <div className={cn("inline-flex items-center justify-center rounded-lg", iconBgColor, "p-2.5")}>
+          <Icon className={cn("h-4 w-4", iconColor)} />
         </div>
       </CardHeader>
       

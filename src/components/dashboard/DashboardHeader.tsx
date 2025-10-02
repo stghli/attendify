@@ -14,12 +14,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     return "Good evening";
   };
   return (
-    <div className="border-b bg-card">
-      <div className="px-6 py-4">
-        <div className="flex items-center gap-3">
-          <BarChart3 className="h-6 w-6 text-primary" />
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">
+    <div className="border-b bg-card shadow-sm">
+      <div className="px-6 py-5">
+        <div className="flex items-start gap-3">
+          <div className="rounded-lg bg-primary/10 p-2.5 mt-0.5">
+            <BarChart3 className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h1 className="text-2xl font-semibold tracking-tight mb-1">
               {getGreeting()}, {userName}
             </h1>
             <p className="text-sm text-muted-foreground">

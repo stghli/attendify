@@ -58,6 +58,13 @@ const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="space-y-6 max-w-[1600px] mx-auto p-6">
+        {/* Subtle background pattern */}
+        <div className="fixed inset-0 -z-10 opacity-[0.02]" 
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+          }}
+        />
         {/* Dashboard Header with greeting and tabs */}
         <div className="flex flex-col gap-6">
           <DashboardHeader userName={user?.name || ''} />
@@ -75,8 +82,11 @@ const Dashboard: React.FC = () => {
 
             <TabsContent value="overview" className="space-y-6">
               {/* Quick Actions */}
-              <div className="border rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+              <div className="border rounded-lg p-6 bg-card shadow-sm">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <div className="h-1 w-8 bg-primary rounded-full" />
+                  Quick Actions
+                </h3>
                 <QuickActions userRole={user?.role || ''} />
               </div>
 
@@ -174,7 +184,7 @@ const Dashboard: React.FC = () => {
 
             <TabsContent value="attendance" className="space-y-6">
               {/* Attendance Trend Chart */}
-              <div className="border rounded-lg p-6">
+              <div className="border rounded-lg p-6 bg-card shadow-sm">
                 <AttendanceTrendChart />
               </div>
 
@@ -200,9 +210,9 @@ const Dashboard: React.FC = () => {
 
             <TabsContent value="analytics" className="space-y-6">
               {/* Analytics content */}
-              <div className="border rounded-lg p-6">
+              <div className="border rounded-lg p-6 bg-card shadow-sm">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <BarChart className="h-5 w-5" />
+                  <BarChart className="h-5 w-5 text-primary" />
                   Analytics & Reports
                 </h3>
                 <p className="text-muted-foreground mb-4">Detailed analytics and reporting features coming soon.</p>
