@@ -13,6 +13,22 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     if (hour < 18) return "Good afternoon";
     return "Good evening";
   };
-  return;
+  return (
+    <div className="border-b bg-card">
+      <div className="px-6 py-4">
+        <div className="flex items-center gap-3">
+          <BarChart3 className="h-6 w-6 text-primary" />
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              {getGreeting()}, {userName}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Here's what's happening with your attendance system today
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 export default DashboardHeader;

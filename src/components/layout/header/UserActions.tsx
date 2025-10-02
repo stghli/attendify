@@ -52,23 +52,24 @@ const UserActions: React.FC<UserActionsProps> = ({ user, logout }) => {
       {/* Profile Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`} alt={user.name} />
               <AvatarFallback className="text-xs">
                 {user.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="hidden md:flex flex-col items-start">
-              <span className="text-sm font-medium">{user.name}</span>
-              <Badge className={`${getRoleBadgeClass(user.role)} capitalize text-xs`}>
-                {user.role}
-              </Badge>
-            </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium">{user.name}</p>
+              <Badge className={`${getRoleBadgeClass(user.role)} capitalize text-xs w-fit`}>
+                {user.role}
+              </Badge>
+            </div>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <User className="mr-2 h-4 w-4" />
